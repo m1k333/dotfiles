@@ -42,23 +42,23 @@ bindkey '\e[B' history-beginning-search-forward
 
 
 # Prompt
-phashD="%#"
+phash="%#"
 dirind="[%~]-"
 
 if [[ "$bindkey" == "vi" ]]; then
 
     precmd()
     {
-        phashF="${phashD}"
-        PS1="${dirind}${phashF} "
+        phashvi="${phash}"
+        PS1="${dirind}${phashvi} "
     }
 
     zle-keymap-select()
 
     {
-        phashF="${phashD}"
-        [[ $KEYMAP = vicmd ]] && phashF="/"
-        PS1="${dirind}${phashF} "
+        phashvi="${phash}"
+        [[ $KEYMAP = vicmd ]] && phashvi="/"
+        PS1="${dirind}${phashvi} "
         () { return $__prompt_status }
         zle reset-prompt
     }
@@ -71,7 +71,7 @@ if [[ "$bindkey" == "vi" ]]; then
 
 else
 
-    PS1="${dirind}${phashD} "
+    PS1="${dirind}${phash} "
 
 fi
 

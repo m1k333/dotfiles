@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Bar executable
+bar='lemonbar'
+
+# String
+string="$@"
+length=$(($(echo "$string" | wc -m) - 1))
+
+# How long should the popup remain?
+duration=5
+
+# Define geometry
+bar_x=10
+bar_y=10
+bar_w=$((8*$length))
+bar_h=20
+
+# Colors
+bar_bg='#ff000000'
+bar_fg='#ffffffff'
+
+# Font
+bar_font='-*-terminus-*-*-*-*-14-*-*-*-*-*-iso10646-*'
+
+#Create the popup
+(echo "$string"; sleep ${duration}) | ${bar} -g ${bar_w}x${bar_h}+${bar_x}+${bar_y} -B${bar_bg} -f ${bar_font}

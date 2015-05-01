@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source ~/.config/bspwm/panel_profile
+
+dmenu_run -fn "$PANEL_FONT_FAMILY" -nb "$DMENU_BACKGROUND" -sb "$DMENU_BACKGROUND" -nf "$DMENU_FOREGROUND" -sf "$DMENU_ACTIVE"

@@ -1,0 +1,19 @@
+!Appearance
+URxvt.font:           xft:Terminus:size=12
+URxvt.boldFont:       xft:Terminus:bold:size=12
+URxvt.internalBorder: 8
+URxvt.externalBorder: 0
+URxvt.background:     #000000
+URxvt.foreground:     #FFFFFF
+URxvt.cursorColor:    #FFFFFF
+
+!Behaviours
+URxvt.saveLines:       30000
+URxvt.scrollBar:       false
+URxvt.urgentonBell:    true
+URxvt.iso14755:        false
+URxvt.iso14755_52:     false
+URxvt.perl-ext-common: default,clipboard,url-select,keyboard-select
+URxvt.keysym.C-C:      perl:clipboard:copy
+URxvt.keysym.C-V:      perl:clipboard:paste
+URxvt.keysym.C-A-V:    perl:clipboard:paste_escaped

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#Xorg stuff
+xsetroot -cursor_name left_ptr
+feh --no-fehbg --bg-center ~/.config/bspwm/wallpaper*
+urxvtd -q -o -f
+~/.config/bspwm/panel &
+
+#Visuals
+bspc config border_width 1
+bspc config window_gap 0
+bspc monitor -d 1 2 3 4 5 6 7 8 9 0
+bspc config normal_frame_opacity 0.0
+bspc config focused_frame_opacity 0.0
+
+#Colours
+bspc config focused_border_color "#FF00A0"
+bspc config active_border_color  "#FF00A0"
+bspc config normal_border_color  "#0000FF"
+bspc config presel_border_color  "#00FF00"
+bspc config urgent_border_color  "#FF0000"
+
+#Behaviour
+bspc config split_ratio 0.50
+bspc config borderless_monocle true
+bspc config gapless_monocle true
+bspc config focus_follows_pointer true
+bspc config auto_alternate true
+bspc config auto_cancel true

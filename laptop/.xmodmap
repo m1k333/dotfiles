@@ -1,0 +1,7 @@
+! Make Menu key into Super_R
+keysym Menu = Super_R
+
+! Make Caps_Lock key into Control_L
+clear Lock
+keysym Caps_Lock = Control_L
+add Control = Control_L

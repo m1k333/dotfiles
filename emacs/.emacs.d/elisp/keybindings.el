@@ -8,6 +8,8 @@
 (global-set-key (kbd "M-h") 'backward-kill-word)
 (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(global-set-key (kbd "C-(") 'kmacro-start-macro-or-insert-counter)
+(global-set-key (kbd "C-)") 'kmacro-end-or-call-macro)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "M-RET") 'newline-and-indent)
 (global-set-key (kbd "M-SPC") 'cycle-spacing)

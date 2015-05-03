@@ -83,7 +83,6 @@
 
 ;; Keybindings and mouse bindings
 (require 'keybindings)
-(mouse-avoidance-mode 'banish)
 (setq mouse-yank-at-point t)
 
 ;; Mode line
@@ -101,7 +100,7 @@
 (setq save-place-file "~/.emacs.d/saveplace-file")
 
 ;; SLIME
-(require 'slime)
+;;(require 'slime)
 (when (featurep 'slime)
 (setq inferior-lisp-program "/usr/bin/sbcl"))
 

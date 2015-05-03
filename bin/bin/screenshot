@@ -1,0 +1,4 @@
+#!/bin/bash
+
+import -window root ~/$(date +%F_%T).jpg
+

@@ -1,4 +1,4 @@
-;;; -*-lisp-*-
+;;;; -*-lisp-*-
 
 ;;; Package
 (in-package :stumpwm)
@@ -44,4 +44,4 @@
 
 ;; Suspend
 (defcommand suspend () ()
-            (run-shell-command "stumpish quit && systemctl suspend"))
+            (run-shell-command "systemctl suspend"))

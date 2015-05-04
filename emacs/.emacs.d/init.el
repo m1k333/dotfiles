@@ -7,35 +7,61 @@
 ;; Load path
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
+;; Determine operating system
+(defun linuxp () "True if running GNU/Linux."
+  (if (or (eq system-type 'gnu/linux) (eq system-type 'linux)) t nil))
+(defun windowsp () "True if running Windows."
+  (if (or (eq system-type 'windows-nt) (eq system-type 'cygwin)) t nil))
+
 ;; Packages
 (require 'package-populate)
 (setq package-required-list
-      '(expand-region multiple-cursors slime))
+      '(color-theme expand-region multiple-cursors slime))
 
 ;; StumpWM swank sever
 (require 'stumpwm-mode)
+(require 'stumpwm-utils)
 (setq stumpwm-shell-program "~/.stumpwm.d/modules/util/stumpish/stumpish")
 
 ;;; Set up Emacs
 
-;; Appearance
+;; Appearance (GUI settings)
 (blink-cursor-mode -1)
 (show-paren-mode 1)
-(setq custom-theme-directory "~/.emacs.d/themes/"
-      echo-keystrokes 0.1
+(setq echo-keystrokes 0.1
       font-lock-maximum-decoration t
       global-font-lock-mode t
-      show-paren-delay 0
-      visible-bell t)
+      show-paren-delay 0)
 (menu-bar-mode -1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(when (display-graphic-p)
-  (when (file-exists-p (concat custom-theme-directory "monokai-theme.el"))
-    (setq monokai-distinct-fringe-background t)
-    (load-theme 'monokai t))
-  (when (or (eq system-type 'windows-nt) (eq system-type 'cygwin))
-    (set-face-attribute 'default nil :font "Consolas-12")))
+
+;; Appearance (font)
+(defun system-font ()
+  "Returns the font to use for Emacs frames; nil means only the
+default font is available."
+  (cond
+   ((and (linuxp) (member "terminus" (font-family-list)))
+    "Terminus-12")
+   ((and (windowsp) (member "Consolas" (font-family-list)))
+    "Consolas-12")))
+
+;; Appearance (theme)
+(require 'color-theme)
+(color-theme-initialize)
+(setq color-theme-is-global nil)
+
+;; Appearance for each frame
+(defun frame-setup-appearance (&optional frame)
+  (when frame (select-frame frame))
+  (if (window-system frame)
+      (color-theme-dark-laptop)
+    (color-theme-dark-laptop))
+  (set-frame-font (system-font)))
+
+;; Appearance set when creating new frame
+(add-hook 'after-make-frame-functions 'frame-setup-appearance)
+(frame-setup-appearance)
 
 ;; Apropos
 (setq apropos-do-all t)

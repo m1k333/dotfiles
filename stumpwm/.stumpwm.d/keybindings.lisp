@@ -1,5 +1,8 @@
 ;;; -*-lisp-*-
 
+;;; Package
+(in-package :stumpwm)
+
 ;;; Keybindings
 
 ;; Keybindings/mouse setings
@@ -16,6 +19,7 @@
         (define-key m (kbd "s-:") "eval")
         (define-key m (kbd "s-b") "banish")
         (define-key m (kbd "s-l") '*launcher-map*)
+        (define-key m (kbd "s-m") "mode-line")
         (define-key m (kbd "XF86AudioRaiseVolume") "exec amixer set Master 5%+")
         (define-key m (kbd "XF86AudioLowerVolume") "exec amixer set Master 5%-")
         (define-key m (kbd "XF86AudioMute")        "exec amixer set Master toggle")
@@ -207,6 +211,6 @@
       (let ((m (make-sparse-keymap)))
         (define-key m (kbd "c") "exec urxvtc")
         (define-key m (kbd "RET") "exec urxvtc")
-        (define-key m (kbd "e") "emacs")
+        (define-key m (kbd "e") "emacsclient")
         (define-key m (kbd "f") "firefox")
         m))

@@ -38,7 +38,7 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-;; Font
+;; Get the font we like
 (defun system-font ()
   "Returns the font to use for Emacs frames; nil means only the
 default font is available."
@@ -48,18 +48,17 @@ default font is available."
    ((and (windowsp) (member "Consolas" (font-family-list)))
     "Consolas-12")))
 
-;; Color theme
+;; Appearance for each frame
 (require 'color-theme)
 (color-theme-initialize)
 (setq color-theme-is-global nil)
-
-;; Appearance for each frame
 (defun frame-setup-appearance (&optional frame)
+  "Set the theme for the newly-created frame."
   (when frame (select-frame frame))
   (if (window-system frame)
-      (color-theme-dark-laptop)
+      (color-theme-dark-laptop) ;; If GUI
     (color-theme-dark-laptop))
-  (set-frame-font (system-font)))
+  (set-frame-font (system-font))) ;; If terminal
 
 ;; Appearance set when creating new frame
 (add-hook 'after-make-frame-functions 'frame-setup-appearance)

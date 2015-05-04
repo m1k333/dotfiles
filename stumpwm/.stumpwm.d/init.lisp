@@ -2,23 +2,35 @@
 
 ;;; Initialize
 
-;; *Package
+;; Package
 (in-package :stumpwm)
 
-;; Init file load path
-(defvar *init-load-path*
-  (directory-namestring
-   (truename (merge-pathnames (user-homedir-pathname)
-                              ".stumpwm.d")))
-  "The directory where the other init files live.")
+;; Swank server
+(require 'swank)
+(swank:create-server :dont-close t)
+;; Requires swank, slime, and quicklisp-slime-helper for emacs.
 
-;; Load-init function
-(defun load-init (filename)
-  "Load a file FILENAME (without extension) from `*init-load-path*'."
-  (let ((file (merge-pathnames *init-load-path* (concat filename ".lisp"))))
+;; RC file load path
+(defvar *rc-load-path*
+  (directory-namestring
+   (truename (merge-pathnames (user-homedir-pathname) "~/.stumpwm.d")))
+  "The directory where the other init/'rc' files live.")
+
+;; Load-rc function
+(defun load-rc (filename)
+  "Load a file FILENAME (without extension) from `*rc-load-path*'."
+  (let ((file (merge-pathnames *rc-load-path* (concat filename ".lisp"))))
     (if (probe-file file)
         (load file)
         (format *error-output* "File '~a' doesn't exist." file))))
+
+;; Modules load path
+(setf *module-dir*
+      (directory-namestring
+        (truename (merge-pathnames *rc-load-path* "modules"))))
+
+;; Populate module list
+(init-load-path *module-dir*)
 
 ;;; Settings
 
@@ -31,15 +43,20 @@
               (getenv "USER") (time-format "%c")))
 
 ;; Load other init files
-(load-init "appearance")
-(load-init "functions")
-(load-init "keybindings")
+(load-rc "appearance")
+(load-rc "functions")
+(load-rc "keybindings")
 
+;; Load modules
+(load-module "screenshot") ;; Requires zpng
+(load-module "surfraw") ;; Requires ...surfraw
+(load-module "stumptray") ;; Requires xembed
 
 ;;; Run external stuff
 
 ;; Finish initializing; everything below this is only run ONCE
-(unless (boundp '*initialized*)
+(defvar *initialized* nil "Set to t if StumpWM has been started once.")
+(unless *initialized*
 
   ;; Background processes
   (run-shell-command "feh --no-fehbg --bg-center ~/.stumpwm.d/wallpaper*")
@@ -47,6 +64,6 @@
 
   ;; Programs to start immediately
   ;;(run-shell-command "urxvtc")
-  
+
   ;; Tell LISP that we've booted up once
-  (defvar *initialized* t "Set to t if StumpWM has been started once."))
+  (setf *initialized* t))

@@ -19,7 +19,7 @@
         (define-key m (kbd "XF86AudioRaiseVolume") "exec amixer set Master 5%+")
         (define-key m (kbd "XF86AudioLowerVolume") "exec amixer set Master 5%-")
         (define-key m (kbd "XF86AudioMute")        "exec amixer set Master toggle")
-        (define-key m (kbd "Print")                "exec screenshot")
+        (define-key m (kbd "Print")                "screenshot")
         m))
 
 ;; Root map

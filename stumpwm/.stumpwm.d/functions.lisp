@@ -4,7 +4,11 @@
 
 ;; ACPI info
 (defcommand battery () ()
-            (echo-string (current-screen) (run-shell-command "acpi -V" t)))
+  (echo-string (current-screen) (run-shell-command "acpi -V" t)))
+
+;; ALSA sound I/O info
+(defcommand audio () ()
+  (echo-string (current-screen) (run-shell-command "amixer get Master" t)))
 
 ;; cat (UNIX-style function)
 (defun cat (&rest strings)

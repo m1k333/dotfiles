@@ -3,10 +3,18 @@
 ;;; Since May 5th, 2014
 
 ;;; Initialize stuff
+
+;; Load path
 (add-to-list 'load-path "~/.emacs.d/elisp")
+
+;; Packages
 (require 'package-populate)
 (setq package-required-list
-      '(auctex expand-region multiple-cursors slime))
+      '(expand-region multiple-cursors slime))
+
+;; StumpWM swank sever
+(require 'stumpwm-mode)
+(setq stumpwm-shell-program "~/.stumpwm.d/modules/util/stumpish/stumpish")
 
 ;;; Set up Emacs
 
@@ -100,9 +108,10 @@
 (setq save-place-file "~/.emacs.d/saveplace-file")
 
 ;; SLIME
-;;(require 'slime)
+(require 'slime)
 (when (featurep 'slime)
-(setq inferior-lisp-program "/usr/bin/sbcl"))
+  (load (expand-file-name "~/.quicklisp/slime-helper.el"))
+  (setq inferior-lisp-program "/usr/bin/sbcl"))
 
 ;; Startup screen
 (setq inhibit-startup-screen t
@@ -175,6 +184,18 @@
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
+(defun stumpwm-connect ()
+  "Connect to StumpWM's swank server at 127.0.0.1:4005."
+  (interactive)
+  (stumpwm-mode 1)
+  (slime-connect "127.0.0.1" 4005))
+
+(defun stumpwm-disconnect ()
+  "Close the current connection."
+  (interactive)
+  (stumpwm-mode -1)
+  (slime-disconnect))
+  
 (defun sudo-edit (&optional arg)
   "Edit a file as root."
   (interactive "p")

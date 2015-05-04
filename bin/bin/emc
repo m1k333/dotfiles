@@ -1,3 +1,31 @@
 #!/bin/sh
 
-exec emacsclient --alternate-editor="" -c "$@"
+# Wrapper for emacs daemon and client interaction,
+# and for using emacsclient as $EDITOR
+
+# Name the arguments
+choice="$@"
+
+# Define start/stop functions
+startdaemon() { emacs --daemon; }
+stopdaemon()  { emacsclient --eval "(kill-emacs)"; }
+
+# Choose what to do
+case $choice in
+    start)     startdaemon ;;
+    stop|quit) stopdaemon ;;
+    restart)   stopdaemon && startdaemon ;;
+
+    *)  # Run a command through to emacsclient
+        emacsargs="-c"
+
+        # Get rid of the `-(g|G)', construct the command proper
+        [[ "$1" == "-g" ]] && shift 1 || emacsargs="-nw $emacsargs"
+        scriptargs="$@"
+
+        # Run the command!
+        exec emacsclient $emacsargs --alternate-editor="" $scriptargs
+        ;;
+esac
+
+#EOF

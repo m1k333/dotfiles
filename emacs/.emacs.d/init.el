@@ -1,31 +1,33 @@
-;;; $HOME/.emacs.d/init.el
-;;; By Michael Richer
-;;; Since May 5th, 2014
+;;;; $HOME/.emacs.d/init.el
+;;;; By Michael Richer
+;;;; Since May 5th, 2014
 
-;;; Initialize stuff
+;;;; Initialize stuff
 
-;; Load path
+;;; Load path
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
-;; Determine operating system
+;;; Determine operating system
 (defun linuxp () "True if running GNU/Linux."
   (if (or (eq system-type 'gnu/linux) (eq system-type 'linux)) t nil))
 (defun windowsp () "True if running Windows."
   (if (or (eq system-type 'windows-nt) (eq system-type 'cygwin)) t nil))
 
-;; Packages
+;;; Packages
 (require 'package-populate)
 (setq package-required-list
       '(color-theme expand-region multiple-cursors slime))
 
-;; StumpWM swank sever
+;;; StumpWM swank sever
 (require 'stumpwm-mode)
 (require 'stumpwm-utils)
 (setq stumpwm-shell-program "~/.stumpwm.d/modules/util/stumpish/stumpish")
 
-;;; Set up Emacs
+;;;; Set up Emacs
 
-;; Appearance (GUI settings)
+;;; Appearance
+
+;; GUI settings
 (blink-cursor-mode -1)
 (show-paren-mode 1)
 (setq echo-keystrokes 0.1
@@ -36,7 +38,7 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-;; Appearance (font)
+;; Font
 (defun system-font ()
   "Returns the font to use for Emacs frames; nil means only the
 default font is available."
@@ -46,7 +48,7 @@ default font is available."
    ((and (windowsp) (member "Consolas" (font-family-list)))
     "Consolas-12")))
 
-;; Appearance (theme)
+;; Color theme
 (require 'color-theme)
 (color-theme-initialize)
 (setq color-theme-is-global nil)
@@ -63,10 +65,10 @@ default font is available."
 (add-hook 'after-make-frame-functions 'frame-setup-appearance)
 (frame-setup-appearance)
 
-;; Apropos
+;;; Apropos
 (setq apropos-do-all t)
 
-;; Backups and autosave
+;;; Backups and autosave
 (defvar backup-dir (expand-file-name "~/.emacs.d/backup/"))
 (defvar autosave-dir (expand-file-name "~/.emacs.d/autosave/"))
 (setq backup-directory-alist (list (cons ".*" backup-dir))
@@ -79,7 +81,7 @@ default font is available."
       kept-new-versions 10
       kept-old-versions 5)
 
-;; Buffers and files
+;;; Buffers and files
 (require 'uniquify)
 (global-auto-revert-mode 1)
 (auto-compression-mode t)
@@ -92,34 +94,34 @@ default font is available."
       recentf-save-file "~/.emacs.d/recentf-file")
 (recentf-mode 1)
 
-;; Calendar and date stuff
+;;; Calendar and date stuff
 (require 'calendar)
 (require 'insert-date)
 (calendar-set-date-style 'iso)
 
-;; Case sensitivity
+;;; Case sensitivity
 (setq completion-ignore-case t
       read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
       pcomplete-ignore-case t
       eshell-cmpl-ignore-case t)
 
-;; Commands/features/functions
+;;; Commands/features/functions
 (setq disabled-command-hook nil)
 (require 'expand-region)
 (require 'multiple-cursors)
 (require 'unfill)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Games
+;;; Games
 (autoload 'typing-of-emacs "typing-of-emacs.el"
   "The Typing of Emacs, a game." t)
 
-;; Keybindings and mouse bindings
+;;; Keybindings and mouse bindings
 (require 'keybindings)
 (setq mouse-yank-at-point t)
 
-;; Mode line
+;;; Mode line
 (setq display-time-24hr-format t
       show-help-function nil)
 (display-time-mode)
@@ -128,38 +130,50 @@ default font is available."
 (size-indication-mode)
 (tooltip-mode -1)
 
-;; Saveplace
+;;; Saveplace
 (require 'saveplace)
 (setq-default save-place t)
 (setq save-place-file "~/.emacs.d/saveplace-file")
 
-;; SLIME
-(require 'slime)
-(when (featurep 'slime)
-  (load (expand-file-name "~/.quicklisp/slime-helper.el"))
-  (setq inferior-lisp-program "/usr/bin/sbcl"))
+;;; SLIME
 
-;; Startup screen
+;; Quicklisp path
+(defvar quicklisp-path
+  (expand-file-name "~/.quicklisp/")
+  "The path to my quicklisp installation.")
+
+;; Quicklisp SLIME helper
+(defvar quicklisp-slime-helper
+  (concat quicklisp-path "slime-helper.el")
+  "The location of the quicklisp-slime-helper elisp file.")
+
+;; Initialize SLIME and helpers
+(require 'slime)
+(when (file-exists-p quicklisp-slime-helper)
+  (load quicklisp-slime-helper))
+(setq inferior-lisp-program "/usr/bin/sbcl")
+
+;;; Startup screen
 (setq inhibit-startup-screen t
       initial-scratch-message ";; *scratch*\n\n")
 
-;; Tabs
+;;; Tabs
 (setq-default indent-tabs-mode nil)
 
-;; Unicode
+;;; Unicode
 (prefer-coding-system 'utf-8)
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-;; Username
+;;; Username
 (setq user-full-name "Michael Richer"
       user-mail-address "msricher1993@gmail.com")
 
-;; X windows options
+;;; X windows options
 (setq x-select-enable-clipboard t
       x-select-enable-primary t
       save-interprogram-paste-before-kill t)
 
-;;; Misc functions
+;;;; Misc functions
 
 (defun delete-current-buffer-file ()
   "Removes file connected to current buffer and kills buffer."
@@ -221,7 +235,7 @@ default font is available."
   (interactive)
   (stumpwm-mode -1)
   (slime-disconnect))
-  
+
 (defun sudo-edit (&optional arg)
   "Edit a file as root."
   (interactive "p")

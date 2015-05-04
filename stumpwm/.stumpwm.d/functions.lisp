@@ -36,11 +36,11 @@
 
 ;; Poweroff
 (defcommand poweroff () ()
-            (run-shell-command "stumpish quit && systemctl poweroff"))
+            (run-shell-command "~/.stumpwm.d/modules/util/stumpish/stumpish quit && systemctl poweroff"))
 
 ;; Reboot
 (defcommand reboot () ()
-            (run-shell-command "stumpish quit && systemctl reboot"))
+            (run-shell-command "~/.stumpwm.d/modules/util/stumpish/stumpish quit && systemctl reboot"))
 
 ;; Suspend
 (defcommand suspend () ()

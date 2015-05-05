@@ -31,7 +31,6 @@
 (init-load-path *module-dir*)
 
 ;; Load modules
-(load-module "battery-portable")
 (load-module "screenshot") ;; Requires zpng
 (load-module "surfraw") ;; Requires ...surfraw
 (load-module "stumptray") ;; Requires xembed
@@ -61,7 +60,7 @@
 
   ;; Background processes
   (run-shell-command "feh --no-fehbg --bg-center ~/.stumpwm.d/wallpaper*")
-  (run-shell-command "emacs --daemon")
+  (run-shell-command "emc start")
   (run-shell-command "urxvtd -q -o -f")
 
   ;; Programs to start immediately

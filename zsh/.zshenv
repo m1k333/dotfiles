@@ -1,4 +1,4 @@
-# ~/.emacs
+# ~/.zshenv
 
 typeset -aU path
 

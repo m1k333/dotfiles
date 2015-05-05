@@ -11,4 +11,4 @@
 
 ;; Mode-line
 (setf *time-modeline-string*    "%A %F %R"
-      *screen-mode-line-format* "[^B%n^b] %W ^B||^b [%B] ^B||^b %d")
+      *screen-mode-line-format* "[^B%n^b] %W ^B||^b %d")

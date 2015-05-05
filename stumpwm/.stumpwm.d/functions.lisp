@@ -21,7 +21,7 @@
 ;; Emacsclient run or raise
 (defcommand emacsclient () ()
             "Run emacsclient, or if it is already open, raise its window."
-            (run-or-raise "emc" '(:class "Emacs")))
+            (run-or-raise "emc -g" '(:class "Emacs")))
 
 ;; Firefox run or raise
 (defcommand firefox () ()

@@ -33,8 +33,9 @@
 ;; Load modules
 (load-module "screenshot") ;; Requires zpng
 (load-module "surfraw") ;; Requires ...surfraw
-(load-module "stumptray") ;; Requires xembed
 (load-module "swm-emacs")
+;;(load-module "battery-portable")
+;;(load-module "stumptray") ;; Requires xembed
 
 ;; Load other init files
 (load-rc "appearance")

@@ -29,8 +29,8 @@ case $choice in
     *)  # Run a command through to emacsclient
         emacsargs="-c"
 
-        # Get rid of the `-(g|G)', construct the command proper
-        [[ "$1" == "-g" ]] && shift 1 || emacsargs="-nw $emacsargs"
+        # Get rid of the `-t', construct the command proper
+        [[ "$1" == "-t" ]] && (shift 1 && emacsargs="-nw -c")
         scriptargs="$@"
 
         # Run the command!

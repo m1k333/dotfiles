@@ -30,7 +30,7 @@ to be installed by running `package-populate'.")
 
 ;; Select required packages
 (setq package-required-list
-      '(color-theme expand-region multiple-cursors slime))
+      '(color-theme expand-region multiple-cursors slime stumpwm-mode))
 
 ;; Test for missing packages
 (defun package-missing ()
@@ -55,8 +55,22 @@ the `package-required-list' variable."
 (package-populate)
 
 ;;; StumpWM swank sever
+
+;; Minor mode for sending StumpWM commands
 (require 'stumpwm-mode)
 (setq stumpwm-shell-program "~/.stumpwm.d/modules/util/stumpish/stumpish")
+
+;; Connect/disconnect from StumpWM's swank server
+(defun stumpwm-connect ()
+  "Connect to StumpWM's swank server at 127.0.0.1:4005."
+  (interactive)
+  (stumpwm-mode 1)
+  (slime-connect "127.0.0.1" 4005))
+(defun stumpwm-disconnect ()
+  "Close the current connection."
+  (interactive)
+  (stumpwm-mode -1)
+  (slime-disconnect))
 
 ;;;; Set up Emacs
 
@@ -129,8 +143,33 @@ default font is available."
 (recentf-mode 1)
 
 ;;; Calendar and date stuff
+
+;; Set up calendar
 (require 'calendar)
 (calendar-set-date-style 'iso)
+
+;; Date function; returns the date in specified format
+(defvar time-string-standard "%F %T" "The preferred stfrtime format.")
+(defun date (&optional format)
+  "Return the date in specified stfrtime format."
+  (if format
+    (progn
+      (if (stringp format)
+          (if (= 0 (length format))
+              (format-time-string time-string-standard)
+              (format-time-string format))
+          (error "Argument passed must be a string")))
+    (format-time-string time-string-standard)))
+
+;; Insert the date interactively
+(defun insert-date (&optional format)
+  (interactive "MStfrtime format [RET for default]: ")
+  (insert (date format)))
+
+;; Insert the date quickly
+(defun insert-standard-date ()
+  (interactive)
+  (insert (date)))
 
 ;;; Case sensitivity
 (setq completion-ignore-case t
@@ -140,30 +179,10 @@ default font is available."
       eshell-cmpl-ignore-case t)
 
 ;;; Commands/features/functions
-(setq disabled-command-hook nil)
 (require 'expand-region)
 (require 'multiple-cursors)
+(setq disabled-command-hook nil)
 (fset 'yes-or-no-p 'y-or-n-p)
-
-;;; Games
-(autoload 'typing-of-emacs "typing-of-emacs.el"
-  "The Typing of Emacs, a game." t)
-
-;;; Keybindings and mouse bindings
-(global-set-key (kbd "C-=") 'er/expand-region)
-(global-set-key (kbd "M-?") 'mark-paragraph)
-(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
-(global-set-key (kbd "M-h") 'backward-kill-word)
-(global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
-(global-set-key (kbd "C-x C-r") 'recentf-open-files)
-(global-set-key (kbd "C-x h") 'help-command)
-(global-set-key (kbd "C-x C-h") 'mark-whole-buffer)
-(global-set-key (kbd "C-(") 'kmacro-start-macro-or-insert-counter)
-(global-set-key (kbd "C-)") 'kmacro-end-or-call-macro)
-(global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "M-RET") 'newline-and-indent)
-(global-set-key (kbd "M-SPC") 'cycle-spacing)
-(setq mouse-yank-at-point t)
 
 ;;; Mode line
 (setq display-time-24hr-format t
@@ -217,6 +236,26 @@ default font is available."
       x-select-enable-primary t
       save-interprogram-paste-before-kill t)
 
+;;;; Keybindings and mouse bindings
+
+;;; Keyboard
+(global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "M-?") 'mark-paragraph)
+(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
+(global-set-key (kbd "M-h") 'backward-kill-word)
+(global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(global-set-key (kbd "C-x h") 'help-command)
+(global-set-key (kbd "C-x C-h") 'mark-whole-buffer)
+(global-set-key (kbd "C-(") 'kmacro-start-macro-or-insert-counter)
+(global-set-key (kbd "C-)") 'kmacro-end-or-call-macro)
+(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "M-RET") 'newline-and-indent)
+(global-set-key (kbd "M-SPC") 'cycle-spacing)
+
+;;; Mouse
+(setq mouse-yank-at-point t)
+
 ;;;; Misc functions
 
 ;;; Delete current buffer file
@@ -232,6 +271,24 @@ default font is available."
         (delete-file filename)
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
+
+;;; Rename current buffer file
+(defun rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " filename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))
 
 ;;; Eval and replace last s-expression
 (defun eval-and-replace ()
@@ -253,61 +310,6 @@ default font is available."
         (linum-mode 1)
         (call-interactively 'goto-line))
     (linum-mode -1)))
-
-;;; Date function; returns the date in specified format
-(defvar time-string-standard "%F %T" "The preferred stfrtime format.")
-(defun date (&optional format)
-  "Return the date in specified stfrtime format."
-  (if format
-    (progn
-      (if (stringp format)
-          (if (= 0 (length format))
-              (format-time-string time-string-standard)
-              (format-time-string format))
-          (error "Argument passed must be a string")))
-    (format-time-string time-string-standard)))
-
-;;; Insert the date interactively
-(defun insert-date (&optional format)
-  (interactive "MStfrtime format [RET for default]: ")
-  (insert (date format)))
-
-;;; Insert the date quickly
-(defun insert-standard-date ()
-  (interactive)
-  (insert (date)))
-
-;;; Rename current buffer file
-(defun rename-current-buffer-file ()
-  "Renames current buffer and file it is visiting."
-  (interactive)
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
-      (let ((new-name (read-file-name "New name: " filename)))
-        (if (get-buffer new-name)
-            (error "A buffer named '%s' already exists!" new-name)
-          (rename-file filename new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil)
-          (message "File '%s' successfully renamed to '%s'"
-                   name (file-name-nondirectory new-name)))))))
-
-;;; Connect to StumpWM's swank server
-(defun stumpwm-connect ()
-  "Connect to StumpWM's swank server at 127.0.0.1:4005."
-  (interactive)
-  (stumpwm-mode 1)
-  (slime-connect "127.0.0.1" 4005))
-
-;;; Disconnect from StumpWM's swank server
-(defun stumpwm-disconnect ()
-  "Close the current connection."
-  (interactive)
-  (stumpwm-mode -1)
-  (slime-disconnect))
 
 ;;; StumpWM shutdown notice; kill emacs daemon when StumpWM closes
 ;;; (called by StumpWM internals)

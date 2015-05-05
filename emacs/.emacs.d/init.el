@@ -151,12 +151,13 @@ default font is available."
 
 ;;; Keybindings and mouse bindings
 (global-set-key (kbd "C-=") 'er/expand-region)
-(global-set-key (kbd "C-?") 'help-command)
 (global-set-key (kbd "M-?") 'mark-paragraph)
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "M-h") 'backward-kill-word)
 (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(global-set-key (kbd "C-x h") 'help-command)
+(global-set-key (kbd "C-x C-h") 'mark-whole-buffer)
 (global-set-key (kbd "C-(") 'kmacro-start-macro-or-insert-counter)
 (global-set-key (kbd "C-)") 'kmacro-end-or-call-macro)
 (global-set-key (kbd "M-/") 'hippie-expand)

@@ -14,9 +14,42 @@
   (if (or (eq system-type 'windows-nt) (eq system-type 'cygwin)) t nil))
 
 ;;; Packages
-(require 'package-populate)
+
+;; Add the package repositories and initialize
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.org/packages/")
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize)
+
+;; Define `package-required-list'
+(defvar package-required-list nil
+  "A list of packages that should be installed for this Emacs
+configuration.  If any are not installed, they should be able
+to be installed by running `package-populate'.")
+
+;; Select required packages
 (setq package-required-list
       '(color-theme expand-region multiple-cursors slime))
+
+;; Test for missing packages
+(defun package-missing ()
+  "Test for missing packages from the list of desired packages in
+the `package-required-list' variable."
+  (catch 'done
+    (unless package-required-list (throw 'done nil))
+    (dolist (pkg package-required-list)
+      (when (not (package-installed-p pkg)) (throw 'done t)))))
+
+;; Populate the system with the desired packages (call if you need it!)
+(defun package-populate ()
+  "If packages from `package-required-list' are missing, install them."
+  (interactive)
+  (when (package-missing)
+    (package-refresh-contents)
+    (dolist (p package-required-list)
+      (when (not (package-installed-p p)) (package-install p)))
+    (package-initialize)))
 
 ;;; StumpWM swank sever
 (require 'stumpwm-mode)
@@ -94,7 +127,6 @@ default font is available."
 
 ;;; Calendar and date stuff
 (require 'calendar)
-(require 'insert-date)
 (calendar-set-date-style 'iso)
 
 ;;; Case sensitivity
@@ -108,7 +140,6 @@ default font is available."
 (setq disabled-command-hook nil)
 (require 'expand-region)
 (require 'multiple-cursors)
-(require 'unfill)
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;;; Games
@@ -116,7 +147,18 @@ default font is available."
   "The Typing of Emacs, a game." t)
 
 ;;; Keybindings and mouse bindings
-(require 'keybindings)
+(global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "C-?") 'help-command)
+(global-set-key (kbd "M-?") 'mark-paragraph)
+(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
+(global-set-key (kbd "M-h") 'backward-kill-word)
+(global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(global-set-key (kbd "C-(") 'kmacro-start-macro-or-insert-counter)
+(global-set-key (kbd "C-)") 'kmacro-end-or-call-macro)
+(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "M-RET") 'newline-and-indent)
+(global-set-key (kbd "M-SPC") 'cycle-spacing)
 (setq mouse-yank-at-point t)
 
 ;;; Mode line
@@ -173,6 +215,7 @@ default font is available."
 
 ;;;; Misc functions
 
+;;; Delete current buffer file
 (defun delete-current-buffer-file ()
   "Removes file connected to current buffer and kills buffer."
   (interactive)
@@ -186,6 +229,7 @@ default font is available."
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
+;;; Eval and replace last s-expression
 (defun eval-and-replace ()
   "Replace the preceding sexp with its value."
   (interactive)
@@ -196,6 +240,7 @@ default font is available."
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 
+;;; Go to line with visible line numbers
 (defun goto-line-with-feedback ()
   "Go to line interactively, while showing the user the line numbers."
   (interactive)
@@ -205,6 +250,30 @@ default font is available."
         (call-interactively 'goto-line))
     (linum-mode -1)))
 
+;;; Date function; returns the date in specified format
+(defvar time-string-standard "%F %T" "The preferred stfrtime format.")
+(defun date (&optional format)
+  "Return the date in specified stfrtime format."
+  (if format
+    (progn
+      (if (stringp format)
+          (if (= 0 (length format))
+              (format-time-string time-string-standard)
+              (format-time-string format))
+          (error "Argument passed must be a string")))
+    (format-time-string time-string-standard)))
+
+;;; Insert the date interactively
+(defun insert-date (&optional format)
+  (interactive "MStfrtime format [RET for default]: ")
+  (insert (date format)))
+
+;;; Insert the date quickly
+(defun insert-standard-date ()
+  (interactive)
+  (insert (date)))
+
+;;; Rename current buffer file
 (defun rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
   (interactive)
@@ -222,18 +291,22 @@ default font is available."
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
+;;; Connect to StumpWM's swank server
 (defun stumpwm-connect ()
   "Connect to StumpWM's swank server at 127.0.0.1:4005."
   (interactive)
   (stumpwm-mode 1)
   (slime-connect "127.0.0.1" 4005))
 
+;;; Disconnect from StumpWM's swank server
 (defun stumpwm-disconnect ()
   "Close the current connection."
   (interactive)
   (stumpwm-mode -1)
   (slime-disconnect))
 
+;;; StumpWM shutdown notice; kill emacs daemon when StumpWM closes
+;;; (called by StumpWM internals)
 (defun stumpwm-daemon-shutdown-emacs (&optional display)
   " This is a function that can bu used to shutdown save buffers and
 shutdown the emacs daemon. It should be called using
@@ -279,6 +352,7 @@ be prompted."
     ; If we made a frame then kill it.
     (when (or modified-buffers active-clients-or-frames) (delete-frame new-frame))))
 
+;;; Edit a file as root using sudo
 (defun sudo-edit (&optional arg)
   "Edit a file as root."
   (interactive "p")
@@ -288,6 +362,7 @@ be prompted."
     (find-alternate-file
       (concat "/sudo:root@localhost:" buffer-file-name))))
 
+;;; Toggle a 2-window split between horizontal and vertical split
 (defun toggle-window-split ()
   "Toggle a two-window-split layout between horizontal and vertical split."
   (interactive)
@@ -313,3 +388,21 @@ be prompted."
           (set-window-buffer (next-window) next-win-buffer)
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
+
+;;; Remove hard wrapping/filling for paragraph
+(defun unfill-paragraph ()
+  "Replace newline chars in current paragraph by single spaces.
+This command does the inverse of `fill-paragraph'."
+  (interactive)
+  (let ((fill-column most-positive-fixnum))
+    (fill-paragraph nil)))
+
+;;; Remove hard wrapping/filling for region
+(defun unfill-region (start end)
+  "Replace newline chars in region by single spaces.
+This command does the inverse of `fill-region'."
+  (interactive "r")
+  (let ((fill-column most-positive-fixnum))
+    (fill-region start end)))
+
+;;;; EOF

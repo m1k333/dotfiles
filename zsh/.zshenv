@@ -8,7 +8,7 @@ path=(
      )
 
 export PAGER=less
-export EDITOR=emc
+export EDITOR=vim
 export BROWSER=firefox
 
 umask 022

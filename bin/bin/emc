@@ -6,9 +6,19 @@
 # Name the arguments
 choice="$@"
 
-# Define start/stop functions
-startdaemon() { emacs --daemon; }
-stopdaemon()  { emacsclient --eval "(kill-emacs)"; }
+# Define start function
+startdaemon()
+{
+    echo "Starting Emacs daemon...";
+    emacs --daemon;
+}
+
+# Define stop function
+stopdaemon()
+{
+    echo "Stopping Emacs daemon...";
+    emacsclient --eval "(kill-emacs)";
+}
 
 # Choose what to do
 case $choice in

@@ -15,7 +15,7 @@
 
 ;;; Packages
 
-;; Add the package repositories and initialize
+;; Add the package repositories and intialize
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/")
@@ -41,7 +41,7 @@ the `package-required-list' variable."
     (dolist (pkg package-required-list)
       (when (not (package-installed-p pkg)) (throw 'done t)))))
 
-;; Populate the system with the desired packages (call if you need it!)
+;; Populate the system with the desired packages
 (defun package-populate ()
   "If packages from `package-required-list' are missing, install them."
   (interactive)
@@ -50,6 +50,9 @@ the `package-required-list' variable."
     (dolist (p package-required-list)
       (when (not (package-installed-p p)) (package-install p)))
     (package-initialize)))
+
+;; Do the package installs if required
+(package-populate)
 
 ;;; StumpWM swank sever
 (require 'stumpwm-mode)

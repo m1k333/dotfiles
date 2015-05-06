@@ -1,5 +1,5 @@
 ! Make Menu key into Super_R
-keysym Menu = Super_R
+keysym Menu = Super_L
 
 ! Make Caps_Lock key into Control_L
 clear Lock

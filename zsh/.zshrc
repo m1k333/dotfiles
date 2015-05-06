@@ -30,6 +30,7 @@ if [[ "$bindkey" == "vi" ]]; then
     bindkey '^G' what-cursor-position
 elif [[ "$bindkey" == "emacs" ]]; then
     bindkey -e
+    bindkey '^[h' backward-delete-word
 fi
 
 # History

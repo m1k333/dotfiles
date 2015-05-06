@@ -50,7 +50,7 @@
 
 ;; Wallpaper
 (unless *initialized*
-  (run-shell-command "feh --no-fehbg --bg-center ~/.stumpwm.d/wallpaper*"))
+  (run-shell-command "feh --no-fehbg --bg-tile ~/.stumpwm.d/wallpaper.jpg"))
 
 ;;; Functions
 
@@ -72,6 +72,12 @@
 ;; ALSA sound info
 (defcommand audio () ()
   (echo-string (current-screen) (run-shell-command "amixer get Master" t)))
+(defcommand volup () ()
+  (run-shell-command "amixer set Master 5%+"))
+(defcommand voldown () ()
+  (run-shell-command "amixer set Master 5%-"))
+(defcommand voltoggle () ()
+  (run-shell-command "amixer set Master toggle"))
 
 ;; Emacsclient run or raise
 (defcommand emacsclient () ()

@@ -50,7 +50,7 @@
 
 ;; Wallpaper
 (unless *initialized*
-  (exec "feh --no-fehbg --bg-center ~/.stumpwm.d/wallpaper*"))
+  (run-shell-command "feh --no-fehbg --bg-center ~/.stumpwm.d/wallpaper*"))
 
 ;;; Functions
 
@@ -142,7 +142,7 @@
 
 ;; Programs to start immediately
 (unless *initialized*
-  (exec "urxvtd -q -o -f"))
+  (run-shell-command "urxvtd -q -o -f"))
 
 ;; Tell StumpWM that we've booted up once
 (setf *initialized* t)

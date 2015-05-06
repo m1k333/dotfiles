@@ -213,4 +213,5 @@
         (define-key m (kbd "RET") "exec urxvtc")
         (define-key m (kbd "e") "emacsclient")
         (define-key m (kbd "f") "firefox")
+        (define-key m (kbd "t") "thunderbird")
         m))

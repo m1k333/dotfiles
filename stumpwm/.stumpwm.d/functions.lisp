@@ -21,12 +21,17 @@
 ;; Emacsclient run or raise
 (defcommand emacsclient () ()
             "Run emacsclient, or if it is already open, raise its window."
-            (run-or-raise "emc -g" '(:class "Emacs")))
+            (run-or-raise "emc" '(:class "Emacs")))
 
 ;; Firefox run or raise
 (defcommand firefox () ()
             "Run Firefox, or if it is already open, raise its window."
             (run-or-raise "firefox" '(:class "Firefox")))
+
+;; Thunderbird run or raise
+(defcommand thunderbird () ()
+            "Run Thunderbird, or if it is already open, raise its window."
+            (run-or-raise "thunderbird" '(:class "Thunderbird")))
 
 ;; Interactive `colon' command; the args are optional initial contents
 (defcommand colon1 (&optional (initial "")) (:rest)

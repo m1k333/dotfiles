@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Wrapper for emacs daemon and client interaction,
 # and for using emacsclient as $EDITOR
@@ -22,9 +22,9 @@ stopdaemon()
 
 # Choose what to do
 case $choice in
-    start)     startdaemon ;;
-    stop|quit) stopdaemon ;;
-    restart)   stopdaemon && startdaemon ;;
+    start)          startdaemon               ;;
+    stop|quit)      stopdaemon                ;;
+    restart|reboot) stopdaemon && startdaemon ;;
 
     *)  # Run a command through to emacsclient
         emacsargs="-c"

@@ -2,7 +2,7 @@
 
 # General options
 export XAUTHORITY=$HOME/.Xauthority
-setopt interactivecomments multios notify nobeep
+setopt interactivecomments multios notify
 
 # Autocompletion
 autoload -Uz compinit && compinit

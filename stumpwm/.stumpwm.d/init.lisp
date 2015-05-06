@@ -36,13 +36,74 @@
 ;;(load-module "battery-portable")
 ;;(load-module "stumptray") ;; Requires xembed
 
-;; Load other init files
-(load-rc "appearance")
-(load-rc "functions")
-(load-rc "keybindings")
-(load-rc "swank")
+;;; Appearance
+
+;; Appearance settings
+(setf *maxsize-border-width*   1
+      *normal-border-width*    1
+      *transient-border-width* 1
+      *window-border-style*    :thin)
+
+;; Mode-line
+(setf *time-modeline-string*    "%A %F %R"
+      *screen-mode-line-format* "[^B%n^b] %W ^B||^b %d")
+
+;; Wallpaper
+(unless *initialized*
+  (exec "feh --no-fehbg --bg-center ~/.stumpwm.d/wallpaper*"))
+
+;;; Functions
+
+;; cat (UNIX-style function)
+(defun cat (&rest strings)
+  "Concatenates strings, like the Unix command `cat'."
+  (apply 'concatenate 'string strings))
+
+;; Interactive `colon' command; the args are optional initial contents
+(defcommand colon1 (&optional (initial "")) (:rest)
+            (let ((cmd (read-one-line (current-screen) ": " :initial-input initial)))
+              (when cmd
+                (eval-command cmd t))))
+
+;; ACPI info
+(defcommand battery () ()
+  (echo-string (current-screen) (run-shell-command "acpi -V" t)))
+
+;; ALSA sound info
+(defcommand audio () ()
+  (echo-string (current-screen) (run-shell-command "amixer get Master" t)))
+
+;; Emacsclient run or raise
+(defcommand emacsclient () ()
+            "Run emacsclient, or if it is already open, raise its window."
+            (run-or-raise "emc" '(:class "Emacs")))
+
+;; Firefox run or raise
+(defcommand firefox () ()
+            "Run Firefox, or if it is already open, raise its window."
+            (run-or-raise "firefox" '(:class "Firefox")))
+
+;; Thunderbird run or raise
+(defcommand thunderbird () ()
+            "Run Thunderbird, or if it is already open, raise its window."
+            (run-or-raise "thunderbird" '(:class "Thunderbird")))
+
+;; Poweroff
+(defcommand poweroff () ()
+            (run-shell-command "~/.stumpwm.d/modules/util/stumpish/stumpish quit && systemctl poweroff"))
+
+;; Reboot
+(defcommand reboot () ()
+            (run-shell-command "~/.stumpwm.d/modules/util/stumpish/stumpish quit && systemctl reboot"))
+
+;; Suspend
+(defcommand suspend () ()
+            (run-shell-command "systemctl suspend"))
 
 ;;; Settings
+
+;; Keybindings
+(load-rc "keybindings")
 
 ;; Shell
 (setf *shell-program* (getenv "SHELL"))
@@ -53,17 +114,35 @@
       (format nil "Welcome ~a, ~a"
               (getenv "USER") (time-format *time-format-string-default*)))
 
-;;; Run external stuff
+;;; Start Swank server
 
-;; Finish initializing; everything below this is only run ONCE
+;; Require swank server
+(require 'swank) ;; Requires swank, slime, and quicklisp-slime-helper for emacs.
+
+;; Is swank running?
+(defvar *swank-running* nil "True if swank is running in StumpWM.")
+
+;; Toggle swank on or off
+(defcommand swank-server () ()
+  "Toggle the swank server on or off."
+  (if *swank-running*
+      (progn
+        (swank:stop-server 4005)
+        (echo-string (current-screen) "Stopping swank.")
+        (setf *swank-running* nil))
+      (progn
+        (swank:create-server :port 4005 :dont-close t)
+        (echo-string (current-screen) "Starting swank.")
+        (setf *swank-running* t))))
+
+;; Start swank
+(unless *initialized* (swank-server))
+
+;;; Finish initializing
+
+;; Programs to start immediately
 (unless *initialized*
+  (exec "urxvtd -q -o -f"))
 
-  ;; Background processes
-  (run-shell-command "feh --no-fehbg --bg-center ~/.stumpwm.d/wallpaper*")
-  (run-shell-command "urxvtd -q -o -f")
-
-  ;; Programs to start immediately
-  ;;(run-shell-command "urxvtc")
-
-  ;; Tell LISP that we've booted up once
-  (setf *initialized* t))
+;; Tell StumpWM that we've booted up once
+(setf *initialized* t)

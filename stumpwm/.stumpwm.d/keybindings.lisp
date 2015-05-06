@@ -82,6 +82,7 @@
         (define-key m *abort-key*       "abort")
 
         ;; Popup information
+        (define-key m (kbd "a") "audio")
         (define-key m (kbd "b") "battery")
         (define-key m (kbd "g") "groups")
         (define-key m (kbd "G") "vgroups")

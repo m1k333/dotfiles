@@ -129,6 +129,13 @@
 (defvar *abort-key* (kbd "s-g"))
 (setf *mouse-focus-policy* :click)
 
+;; Top map display keybindings
+(defcommand display-keybindings () ()
+  "Display the keybindings for the top-level keymaps."
+  (display-bindings-for-keymaps
+   `(,(kbd "Super_L"))
+   *top-map* *tile-group-top-map* *group-top-map*))
+
 ;; Top map
 (setf *top-map*
       (let ((m (make-sparse-keymap)))
@@ -146,6 +153,7 @@
         (define-key m (kbd "s-b") "banish")
         (define-key m (kbd "s-r") "run-shell-command")
         (define-key m (kbd "s-:") "eval")
+        (define-key m (kbd "s-?") "display-keybindings")
 
         ;; Group commands
         (define-key m (kbd "s-1") "gselect 1")

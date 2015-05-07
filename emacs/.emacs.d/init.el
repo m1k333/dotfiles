@@ -23,14 +23,11 @@
 (package-initialize)
 
 ;; Define `package-required-list'
-(defvar package-required-list nil
+(defvar package-required-list
+  '(color-theme expand-region multiple-cursors slime stumpwm-mode)
   "A list of packages that should be installed for this Emacs
 configuration.  If any are not installed, they should be able
 to be installed by running `package-populate'.")
-
-;; Select required packages
-(setq package-required-list
-      '(color-theme expand-region multiple-cursors slime stumpwm-mode))
 
 ;; Test for missing packages
 (defun package-missing ()
@@ -136,17 +133,53 @@ default font is available."
       kept-old-versions 5)
 
 ;;; Buffers and files
+
+;; Various useful things
 (require 'uniquify)
 (global-auto-revert-mode 1)
 (auto-compression-mode t)
 (setq uniquify-buffer-name-style 'forward
       global-auto-revert-non-file-buffers t
       auto-revert-verbose nil
-      load-prefer-newer t
-      recentf-max-saved-items 50
+      load-prefer-newer t)
+
+;; Recentf mode
+(setq recentf-max-saved-items 50
       recentf-max-menu-items recentf-max-saved-items
       recentf-save-file "~/.emacs.d/recentf-file")
 (recentf-mode 1)
+
+;;; Delete current buffer file
+(defun delete-current-buffer-file ()
+  "Removes file connected to current buffer and kills buffer."
+  (interactive)
+  (let ((filename (buffer-file-name))
+        (buffer (current-buffer))
+        (name (buffer-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (ido-kill-buffer)
+      (when (yes-or-no-p "Are you sure you want to remove this file? ")
+        (delete-file filename)
+        (kill-buffer buffer)
+        (message "File '%s' successfully removed" filename)))))
+
+;;; Rename current buffer file
+(defun rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " filename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))
 
 ;;; Calendar and date stuff
 
@@ -190,6 +223,40 @@ default font is available."
 (setq disabled-command-hook nil)
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;;; Fill
+
+;; Default fill column
+(setq-default fill-column 80)
+
+;; Remove hard wrapping/filling for paragraph
+(defun unfill-paragraph ()
+  "Replace newline chars in current paragraph by single spaces.
+This command does the inverse of `fill-paragraph'."
+  (interactive)
+  (let ((fill-column most-positive-fixnum))
+    (fill-paragraph nil)))
+
+;; Remove hard wrapping/filling for region
+(defun unfill-region (start end)
+  "Replace newline chars in region by single spaces.
+This command does the inverse of `fill-region'."
+  (interactive "r")
+  (let ((fill-column most-positive-fixnum))
+    (fill-region start end)))
+
+;;; LISP interaction stuff
+
+;; Eval and replace last sexp function
+(defun eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+
 ;;; Mode line
 (setq display-time-24hr-format t
       show-help-function nil)
@@ -222,6 +289,18 @@ default font is available."
   (load quicklisp-slime-helper))
 (setq inferior-lisp-program "/usr/bin/sbcl")
 
+;;; TRAMP
+
+;;; Edit a file as root using sudo (from `what the .emacs.d?!')
+(defun sudo-edit (&optional arg)
+  "Edit a file as root."
+  (interactive "p")
+  (if (or arg (not buffer-file-name))
+      (find-file
+        (concat "/sudo:root@localhost:" (read-file-name "File: ")))
+    (find-alternate-file
+      (concat "/sudo:root@localhost:" buffer-file-name))))
+
 ;;; Startup screen
 (setq inhibit-startup-screen t
       initial-scratch-message ";; *scratch*\n\n")
@@ -236,6 +315,36 @@ default font is available."
 ;;; Username
 (setq user-full-name "Michael Richer"
       user-mail-address "msricher1993@gmail.com")
+
+;;; Window/frame management
+
+;;; Toggle a 2-window split between horizontal and vertical split
+(defun toggle-window-split ()
+  "Toggle a two-window-split layout between horizontal and
+vertical split."
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
 
 ;;; X windows options
 (setq x-select-enable-clipboard t
@@ -261,113 +370,5 @@ default font is available."
 
 ;;; Mouse
 (setq mouse-yank-at-point t)
-
-;;;; Misc functions
-
-;;; Delete current buffer file
-(defun delete-current-buffer-file ()
-  "Removes file connected to current buffer and kills buffer."
-  (interactive)
-  (let ((filename (buffer-file-name))
-        (buffer (current-buffer))
-        (name (buffer-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (ido-kill-buffer)
-      (when (yes-or-no-p "Are you sure you want to remove this file? ")
-        (delete-file filename)
-        (kill-buffer buffer)
-        (message "File '%s' successfully removed" filename)))))
-
-;;; Rename current buffer file
-(defun rename-current-buffer-file ()
-  "Renames current buffer and file it is visiting."
-  (interactive)
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
-      (let ((new-name (read-file-name "New name: " filename)))
-        (if (get-buffer new-name)
-            (error "A buffer named '%s' already exists!" new-name)
-          (rename-file filename new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil)
-          (message "File '%s' successfully renamed to '%s'"
-                   name (file-name-nondirectory new-name)))))))
-
-;;; Eval and replace last s-expression
-(defun eval-and-replace ()
-  "Replace the preceding sexp with its value."
-  (interactive)
-  (backward-kill-sexp)
-  (condition-case nil
-      (prin1 (eval (read (current-kill 0)))
-             (current-buffer))
-    (error (message "Invalid expression")
-           (insert (current-kill 0)))))
-
-;;; Go to line with visible line numbers
-(defun goto-line-with-feedback ()
-  "Go to line interactively, while showing the user the line numbers."
-  (interactive)
-  (unwind-protect
-      (progn
-        (linum-mode 1)
-        (call-interactively 'goto-line))
-    (linum-mode -1)))
-
-;;; Edit a file as root using sudo
-(defun sudo-edit (&optional arg)
-  "Edit a file as root."
-  (interactive "p")
-  (if (or arg (not buffer-file-name))
-      (find-file
-        (concat "/sudo:root@localhost:" (read-file-name "File: ")))
-    (find-alternate-file
-      (concat "/sudo:root@localhost:" buffer-file-name))))
-
-;;; Toggle a 2-window split between horizontal and vertical split
-(defun toggle-window-split ()
-  "Toggle a two-window-split layout between horizontal and vertical split."
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-             (next-win-buffer (window-buffer (next-window)))
-             (this-win-edges (window-edges (selected-window)))
-             (next-win-edges (window-edges (next-window)))
-             (this-win-2nd (not (and (<= (car this-win-edges)
-                                         (car next-win-edges))
-                                     (<= (cadr this-win-edges)
-                                         (cadr next-win-edges)))))
-             (splitter
-              (if (= (car this-win-edges)
-                     (car (window-edges (next-window))))
-                  'split-window-horizontally
-                'split-window-vertically)))
-        (delete-other-windows)
-        (let ((first-win (selected-window)))
-          (funcall splitter)
-          (if this-win-2nd (other-window 1))
-          (set-window-buffer (selected-window) this-win-buffer)
-          (set-window-buffer (next-window) next-win-buffer)
-          (select-window first-win)
-          (if this-win-2nd (other-window 1))))))
-
-;;; Remove hard wrapping/filling for paragraph
-(defun unfill-paragraph ()
-  "Replace newline chars in current paragraph by single spaces.
-This command does the inverse of `fill-paragraph'."
-  (interactive)
-  (let ((fill-column most-positive-fixnum))
-    (fill-paragraph nil)))
-
-;;; Remove hard wrapping/filling for region
-(defun unfill-region (start end)
-  "Replace newline chars in region by single spaces.
-This command does the inverse of `fill-region'."
-  (interactive "r")
-  (let ((fill-column most-positive-fixnum))
-    (fill-region start end)))
 
 ;;;; EOF

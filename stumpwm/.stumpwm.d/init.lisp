@@ -94,6 +94,11 @@
             "Run Thunderbird, or if it is already open, raise its window."
             (run-or-raise "thunderbird" '(:class "Thunderbird")))
 
+;; Urxvtd launcher
+(defcommand urxvtd () ()
+            "Launch the urxvt daemon."
+            (run-shell-command "urxvtd -q -o -f"))
+
 ;; Poweroff
 (defcommand poweroff () ()
             (run-shell-command "~/.stumpwm.d/modules/util/stumpish/stumpish quit && systemctl poweroff"))

@@ -1,4 +1,14 @@
-# ~/.zshrc
+## ~/.zshrc
+
+## Say `beep' again, I dare you, I double dare you!
+unsetopt beep
+set bell-style none
+[[ "$TERM" == 'linux' ]] && setterm -blength 0
+
+## Add my ~/bin to $PATH, before the defaults
+typeset -aU path # Disallow duplicate entries
+path=($HOME/bin $path)
+export PATH
 
 ## General options
 export XAUTHORITY=$HOME/.Xauthority

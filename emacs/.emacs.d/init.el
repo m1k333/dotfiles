@@ -260,9 +260,10 @@ This command does the inverse of `fill-region'."
 ;;; Mode line
 (setq display-time-24hr-format t
       show-help-function nil)
+(column-number-mode)
+(display-battery-mode)
 (display-time-mode)
 (line-number-mode)
-(column-number-mode)
 (size-indication-mode)
 (tooltip-mode -1)
 

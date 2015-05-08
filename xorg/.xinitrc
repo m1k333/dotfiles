@@ -15,8 +15,19 @@ xset -b s 3600 dpms 7200 7200 7200
 
 # Run window manager
 session=${1:-stumpwm} # Default
+
 case $session in
-    bspwm) (sxhkd -c ~/.config/bspwm/sxhkdrc &) && exec bspwm;;
-    stumpwm) exec stumpwm;;
-    *) exec $@;;
+
+    bspwm)   (sxhkd -c ~/.config/bspwm/sxhkdrc &) && exec bspwm
+             ;;
+
+    emacs)   exec emacs --eval "(toggle-frame-fullscreen)"
+             ;;
+
+    stumpwm) exec stumpwm
+             ;;
+
+    *)       exec $@
+             ;;
+
 esac

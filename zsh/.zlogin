@@ -1,20 +1,21 @@
-# ~/.zlogin
+## ~/.zlogin
 
-## Uncomment to start default X server automatically upon login
-# [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && startx
+## Start X at login?
+STARTXATLOGIN='no' # 'x', 'emacs', or anything else for 'no'
 
-## Uncomment to start Emacs X session automatically upon login
-# [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && startx ~/.xinitrc emacs
-
-## Do things in the linux console
+## Set up our linux console
 if [[ "$TERM" == 'linux' ]] ; then
-
-    ## Load the linux console font I like when it's installed
     [[ -e "/usr/share/kbd/consolefonts/ter-u20n.psf.gz" ]] && setfont ter-u20n
-
-    ## Make the login messages pretty by inserting a blank line!
-    echo
-
+    echo # Pretty printing!
 fi
 
-# EOF
+## Start default X server (+ safety "are we in console?" check)
+if [[ "$STARTXATLOGIN" == 'x' ]] ; then
+    [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && startx
+
+## Same, but run Emacs fullscreen for our X session
+elif [[ "$STARTXATLOGIN" == 'emacs' ]] ; then
+    [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && startx ~/.xinitrc emacs
+
+## Done
+fi

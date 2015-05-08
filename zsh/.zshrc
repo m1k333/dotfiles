@@ -16,65 +16,20 @@ DIRSTACKSIZE=10
 setopt autocd autopushd pushdminus pushdsilent pushdtohome
 
 # Editor
-bindkey="emacs"
-if [[ "$bindkey" == "vi" ]]; then
-    bindkey -v
-    export KEYTIMEOUT=1
-    bindkey -a 'gg' beginning-of-buffer-or-history
-    bindkey -a 'g~' vi-oper-swap-case
-    bindkey -a G end-of-buffer-or-history
-    bindkey -a u undo
-    bindkey -a '^R' redo
-    bindkey '^?' backward-delete-char
-    bindkey '^H' backward-delete-char
-    bindkey '^G' what-cursor-position
-elif [[ "$bindkey" == "emacs" ]]; then
-    bindkey -e
-    bindkey '^[h' backward-delete-word
-fi
+bindkey -e
+bindkey '^[h' backward-delete-word
+bindkey '\e[A' history-beginning-search-backward
+bindkey '\e[B' history-beginning-search-forward
 
 # History
 export HISTFILE=$HOME/.zhistory
 export HISTSIZE=1000
 export SAVEHIST=$HISTSIZE
 setopt histignoredups histignorespace histsavenodups sharehistory
-bindkey '\e[A' history-beginning-search-backward
-bindkey '\e[B' history-beginning-search-forward
-
 
 # Prompt
-phash="%#"
-dirind="[%~]-"
-
-if [[ "$bindkey" == "vi" ]]; then
-
-    precmd()
-    {
-        phashvi="${phash}"
-        PS1="${dirind}${phashvi} "
-    }
-
-    zle-keymap-select()
-
-    {
-        phashvi="${phash}"
-        [[ $KEYMAP = vicmd ]] && phashvi="/"
-        PS1="${dirind}${phashvi} "
-        () { return $__prompt_status }
-        zle reset-prompt
-    }
-
-    zle-line-init()
-    { typeset -g __prompt_status="$?" }
-
-    zle -N zle-keymap-select
-    zle -N zle-line-init
-
-else
-
-    PS1="${dirind}${phash} "
-
-fi
+[[ "$TERM" == 'linux' ]] && precmd() { echo -en "\e[?6c"; }
+PS1="[%~]-%# "
 
 # Aliases
 alias ls='ls -p --color=auto --group-directories-first'

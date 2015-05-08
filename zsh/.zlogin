@@ -9,10 +9,10 @@
 ## Do things in the linux console
 if [[ "$TERM" == 'linux' ]] ; then
 
-    ## Load the linux console font I like
-    setfont ter-u20n
+    ## Load the linux console font I like when it's installed
+    [[ -e "/usr/share/kbd/consolefonts/ter-u20n.psf.gz" ]] && setfont ter-u20n
 
-    ## Make the messages pretty by inserting a blank line!
+    ## Make the login messages pretty by inserting a blank line!
     echo
 
 fi

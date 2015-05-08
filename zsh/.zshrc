@@ -1,25 +1,16 @@
 ## ~/.zshrc
 
-## Say `beep' again, I dare you, I double dare you!
-unsetopt beep
-set bell-style none
-[[ "$TERM" == 'linux' ]] && setterm -blength 0
-
-## Add my ~/bin to $PATH, before the defaults
-typeset -aU path # Disallow duplicate entries
-path=($HOME/bin $path)
-export PATH
-
-## General options
-export XAUTHORITY=$HOME/.Xauthority
-setopt interactivecomments multios notify
-
 ## Autocompletion
 autoload -Uz compinit && compinit
 compinit -d $HOME/.zcompdump
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 setopt completealiases correct extendedglob globdots nocaseglob
+
+## Beep OFF; one of these should work
+[[ "$TERM" == 'linux' ]] && setterm -blength 0
+set bell-style none
+unsetopt beep
 
 ## Dirstack
 DIRSTACKSIZE=10
@@ -37,9 +28,15 @@ export HISTSIZE=1000
 export SAVEHIST=$HISTSIZE
 setopt histignoredups histignorespace histsavenodups sharehistory
 
+## Interactive settings
+setopt interactivecomments multios notify
+
 ## Prompt
 [[ "$TERM" == 'linux' ]] && precmd() { echo -en "\e[?6c"; }
-PROMPT="[%~]-%# "
+PS1="[%~]-%# "
+
+## Xorg
+export XAUTHORITY=$HOME/.Xauthority
 
 ## Aliases
 alias ls='ls -p --color=auto --group-directories-first'
@@ -52,3 +49,5 @@ alias rm='rm -i'
 alias sudo='sudo -E'
 alias tmat='tmux attach'
 alias xemacs='startx ~/.xinitrc emacs'
+
+## EOF

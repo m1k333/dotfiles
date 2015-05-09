@@ -52,9 +52,18 @@ alias rm='rm -i'
 # Emacs
 function emcd
 {
-    [[ "$*" == 'start' ]] && (emacs --daemon; return $?);
-    [[ "$*" == 'kill'  ]] && (emacsclient --eval '(kill-emacs)'; return $?);
-    echo "Usage: emcd (start|kill)"; return 1;
+    if [[ "$*" == 'start' ]]
+    then
+        emacs --daemon
+        return $?
+    elif [[ "$*" == 'kill' ]]
+    then
+        emacsclient --eval '(kill-emacs)'
+        return $?
+    else
+        echo "Usage: emcd (start|kill)"
+        return 1
+    fi
 }
 alias emc='emacsclient -c'
 alias xemacs='startx ~/.xinitrc emacs'

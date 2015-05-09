@@ -39,6 +39,8 @@ PS1="[%~]-%# "
 export XAUTHORITY=$HOME/.Xauthority
 
 ## Aliases
+
+# Coreutils
 alias ls='ls -p --color=auto --group-directories-first'
 alias ll='ls -ahlp --color=auto --group-directories-first'
 alias la='ls -ap --color=auto --group-directories-first'
@@ -46,8 +48,19 @@ alias -g grep='grep --color=auto'
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
+
+# Emacs
+function emcd
+{
+    [[ "$*" == 'start' ]] && (emacs --daemon; return $?);
+    [[ "$*" == 'kill'  ]] && (emacsclient --eval '(kill-emacs)'; return $?);
+    echo "Usage: emcd (start|kill)"; return 1;
+}
+alias emc='emacsclient -c'
+alias xemacs='startx ~/.xinitrc emacs'
+
+# Misc
 alias sudo='sudo -E'
 alias tmat='tmux attach'
-alias xemacs='startx ~/.xinitrc emacs'
 
 ## EOF

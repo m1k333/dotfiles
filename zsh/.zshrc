@@ -139,6 +139,9 @@ alias emcd='emacs --daemon'
 alias emcd-kill="emacsclient --eval '(kill-emacs)'"
 alias xemacs='startx ~/.xinitrc emacs'
 
+# Info
+alias bat='acpi -V'
+
 # Tmux
 alias tmat='tmux attach'
 

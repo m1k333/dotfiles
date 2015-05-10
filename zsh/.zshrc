@@ -137,12 +137,16 @@ alias sudo='sudo -E'
 alias emc='emacsclient -c'
 alias emcd='emacs --daemon'
 alias emcd-kill="emacsclient --eval '(kill-emacs)'"
-alias xemacs='startx ~/.xinitrc emacs'
 
 # Info
 alias bat='acpi -V'
 
 # Tmux
 alias tmat='tmux attach'
+
+# X server
+alias xbspwm='startx ~/.xinitrc bspwm'
+alias xemacs='startx ~/.xinitrc emacs'
+alias xstumpwm='startx ~/.xinitrc stumpwm'
 
 ## EOF #################################################################

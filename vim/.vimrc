@@ -3,24 +3,13 @@
 
 "" Appearance ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-" Bell (off)
-set noerrorbells
-set novisualbell
-set timeoutlen=500
-set t_vb=
-
-" Colourscheme
+" Visuals
 colorscheme elflord
+set background=dark
+set noerrorbells novisualbell t_vb= 
 
-" Scroll buffer
-set scrolloff=7
-
-" Splash screen
-set shortmess=atI
-
-
-" Status line
-set laststatus=2
+" Information
+set laststatus=2 modeline number shortmess=atI showcmd 
 set statusline=./%f%m%r%h%w\ type:%Y%<%=\ %p%%\ (%LL)\ (%04l,%04v)
 
 "" Files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,49 +18,53 @@ set statusline=./%f%m%r%h%w\ type:%Y%<%=\ %p%%\ (%LL)\ (%04l,%04v)
 set autoread
 
 " Encoding
-set encoding=utf-8
-set ffs=unix,dos,mac
+set encoding=utf-8 fileformats=unix,dos,mac
 
 " Filetype syntax HL and indentation
-filetype on
-filetype plugin on
-filetype indent on
+filetype plugin indent on
 syntax on
-set showmatch
-set mat=2
+set showmatch matchtime=2 
+set formatoptions=c,q,r,t
 
 " New files default to text mode
 autocmd BufNewFile,BufRead * setfiletype text
 
 " Specific filetype options
-autocmd FileType fortran setlocal tabstop=6 shiftwidth=6
+autocmd FileType fortran setlocal shiftwidth=6 tabstop=6 
 
-"" Searching ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-set incsearch
-set ignorecase
-set smartcase
-set magic
-set wildmenu
+"" Functions and commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-"" Tabs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-set smarttab
-set expandtab
-set shiftround
-set tabstop=4
-set shiftwidth=4
-
-"" Command to clean up whitespace ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" Clean up whitespace
 func! WScleanup()
     exe "normal mz"
     %s/\s\+$//ge
     exe "normal `z"
 endfunc
 command! WScleanup call WScleanup()
+
+"" Keybindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+if has('mouse') | set mouse= | endif
+set scrolloff=7
+set timeoutlen=500
+nmap <leader>n :set invrelativenumber<CR>
 nmap <leader>w :WScleanup<CR>
 
+"" Searching ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+set incsearch 
+set ignorecase smartcase
+
+"" Tabs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+" Indentation
+set autoindent smartindent
+set expandtab shiftround smarttab 
+set shiftwidth=4 tabstop=4
+
+" Tab-completion
+set wildmenu
+
 "" Wrap ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-set backspace=indent,eol,start
+set backspace=indent,eol,start 
 set textwidth=80
-set formatoptions+=t
 
 "" EOF ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

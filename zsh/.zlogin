@@ -1,15 +1,17 @@
-## ~/.zlogin
+## ~/.zlogin ###########################################################
 
-## Start X at login?
-XCHOICE='no' # 'stumpwm', 'emacs', etc., or 'no'
+## Automatically start an X server from zsh login? #####################
+STARTX='n'          # 'y' / anything else for no
+XCHOICE="stumpwm"   # Args for ~/.xinitrc script
 
-## Set up our linux console
-[[ "$TERM" == 'linux' ]] && echo '' # Pretty printing!
+## Start an X server ###################################################
+if [[ "$STARTX" == 'y' && -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+    # Run the startx ~/.xinitrc init script
+    startx ~/.xinitrc ${XCHOICE}; fi
 
-## Stop if X is unwanted or if we're in SSH
-[[ "$XCHOICE" -eq 'no' || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]] && return
+## Start a linux console ###############################################
+if [[ "$TERM" == 'linux' ]]; then
+    # New line for prettiness
+    echo ""; fi 
 
-## Start X if a display server is not already running
-[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && startx ~/.xinitrc $XCHOICE
-
-## EOF
+## EOF #################################################################

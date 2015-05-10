@@ -1,14 +1,13 @@
-## ~/.zprofile
+## ~/.zprofile #########################################################
 
-## Add my ~/bin to $PATH, before the defaults
-typeset -aU path # Disallow duplicate entries
-path=($HOME/bin $path)
-export PATH
+## Add my ~/bin to $PATH, before the defaults ##########################
+typeset -aU path            # Disallow duplicate entries in $path
+path=(${HOME}/bin ${path})  # Add ~/bin, $PATH to the $path array
+export PATH                 # Export $PATH; zsh knows to use $path
 
-## Set my environment
-export PAGER=less
-export EDITOR=vim
+## Set my environment ##################################################
 export BROWSER=firefox
-
-## Let other users see (but not write) my stuff
+export EDITOR=vim
+export PAGER=less
+export XAUTHORITY=${HOME}/.Xauthority
 umask 022

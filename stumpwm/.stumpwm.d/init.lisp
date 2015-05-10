@@ -143,15 +143,16 @@
         ;; Access keyboard maps
         (define-key m *escape-key* '*root-map*)
         (define-key m (kbd "s-e")  '*exchange-window-map*)
+        (define-key m (kbd "s-E")  '*exchange-window-map*)
         (define-key m (kbd "s-G")  '*groups-map*)
-        (define-key m (kbd "s-h")  '*help-map*)
-        (define-key m (kbd "s-l")  '*launcher-map*)
+        (define-key m (kbd "s-H")  '*help-map*)
+        (define-key m (kbd "s-r")  '*launcher-map*)
+        (define-key m (kbd "s-R")  '*launcher-map*)
 
         ;; StumpWM interaction
         (define-key m *abort-key* "abort")
         (define-key m (kbd "s-;") "colon")
         (define-key m (kbd "s-b") "banish")
-        (define-key m (kbd "s-r") "run-shell-command")
         (define-key m (kbd "s-:") "eval")
         (define-key m (kbd "s-?") "display-keybindings")
 
@@ -252,10 +253,17 @@
 
         ;; Window commands
         (define-key m (kbd "s-n")       "pull-hidden-next")
+        (define-key m (kbd "s-j")       "pull-hidden-next")
         (define-key m (kbd "s-N")       "next")
+        (define-key m (kbd "s-J")       "next")
         (define-key m (kbd "s-C-n")     "next-in-frame")
+        (define-key m (kbd "s-C-j")     "next-in-frame")
         (define-key m (kbd "s-p")       "pull-hidden-previous")
+        (define-key m (kbd "s-k")       "pull-hidden-previous")
         (define-key m (kbd "s-P")       "prev")
+        (define-key m (kbd "s-K")       "prev")
+        (define-key m (kbd "s-C-p")     "next-in-frame")
+        (define-key m (kbd "s-C-k")     "next-in-frame")
         (define-key m (kbd "s-SPC")     "pull-hidden-other")
         (define-key m (kbd "s-C-SPC")   "other-in-frame")
         (define-key m (kbd "s-Up")      "move-focus up")
@@ -304,6 +312,7 @@
         (define-key m (kbd "RET") "exec urxvtc")
         (define-key m (kbd "e")   "emacsclient")
         (define-key m (kbd "f")   "firefox")
+        (define-key m (kbd "r")   "run-shell-command")
         (define-key m (kbd "t")   "thunderbird")
         m))
 

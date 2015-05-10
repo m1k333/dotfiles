@@ -27,10 +27,8 @@ setopt interactivecomments multios notify
 
 ## Editor settings #####################################################
 
-# Global keybindings
+# Don't wait long for key sequences
 KEYTIMEOUT=1
-bindkey '\e[A' history-beginning-search-backward
-bindkey '\e[B' history-beginning-search-forward
 
 # Vi mode settings
 function zsh-vi-mode
@@ -50,32 +48,38 @@ function zsh-vi-mode
             && zle vi-forward-blank-word-end
     }
 
-    # Vim-like keybindings
+    # Vim-like keybindings; '-v': insert, '-a': command
     bindkey -v
-    bindkey '^G' what-cursor-position
-    bindkey -a 'gg' beginning-of-buffer-or-history
-    bindkey -a 'g~' vi-oper-swap-case
-    bindkey -a G end-of-buffer-or-history
-    bindkey -a u undo
-    bindkey -a '^R' redo
-    bindkey -v '^?' backward-delete-char
-    bindkey -v '^H' backward-delete-char
-    bindkey -v 'ge' vi-backward-word-end
-    bindkey -v 'GE' vi-backward-blank-word-end
+    bindkey -v 'ge'   vi-backward-word-end
+    bindkey -v 'GE'   vi-backward-blank-word-end
+    bindkey -v '^G'   what-cursor-position
+    bindkey -v '^H'   backward-delete-char
+    bindkey -v '^?'   backward-delete-char
+    bindkey -v '\e[A' history-beginning-search-backward
+    bindkey -v '\e[B' history-beginning-search-forward
+    bindkey -a 'gg'   beginning-of-buffer-or-history
+    bindkey -a 'g~'   vi-oper-swap-case
+    bindkey -a 'G'    end-of-buffer-or-history
+    bindkey -a '^G'   what-cursor-position
+    bindkey -a '^R'   redo
+    bindkey -a 'u'    undo
+    bindkey -a '\e[A' history-beginning-search-backward
+    bindkey -a '\e[B' history-beginning-search-forward
+
 
     # Right prompt '(CMD)' in command mode; be sure to
     # reset 'RPROMPT' in precmd (see 'Prompt' section)
     function zle-keymap-select
     {
-        RPROMPT=""
+        RPROMPT=''
         [[ $KEYMAP = vicmd ]] && RPROMPT="(CMD)"
-        () { return $__prompt_status }
+        function { return $__prompt_status; }
         zle reset-prompt
     }
 
     # Preserve return statuses
     function zle-line-init
-    { typeset -g __prompt_status="$?" }
+    { typeset -g __prompt_status="$?"; }
 
     # Load the functions defined above
     zle -N zle-keymap-select
@@ -85,14 +89,19 @@ function zsh-vi-mode
 # Emacs mode settings
 function zsh-emacs-mode
 {
-    # Get rid of vi mode behaviour if it has been defined
-    zle -D zle-keymap-select
+    # Get rid of vi mode zle functions if they have been defined --
+    # (re)initialize them with placeholder values, then delete them
+    function blank {}
+    zle -N zle-keymap-select blank
+    zle -N zle-line-init blank
+    zle -D zle-keymap-select 
     zle -D zle-line-init 
-    bindkey '^G' list-expand
 
-    # Emacs-like keybindings
+    # Emacs-like keybindings; '-e': emacs 
     bindkey -e
-    bindkey -e '^[h' backward-delete-word
+    bindkey -e '^[h'  backward-delete-word
+    bindkey -e '\e[A' history-beginning-search-backward
+    bindkey -e '\e[B' history-beginning-search-forward
 }
 
 # Pick an editor mode
@@ -100,17 +109,17 @@ zsh-vi-mode
 
 ## Prompt ##############################################################
 
-# Set up prompt
+# Prompt definition
+PROMPT="[%~]-%# "
+
+# Prompt settings
 if [[ "$TERM" == 'linux' ]] ; then
     # Send escape char to get block cursor in linux console
-    function precmd { RPROMPT=""; echo -en "\e[?6c"; }
+    function precmd { RPROMPT=''; echo -en "\e[?6c"; }
 else
-    # 'RPROMPT=""' is always needed for zle in vi mode
-    function precmd { RPROMPT=""; }
+    # Empty RPROMPT is needed for zle's vi mode indication
+    function precmd { RPROMPT=''; }
 fi
-
-# Define left prompt
-PROMPT="[%~]-%# "
 
 ## Aliases #############################################################
 

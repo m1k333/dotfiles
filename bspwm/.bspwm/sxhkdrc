@@ -1,7 +1,7 @@
-## bspwm sxhkd setup
+## bspwm sxhkd setup ###################################################
 ## MSR 2014
 
-## bspwm commands
+## bspwm commands ######################################################
 
 # Quit bspwm
 super + shift + q
@@ -9,11 +9,38 @@ super + shift + q
 
 # Reload sxhkd configuration
 super + Escape
-    pkill -x sxhkd && sxhkd -c ~/.bspwm/sxhkdrc
+    pkill --exact --signal SIGUSR1 sxhkd
+
+## Desktop commands ####################################################
+
+# Focus or move a window to desktop X
+super + {_,shift + }{1-9,0}
+    bspc {desktop -f,window -d} ^{1-9,10}
+
+# Focus or move a window to the next/previous desktop
+super + {_,shift + }bracket{left,right}
+    bspc {desktop -f,window focused -d} {prev,next}
+
+# Switch to last used desktop
+super + shift + Tab
+    bspc desktop -f last
+
+## Window commands #####################################################
 
 # Focus or move window
 super + {_,shift + }{h,j,k,l}
     bspc window -{f,s} {left,down,up,right}
+
+# Extend (and shrink, for windows touching walls) a window
+super + alt + {h,j,k,l}
+    {bspc window -e left  -10 || bspc window -e right -10,\
+     bspc window -e down  +10 || bspc window -e up    +10,\
+     bspc window -e up    -10 || bspc window -e down  -10,\
+     bspc window -e right +10 || bspc window -e left  +10}
+
+# Shrink a window (for windows not touching walls)
+super + alt + shift + {h,j,k,l}
+    bspc window -e {right -10,up +10,down -10,left +10}
 
 # Preselect part of a window
 super + ctrl + {h,j,k,l}
@@ -31,21 +58,17 @@ super + ctrl + {_,shift + }space
 super + ctrl + {1-9}
     bspc window -r 0.{1-9}
 
-# Focus desktop to the left/right
-super + bracket{left,right}
-    bspc desktop -f {prev,next}
+# Switch to last used window
+super + Tab
+    bspc window -f last
 
-# Extend a window
-super + alt + {h,j,k,l}
-    bspc window -e {left -10,down +10,up -10,right +10}
+# Swap window position with last used window
+super + s
+    bspc window -s last
 
-# Shrink a window
-super + alt + shift + {h,j,k,l}
-    bspc window -e {right -10,up +10,down -10,left +10}
-
-# Close window
-super + shift + c
-    bspc window -c
+# Swap window position with largest window
+super + m
+    bspc window -s biggest
 
 # Balance windows
 super + b
@@ -59,29 +82,17 @@ super + {space,f}
 super + t
     bspc desktop -l next
 
-# Focus or move a window to desktop X
-super + {_,shift + }{1-9,0}
-    bspc {desktop -f,window -d} ^{1-9,10}
+# Close window
+super + shift + c
+    bspc window -c
 
-# Switch to last used window/desktop
-super + {_,shift + }Tab
-    bspc {window,desktop} -f last
+## Mouse controls ######################################################
 
-# Swap window position with last used window
-super + s
-    bspc window -s last
-
-# Swap window position with largest window
-super + m
-    bspc window -s biggest
-
-## Mouse controls
-
-# Track pointer
+# Send pointer coordinates
 super + !button{1-3}
     bspc pointer -t %i %i
 
-# Stop tracking pointer
+# Stop sending pointer coordinates
 super + @button{1-3}
     bspc pointer -u
 
@@ -93,14 +104,15 @@ super + @button{1-3}
 super + button{1-3}
     bspc pointer -g {move,resize_side,resize_corner}
 
-## External commands
+## External commands ###################################################
 
 # dmenu
 super + p
-    dmenu_run -l 5 -nb black -nf white -sb green -sf black
+    dmenu_run -l 5 -nb black -nf white -sb green -sf black -fn \
+    '-xos4-terminus-medium-r-normal--14-140-72-72-*-80-iso10646-1'
 
 # urxvtc
-super + {shift + ,_}Return
+super + Return
     urxvtc
 
 # Emacsclient
@@ -115,4 +127,4 @@ XF86Audio{RaiseVolume,LowerVolume,Mute}
 Print
     screenshot
 
-## EOF
+## EOF #################################################################

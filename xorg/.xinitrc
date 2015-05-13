@@ -22,12 +22,10 @@ case $session in
     bspwm)   (sxhkd -c ${HOME}/.bspwm/sxhkdrc &) && \
              exec bspwm -c ${HOME}/.bspwm/bspwmrc
              ;;
-    emacs)   exec emacs --eval "(toggle-frame-fullscreen)"
-             ;;
     stumpwm) exec stumpwm
              ;;
     *)       exec $@
-            ;;
+             ;;
 esac
 
 # EOF

@@ -1,24 +1,24 @@
 !! Font
-URxvt.font:       xft:Terminus:size=12
-URxvt.boldFont:   xft:Terminus:bold:size=12
-!Normally I'd use xft fonts, but my laptop hates them
-!URxvt.font:     -xos4-terminus-medium-r-normal--14-140-72-72-*-80-iso10646-1
-!URxvt.boldFont: -xos4-terminus-bold-r-normal--14-140-72-72-*-80-iso10646-1
+URxvt.font:     xft:terminus:pixelsize=16
+!URxvt.font:    -xos4-terminus-medium-r-normal--14-140-72-72-*-80-iso10646-1
+!!!!!!!!!!!!    Normally I'd use xft fonts, but my laptop hates them
+URxvt.boldFont:
 
 !! Appearance
-URxvt.internalBorder: 8
-URxvt.externalBorder: 0
 URxvt.background:     #000000
 URxvt.foreground:     #FFFFFF
+URxvt.color12:        #5C5CFF
 URxvt.cursorColor:    #FFFFFF
+URxvt.internalBorder: 6
+URxvt.externalBorder: 0
+URxvt.scrollBar:      false
 
 !! Behaviour
-URxvt.saveLines:       30000
-URxvt.scrollBar:       false
-URxvt.urgentonBell:    true
 URxvt.iso14755:        false
 URxvt.iso14755_52:     false
-URxvt.perl-ext-common: default,clipboard,url-select,keyboard-select
 URxvt.keysym.C-C:      perl:clipboard:copy
 URxvt.keysym.C-V:      perl:clipboard:paste
 URxvt.keysym.C-A-v:    perl:clipboard:paste_escaped
+URxvt.perl-ext-common: default,clipboard,url-select,keyboard-select
+URxvt.saveLines:       30000
+URxvt.urgentonBell:    true

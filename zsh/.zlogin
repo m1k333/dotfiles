@@ -1,8 +1,8 @@
 ## ~/.zlogin ###########################################################
 
 ## Automatically start an X server from zsh login? #####################
-STARTX='n'          # 'y' / anything else for no
-XCHOICE="stumpwm"   # Args for ~/.xinitrc script
+STARTX='y'          # 'y' / anything else for no
+XCHOICE="bspwm"   # Args for ~/.xinitrc script
 
 ## Start an X server ###################################################
 if [[ "$STARTX" == 'y' && -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then

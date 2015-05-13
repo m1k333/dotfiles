@@ -105,7 +105,7 @@ function zsh-emacs-mode
 }
 
 # Pick an editor mode
-zsh-vi-mode
+zsh-emacs-mode
 
 ## Prompt ##############################################################
 
@@ -141,12 +141,14 @@ alias emcd-kill="emacsclient --eval '(kill-emacs)'"
 # Info
 alias bat='acpi -V'
 
+# Shell
+alias :q='exit'
+
 # Tmux
-alias tmat='tmux attach'
+alias tmat='tmux attach || tmux new-session'
 
 # X server
 alias xbspwm='startx ~/.xinitrc bspwm'
-alias xemacs='startx ~/.xinitrc emacs'
 alias xstumpwm='startx ~/.xinitrc stumpwm'
 
 ## EOF #################################################################

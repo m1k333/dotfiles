@@ -5,7 +5,7 @@
 ;;;; Initialize stuff
 
 ;;; Load path
-(add-to-list 'load-path "~/.emacs.d/elisp")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 
 ;;; Determine operating system
 (defun linuxp () "True if running GNU/Linux."

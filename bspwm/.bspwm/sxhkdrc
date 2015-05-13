@@ -3,13 +3,9 @@
 
 ## bspwm commands ######################################################
 
-# Quit bspwm
-super + shift + q
-    bspc quit
-
-# Reload sxhkd configuration
-super + Escape
-    pkill --exact --signal SIGUSR1 sxhkd
+# Quit bspwm or reload keybindings
+super + {shift + ,_}Escape
+    {bspc quit,pkill --exact --signal SIGUSR1 sxhkd}
 
 ## Desktop commands ####################################################
 
@@ -17,13 +13,13 @@ super + Escape
 super + {_,shift + }{1-9,0}
     bspc {desktop -f,window -d} ^{1-9,10}
 
-# Focus or move a window to the next/previous desktop
+# Focus a window to the next/previous desktop
 super + {_,shift + }bracket{left,right}
     bspc {desktop -f,window focused -d} {prev,next}
 
-# Switch to last used desktop
-super + shift + Tab
-    bspc desktop -f last
+# Switch to last used {window,desktop}
+super + {_,shift + }Tab
+    bspc {window,desktop} -f last
 
 ## Window commands #####################################################
 
@@ -31,99 +27,86 @@ super + shift + Tab
 super + {_,shift + }{h,j,k,l}
     bspc window -{f,s} {left,down,up,right}
 
-# Extend (and shrink, for windows touching walls) a window
+# Extend (or shrink) a window (for windows touching walls)
 super + alt + {h,j,k,l}
     {bspc window -e left  -10 || bspc window -e right -10,\
      bspc window -e down  +10 || bspc window -e up    +10,\
      bspc window -e up    -10 || bspc window -e down  -10,\
      bspc window -e right +10 || bspc window -e left  +10}
 
-# Shrink a window (for windows not touching walls)
+# Shrink (or expand) a window (for windows not touching walls)
 super + alt + shift + {h,j,k,l}
-    bspc window -e {right -10,up +10,down -10,left +10}
+    {bspc window -e right -10 || bspc window -e left  -10,\
+     bspc window -e up    +10 || bspc window -e down  +10,\
+     bspc window -e down  -10 || bspc window -e up    -10,\
+     bspc window -e left  +10 || bspc window -e right +10}
 
 # Preselect part of a window
 super + ctrl + {h,j,k,l}
     bspc window -p {left,down,up,right}
+
+# Set preselection size ratio
+super + ctrl + {1-9}
+    bspc window -r 0.{1-9}
 
 # Move window to last preselection
 super + y
     bspc window -w last.manual
 
 # Cancel preselections
-super + ctrl + {_,shift + }space
-    bspc {window -p cancel,desktop -c}
+super + c
+    bspc desktop -c
 
-# Set preselection size ratio
-super + ctrl + {1-9}
-    bspc window -r 0.{1-9}
+# Swap window position with {largest,last used window}
+super + {m,t}
+    bspc window -s {biggest,last}
 
-# Switch to last used window
-super + Tab
-    bspc window -f last
-
-# Swap window position with last used window
-super + s
-    bspc window -s last
-
-# Swap window position with largest window
-super + m
-    bspc window -s biggest
-
-# Balance windows
-super + b
-    bspc desktop -B
-
-# Float or fullscreen windows
-super + {space,f}
-    bspc window -t {floating,fullscreen}
+# {float,fullscreen,lock,sticky,private} windows
+super + {space,x,s,p}
+    bspc window -t {floating,locked,sticky,private}
 
 # Toggle monocle mode for focused window
-super + t
+super + f
     bspc desktop -l next
 
+# Balance windows
+super + equal
+    bspc desktop -B
+
 # Close window
-super + shift + c
+super + q
     bspc window -c
 
 ## Mouse controls ######################################################
 
-# Send pointer coordinates
-super + !button{1-3}
-    bspc pointer -t %i %i
-
-# Stop sending pointer coordinates
-super + @button{1-3}
-    bspc pointer -u
+# Track and send pointer coordinates
+super + {!,@}button{1,2,3}
+    bspc pointer {-t %i %i,-u}{_,_,_}
 
 # Focus window
 ~button1
     bspc pointer -g focus
 
 # Rearrange/resize windows
-super + button{1-3}
+super + button{1,2,3}
     bspc pointer -g {move,resize_side,resize_corner}
 
 ## External commands ###################################################
 
 # dmenu
-super + p
+super + r
     dmenu_run -l 5 -nb black -nf white -sb green -sf black -fn \
     '-xos4-terminus-medium-r-normal--14-140-72-72-*-80-iso10646-1'
 
-# urxvtc
-super + Return
-    urxvtc
-
-# Emacsclient
-super + e
-    emacsclient -c
+# Applications
+super + {Return,e}
+    {urxvtc,emacsclient -c}
 
 # Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}
     amixer set Master {5%+,5%-,toggle}
 
-# PrintScreen
+# Screenshot
 Print
     screenshot
 

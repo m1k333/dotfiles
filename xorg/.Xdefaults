@@ -1,7 +1,5 @@
 !! Font
-URxvt.font:     xft:terminus:pixelsize=16
-!URxvt.font:    -xos4-terminus-medium-r-normal--14-140-72-72-*-80-iso10646-1
-!!!!!!!!!!!!    Normally I'd use xft fonts, but my laptop hates them
+URxvt.font:     xft:inconsolata:size=14
 URxvt.boldFont:
 
 !! Appearance

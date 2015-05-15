@@ -13,6 +13,7 @@ setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
 xmodmap -e "keycode 135 = Super_R"
 [ -f ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
 xset -b s 3600 dpms 7200 7200 7200
+xautolock -time 60 -locker "systemctl suspend" &
 
 # Default selection if no argument passed
 session=${1:-bspwm}

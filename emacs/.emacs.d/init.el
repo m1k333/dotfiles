@@ -88,16 +88,6 @@ the `package-required-list' variable."
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-;; Get the font we like
-(defun system-font ()
-  "Returns the font to use for Emacs frames; nil means only the
-default font is available."
-  (cond
-   ((and (linuxp) (member "terminus" (font-family-list)))
-    "Terminus-12")
-   ((and (windowsp) (member "Consolas" (font-family-list)))
-    "Consolas-12")))
-
 ;; Appearance for each frame
 (require 'color-theme)
 (color-theme-initialize)
@@ -106,9 +96,13 @@ default font is available."
   "Set the theme for the newly-created frame."
   (when frame (select-frame frame))
   (if (window-system frame)
-      (color-theme-dark-laptop) ;; If GUI
-    (color-theme-dark-laptop))  ;; If terminal
-  (set-frame-font (system-font)))
+      (progn
+        (color-theme-dark-laptop)
+        (if (linuxp)
+            (set-frame-font "inconsolata-14"))) ;; If GUI
+    (color-theme-dark-laptop)))                 ;; If terminal
+
+
 
 ;; Appearance set when creating new frame
 (add-hook 'after-make-frame-functions 'frame-setup-appearance)
@@ -276,7 +270,7 @@ This command does the inverse of `fill-region'."
 
 ;; Quicklisp path
 (defvar quicklisp-path
-  (expand-file-name "~/.quicklisp/")
+  (expand-file-name "~/quicklisp/")
   "The path to my quicklisp installation.")
 
 ;; Quicklisp SLIME helper

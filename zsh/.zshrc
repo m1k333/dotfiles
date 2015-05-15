@@ -105,7 +105,7 @@ function zsh-emacs-mode
 }
 
 # Pick an editor mode
-zsh-emacs-mode
+zsh-vi-mode
 
 ## Prompt ##############################################################
 
@@ -131,12 +131,7 @@ alias ll='ls -ahlp --color=auto --group-directories-first'
 alias ls='ls -p --color=auto --group-directories-first'
 alias mv='mv -i'
 alias rm='rm -i'
-alias sudo='sudo -E'
-
-# Emacs
-alias emc='emacsclient -c'
-alias emcd='emacs --daemon'
-alias emcd-kill="emacsclient --eval '(kill-emacs)'"
+alias sushell="sudo -E ${SHELL}"
 
 # Info
 alias bat='acpi -V'
@@ -144,10 +139,13 @@ alias bat='acpi -V'
 # Shell
 alias :q='exit'
 
-# Tmux
+# Applications
+alias bsptree='bspc query -T'
+alias emc='emacsclient -c'
+alias emcd='emacs --daemon'
+alias emcd-kill="emacsclient --eval '(kill-emacs)'"
+alias ncmpc="ncmpcpp"
 alias tmat='tmux attach || tmux new-session'
-
-# X server
 alias xbspwm='startx ~/.xinitrc bspwm'
 alias xstumpwm='startx ~/.xinitrc stumpwm'
 

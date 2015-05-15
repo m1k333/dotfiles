@@ -1,0 +1,12 @@
+" vim: set ft=vimperator:
+" 3.9 (created: 2015/02/15 15:49:05)
+
+" GUI
+set gui="none,tabs,navigation";
+
+" Hints
+highlight Hint::after -append font-size: 10pt;
+
+" External editor
+set editor="urxvt -e vim";
+

@@ -10,4 +10,5 @@ export BROWSER=firefox
 export EDITOR=vim
 export PAGER=less
 export XAUTHORITY=${HOME}/.Xauthority
+ulimit -c 0
 umask 022

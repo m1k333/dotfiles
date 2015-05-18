@@ -24,6 +24,7 @@ setopt histignoredups histignorespace histsavenodups sharehistory
 
 ## Interactive settings ################################################
 setopt interactivecomments multios notify
+ulimit -c 0
 
 ## Editor settings #####################################################
 
@@ -33,25 +34,8 @@ KEYTIMEOUT=1
 # Vi mode settings
 function zsh-vi-mode
 {
-    # Vim-like 'ge' behaviour
-    function vi-backward-word-end
-    {
-        zle vi-forward-word-end
-        zle vi-backward-word -n 2 && zle vi-forward-word-end
-    }
-
-    # Vim-like 'GE' behaviour
-    function vi-backward-blank-word-end
-    {
-        zle vi-forward-blank-word-end
-        zle vi-backward-blank-word -n 2 \
-            && zle vi-forward-blank-word-end
-    }
-
     # Vim-like keybindings; '-v': insert, '-a': command
     bindkey -v
-    bindkey -v 'ge'   vi-backward-word-end
-    bindkey -v 'GE'   vi-backward-blank-word-end
     bindkey -v '^G'   what-cursor-position
     bindkey -v '^H'   backward-delete-char
     bindkey -v '^?'   backward-delete-char
@@ -65,7 +49,6 @@ function zsh-vi-mode
     bindkey -a 'u'    undo
     bindkey -a '\e[A' history-beginning-search-backward
     bindkey -a '\e[B' history-beginning-search-forward
-
 
     # Right prompt '(CMD)' in command mode; be sure to
     # reset 'RPROMPT' in precmd (see 'Prompt' section)
@@ -135,6 +118,11 @@ alias sushell="sudo -E ${SHELL}"
 
 # Info
 alias bat='acpi -V'
+
+# Pacman
+which pacmatic &> /dev/null && PACPROG='pacmatic' || PACPROG='pacman'
+which yaourt &> /dev/null && export pacman_program='yaourt' || PACPROG="sudo -E ${PACPROG}"
+alias pac="${PACPROG}"
 
 # Shell
 alias :q='exit'

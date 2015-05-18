@@ -10,3 +10,6 @@ highlight Hint::after -append font-size: 10pt;
 " External editor
 set editor="urxvt -e vim";
 
+" Keybindings
+noremap <C-a> <C-v><C-a>
+

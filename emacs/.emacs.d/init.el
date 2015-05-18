@@ -89,20 +89,13 @@ the `package-required-list' variable."
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
 ;; Appearance for each frame
-(require 'color-theme)
-(color-theme-initialize)
-(setq color-theme-is-global nil)
+(when (window-system) (load-theme 'tango-dark))
 (defun frame-setup-appearance (&optional frame)
   "Set the theme for the newly-created frame."
   (when frame (select-frame frame))
   (if (window-system frame)
-      (progn
-        (color-theme-dark-laptop)
         (if (linuxp)
-            (set-frame-font "inconsolata-14"))) ;; If GUI
-    (color-theme-dark-laptop)))                 ;; If terminal
-
-
+            (set-frame-font "inconsolata-14"))))
 
 ;; Appearance set when creating new frame
 (add-hook 'after-make-frame-functions 'frame-setup-appearance)

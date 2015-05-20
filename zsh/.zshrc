@@ -119,20 +119,13 @@ alias sushell="sudo -E ${SHELL}"
 # Info
 alias bat='acpi -V'
 
-# Pacman
-which pacmatic &> /dev/null && PACPROG='pacmatic' || PACPROG='pacman'
-which yaourt &> /dev/null && export pacman_program='yaourt' || PACPROG="sudo -E ${PACPROG}"
-alias pac="${PACPROG}"
-
-# Shell
-alias :q='exit'
-
 # Applications
 alias bsptree='bspc query -T'
 alias emc='emacsclient -c'
 alias emcd='emacs --daemon'
 alias emcd-kill="emacsclient --eval '(kill-emacs)'"
 alias ncmpc="ncmpcpp"
+alias pac='sudo -E pacman'
 alias tmat='tmux attach || tmux new-session'
 alias xbspwm='startx ~/.xinitrc bspwm'
 alias xstumpwm='startx ~/.xinitrc stumpwm'

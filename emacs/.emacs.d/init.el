@@ -9,9 +9,12 @@
 
 ;;; Determine operating system
 (defun linuxp () "True if running GNU/Linux."
-  (if (or (eq system-type 'gnu/linux) (eq system-type 'linux)) t nil))
+       (if (or (eq system-type 'gnu/linux) (eq system-type 'linux)) t nil))
 (defun windowsp () "True if running Windows."
-  (if (or (eq system-type 'windows-nt) (eq system-type 'cygwin)) t nil))
+       (if (or (eq system-type 'windows-nt) (eq system-type 'cygwin)) t nil))
+
+;;; Common lisp functionality
+(require 'cl)
 
 ;;; Packages
 
@@ -24,7 +27,7 @@
 
 ;; Define `package-required-list'
 (defvar package-required-list
-  '(color-theme expand-region multiple-cursors slime stumpwm-mode)
+  '(slime stumpwm-mode)
   "A list of packages that should be installed for this Emacs
 configuration.  If any are not installed, they should be able
 to be installed by running `package-populate'.")
@@ -87,21 +90,7 @@ the `package-required-list' variable."
 (menu-bar-mode -1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-
-;; Appearance for each frame
 (when (window-system) (load-theme 'tango-dark))
-(defun frame-setup-appearance (&optional frame)
-  "Set the theme for the newly-created frame."
-  (when frame (select-frame frame))
-  (if (window-system frame)
-        (if (linuxp)
-            (set-frame-font "inconsolata-14"))))
-
-;; Appearance set when creating new frame
-(add-hook 'after-make-frame-functions 'frame-setup-appearance)
-
-;; Needs to be run for standalone/non-daemon-client instances
-(frame-setup-appearance)
 
 ;;; Apropos
 (setq apropos-do-all t)
@@ -205,8 +194,6 @@ the `package-required-list' variable."
       eshell-cmpl-ignore-case t)
 
 ;;; Commands/features/functions
-(require 'expand-region)
-(require 'multiple-cursors)
 (setq disabled-command-hook nil)
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -342,7 +329,6 @@ vertical split."
 ;;;; Keybindings and mouse bindings
 
 ;;; Keyboard
-(global-set-key (kbd "C-=") 'er/expand-region)
 (global-set-key (kbd "M-?") 'mark-paragraph)
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "M-h") 'backward-kill-word)

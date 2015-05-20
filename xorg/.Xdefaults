@@ -1,22 +1,48 @@
+!!! X Server !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!! XCursor
+Xcursor.theme: OpenZone_White
+
+!!! URXVT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!! Appearance 
+
+!! Borders
+URxvt*internalBorder: 4
+URxvt*externalBorder: 0
+
+!! Colours
+URxvt*background:  #000000
+URxvt*foreground:  #FFFFFF
+URxvt*color12:     #5C5CFF
+URxvt*cursorColor: #FFFFFF
+
 !! Font
-URxvt.font:     xft:inconsolata:size=14
-URxvt.boldFont:
+URxvt*font: xft:DejaVu Sans Mono:size=12
+URxvt*boldFont:
 
-!! Appearance
-URxvt.background:     #000000
-URxvt.foreground:     #FFFFFF
-URxvt.color12:        #5C5CFF
-URxvt.cursorColor:    #FFFFFF
-URxvt.internalBorder: 6
-URxvt.externalBorder: 0
-URxvt.scrollBar:      false
+!! ScrollBar
+URxvt*scrollBar: false
 
-!! Behaviour
-URxvt.iso14755:        false
-URxvt.iso14755_52:     false
-URxvt.keysym.C-C:      perl:clipboard:copy
-URxvt.keysym.C-V:      perl:clipboard:paste
-URxvt.keysym.C-A-v:    perl:clipboard:paste_escaped
-URxvt.perl-ext-common: default,clipboard,url-select,keyboard-select
-URxvt.saveLines:       30000
-URxvt.urgentonBell:    true
+!!! Behaviour
+
+!! Bell
+URxvt*urgentonBell: true
+
+!! Copy+Paste
+URxvt*keysym.C-C:   perl:clipboard:copy
+URxvt*keysym.C-V:   perl:clipboard:paste
+URxvt*keysym.C-A-v: perl:clipboard:paste_escaped
+
+!! History
+URxvt*saveLines: 30000
+
+!! Perl extensions
+URxvt*perl-ext-common: default,clipboard,matcher,url-select
+URxvt*url-launcher:    /usr/bin/firefox
+URxvt*matcher.button:  1
+
+!! Picture mode
+URxvt*iso14755:    false
+URxvt*iso14755_52: false
+

@@ -15,6 +15,9 @@ xmodmap -e "keycode 135 = Super_R"
 xset -b s 3600 dpms 7200 7200 7200
 xautolock -time 60 -locker "systemctl suspend" &
 
+# Make QT pick up on GTK themes and icons
+export DESKTOP_SESSION=gnome
+
 # Default selection if no argument passed
 session=${1:-bspwm}
 

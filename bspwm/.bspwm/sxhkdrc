@@ -99,8 +99,9 @@ super + n
 
 # dmenu
 super + r
-    dmenu_run -l 5 -nb black -nf white -sb green -sf black \
-    -fn 'Inconsolata-14:normal'
+    interrobang
+#   dmenu_run -l 5 -nb black -nf white -sb green -sf black \
+#   -fn 'Inconsolata-14:normal'
 
 # Applications
 super + {Return,e}

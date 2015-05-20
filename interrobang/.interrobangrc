@@ -1,0 +1,35 @@
+## ~/.interrobangrc
+
+## Appearance
+#              FG      BG      CMPFG   CMPBG   CMPHLFG CMPHLBG
+set colors	 = #E0E0E0 #000000 #808080 #000000 #00D000 #000000
+set border   = 2px #202020
+set geometry = top
+set font     = -*-fixed-*-r-*-*-20-*-*-*-*-*-iso10646-*
+
+## Behaviour
+set bangchar = :
+set run_hook = %s
+set autocomp = 1
+set list     = true
+set last     = true
+set margin   = -20
+set shell    = /bin/bash
+set flags    = -c
+
+## Bang options
+bang term     = urxvt -e %s
+bang vim      = urxvt -e vim %s
+bang man      = urxvt -e man %s
+bang pdf      = zathura %s
+bang web      = firefox "%s"
+bang archwiki = firefox https://wiki.archlinux.org/index.php/"%s"
+bang aur      = firefox https://aur.archlinux.org/packages/?q="%s"
+bang google   = firefox https://google.com/search?q="%s"
+bang twitch   = firefox https://twitch.tv/"%s"
+bang wiki     = firefox https://en.wikipedia.org/wiki/"%s"
+
+## Completion options
+tab default = percontation "%s" %s | sort -u
+tab calc    = str="%s%s"; echo "!calc $(echo ${str#\!calc} | bc -l)"
+tab ?       = ignore="%s%s"; awk '/^bang/ {print "!"$2" ";}' ~/.interrobangrc

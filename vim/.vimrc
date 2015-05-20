@@ -9,7 +9,7 @@ set background=dark
 set noerrorbells novisualbell t_vb=
 
 " Information
-set laststatus=2 modeline number shortmess=atI showcmd 
+set laststatus=2 modeline shortmess=atI showcmd 
 set statusline=./%f%m%r%h%w\ type:%Y%<%=\ %p%%\ (%LL)\ (%04l,%04v)
 
 "" Files ###############################################################
@@ -45,7 +45,7 @@ command! WScleanup call WScleanup()
 "" Keybindings #########################################################
 set scrolloff=7
 set timeoutlen=500
-nmap <leader>n :set invrelativenumber<CR>
+nmap <leader>n :set invnumber<CR>
 nmap <leader>w :WScleanup<CR>
 
 "" Searching ###########################################################

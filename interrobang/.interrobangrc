@@ -2,8 +2,8 @@
 
 ## Appearance
 #              FG      BG      CMPFG   CMPBG   CMPHLFG CMPHLBG
-set colors	 = #E0E0E0 #000000 #808080 #000000 #00D000 #000000
-set border   = 2px #202020
+set colors	 = #657b83 #000000 #657b83 #000000 #d33682 #000000
+set border   = 1px #d33682
 set geometry = top
 set font     = -*-fixed-*-r-*-*-20-*-*-*-*-*-iso10646-*
 
@@ -26,8 +26,11 @@ bang web      = firefox "%s"
 bang archwiki = firefox https://wiki.archlinux.org/index.php/"%s"
 bang aur      = firefox https://aur.archlinux.org/packages/?q="%s"
 bang google   = firefox https://google.com/search?q="%s"
-bang twitch   = firefox https://twitch.tv/"%s"
+bang reddit   = firefox https://reddit.com/r/"%s"
 bang wiki     = firefox https://en.wikipedia.org/wiki/"%s"
+bang youtube  = firefox https://youtube.com/"%s"
+bang twitch   = firefox https://twitch.tv/"%s"
+bang mpv      = mpv %s
 
 ## Completion options
 tab default = percontation "%s" %s | sort -u

@@ -4,9 +4,8 @@
 "" Appearance ##########################################################
 
 " Visuals
-colorscheme elflord
-set background=dark
-set noerrorbells novisualbell t_vb=
+colorscheme solarized
+set background=dark noerrorbells novisualbell t_vb=
 
 " Information
 set laststatus=2 modeline shortmess=atI showcmd 

@@ -27,7 +27,7 @@
 
 ;; Define `package-required-list'
 (defvar package-required-list
-  '(slime stumpwm-mode)
+  '(color-theme-solarized slime stumpwm-mode)
   "A list of packages that should be installed for this Emacs
 configuration.  If any are not installed, they should be able
 to be installed by running `package-populate'.")
@@ -90,7 +90,11 @@ the `package-required-list' variable."
 (menu-bar-mode -1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(when (window-system) (load-theme 'tango-dark))
+(when (window-system)
+  (require 'color-theme)
+  (setq color-theme-is-global t)
+  (color-theme-initialize)
+  (color-theme-solarized))
 
 ;;; Apropos
 (setq apropos-do-all t)

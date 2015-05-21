@@ -8,6 +8,7 @@ export PATH                 # Export $PATH; zsh knows to use $path
 ## Set my environment ##################################################
 export BROWSER=firefox
 export EDITOR=vim
+export NMON=cmdnt
 export PAGER=less
 export XAUTHORITY=${HOME}/.Xauthority
 ulimit -c 0

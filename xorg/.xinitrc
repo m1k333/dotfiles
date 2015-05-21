@@ -13,7 +13,8 @@ setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
 xmodmap -e "keycode 135 = Super_R"
 [ -f ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
 xset -b s 3600 dpms 7200 7200 7200
-xautolock -time 60 -locker "systemctl suspend" &
+xrdb -merge ~/.Xresources
+which redshift &> /dev/null && [ -e "~/.config/redshift.conf" ] && redshift
 
 # Make QT pick up on GTK themes and icons
 export DESKTOP_SESSION=gnome

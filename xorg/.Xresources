@@ -70,7 +70,7 @@ URxvt*color15: S_base3
 URxvt*urgentonBell: true
 
 !! Borders
-URxvt*internalBorder: 4
+URxvt*internalBorder: 2
 URxvt*externalBorder: 0
 
 !! Copy+Paste
@@ -82,7 +82,7 @@ URxvt*keysym.C-A-v: perl:clipboard:paste_escaped
 URxvt*cursorBlinks: true
 
 !! Font
-URxvt*font:     xft:DejaVu Sans Mono:size=12
+URxvt*font:     xft:DejaVu Sans Mono:bold:size=12
 URxvt*boldFont:
 
 !! History

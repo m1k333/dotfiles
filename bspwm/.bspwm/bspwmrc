@@ -43,9 +43,22 @@ bspc config focus_follows_pointer true
 bspc config gapless_monocle       true
 bspc config split_ratio           0.50
 
-# Set up X displays
+# Make BSPWM desktops after everything else is set up
 xsetroot -solid black
 xsetroot -cursor_name left_ptr
 bspc monitor -d 1 2 3 4 5 6 7 8 9 0
+
+# Configure X
+setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
+xmodmap -e "keycode 135 = Super_R"
+[ -e ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
+xset -b 
+xset s 1800
+xset dpms 1800 1800 1800
+xrdb -merge ~/.Xresources
+[ -e ${HOME}/.config/redshift.conf ] && redshift
+
+# Make QT pick up on GTK themes and icons
+export DESKTOP_SESSION=gnome
 
 # EOF

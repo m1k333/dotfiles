@@ -1,0 +1,19 @@
+#!/bin/sh
+
+channel=${1:-void}
+quality=${2:-medium}
+
+if [ "$channel" = "void" ]
+then
+    echo "Usage: ttv CHANNEL [quality]."
+    exit 1
+else
+    livestreamer -p mpv https://twitch.tv/${channel} ${quality} || \
+    mpv https://twitch.tv/${channel} ${quality} || \
+    {
+        echo "Install mpv and livestreamer (&optional youtube-dl)...";
+        exit 1;
+    }
+fi
+
+## EOF

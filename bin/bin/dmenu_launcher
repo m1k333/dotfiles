@@ -1,0 +1,8 @@
+#!/bin/sh
+
+dmenu_run  -i -p '>>>'         \
+-fn 'DejaVu Sans Mono-13:bold' \
+-nf '#586e75' -nb '#fdf6e3'    \
+-sf '#d33682' -sb '#fdf6e3'
+
+## EOF

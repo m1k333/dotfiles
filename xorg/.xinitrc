@@ -9,15 +9,17 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
 fi
 
 # Configure X
-setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
-xmodmap -e "keycode 135 = Super_R"
-[ -f ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
-xset -b s 3600 dpms 7200 7200 7200
-xrdb -merge ~/.Xresources
-which redshift &> /dev/null && [ -e "~/.config/redshift.conf" ] && redshift
+#setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
+#xmodmap -e "keycode 135 = Super_R"
+#[[ -e ${HOME}/.xmodmap ]] && xmodmap ${HOME}/.xmodmap
+#xset -b 
+#xset s 1800
+#xset dpms 1800 1800 1800
+#xrdb -merge ~/.Xresources
+#[[ -e "~/.config/redshift.conf" ]] && redshift
 
 # Make QT pick up on GTK themes and icons
-export DESKTOP_SESSION=gnome
+#export DESKTOP_SESSION=gnome
 
 # Default selection if no argument passed
 session=${1:-bspwm}

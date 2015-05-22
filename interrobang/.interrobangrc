@@ -2,7 +2,7 @@
 
 ## Appearance
 #              FG      BG      CMPFG   CMPBG   CMPHLFG CMPHLBG
-set colors	 = #657b83 #000000 #657b83 #000000 #d33682 #000000
+set colors	 = #073642 #fdf6e3 #657b83 #fdf6e3 #d33682 #fdf6e3
 set border   = 1px #d33682
 set geometry = top
 set font     = -*-fixed-*-r-*-*-20-*-*-*-*-*-iso10646-*

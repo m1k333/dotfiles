@@ -1,0 +1,251 @@
+#! /bin/bash
+
+## Load config #########################################################
+
+source ${HOME}/.bspwm/panelrc
+
+## Convert colours to lemonbar format ##################################
+
+black="#FF${black}"
+white="#FF${white}"
+red="#FF${red}"
+orange="#FF${orange}"
+yellow="#FF${yellow}"
+green="#FF${green}"
+cyan="#FF${cyan}"
+blue="#FF${blue}"
+magenta="#FF${magenta}"
+violet="#FF${violet}"
+base0="#FF${base0}"
+base1="#FF${base1}"
+foreground0="#FF${foreground0}"
+foreground1="#FF${foreground1}"
+foreground2="#FF${foreground2}"
+foreground3="#FF${foreground3}"
+light0="#FF${light0}"
+light1="#FF${light1}"
+
+## Cleanup #############################################################
+
+function proc_clean
+{
+    while [ $(pgrep -cx ${i}) -gt 1 ]
+    do
+        pkill -ox -9 ${i}
+    done
+}
+
+proc_clean 'bspwm-panel-start' 'xtitle' 'bspc control --subscribe'
+
+## Make FIFO ###########################################################
+
+# Sending status updates to a FIFO
+trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+# Make FIFO
+[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+mkfifo "$PANEL_FIFO"
+
+## Ready BSPWM for the bar #############################################
+
+bspc config top_padding $PANEL_HEIGHT
+
+## Run programs into the FIFO ##########################################
+
+# Window manager info
+bspc control --subscribe > "$PANEL_FIFO" &
+xtitle -sf 'T%s' > "$PANEL_FIFO" &
+
+## Clock
+
+function clock
+{
+    while true
+    do
+        date +"S%F %T"
+        sleep 1
+    done
+}
+
+clock > "$PANEL_FIFO" &
+
+## Battery monitor
+
+BAT="/sys/class/power_supply/BAT0"
+
+function bat_percent
+{
+    while true
+    do
+        CHARGE_NOW=`cat $BAT/charge_now`
+        CHARGE_FULL=`cat $BAT/charge_full`
+        PERCENT=`echo "($CHARGE_NOW * 100)/$CHARGE_FULL" | bc`
+        BSTATUS=`cat $BAT/status`
+
+        if [ $BSTATUS == "Charging" ]
+        then
+            BSTATUS="+"
+        elif [ $BSTATUS == "Discharging" ]
+        then
+            BSTATUS="-"
+        else
+            BSTATUS=""
+        fi
+
+        if [ $PERCENT -gt 66 ]
+        then
+            BCOLOUR="%{F$green}"
+        elif [ $PERCENT -gt 33 ]
+        then
+            BCOLOUR="%{F$yellow}"
+        else
+            BCOLOUR="%{F$red}"
+        fi
+
+        echo "B$BCOLOUR$BSTATUS$PERCENT%{F-}"
+        sleep 5
+    done
+}
+
+## Parse the FIFO output for lemonbar ##################################
+
+# Initialize variables for monitor-specific output
+num_mon=$(bspc query -M | wc -l)
+wm_info_array=("" "" "" "" "")
+
+# Parse FIFO ouput
+function panel_bar
+{
+    while read line < $PANEL_FIFO
+    do
+
+        case $line in
+
+            S*) # Clock output
+                date="${line#?}"
+                ;;
+
+            B*) # Battery output
+                percent="${line#?}"
+                ;;
+
+            T*) # Xtitle output
+                title="${line#?}"
+                ;;
+
+            W*) # BSPWM internal state output (RIP 80 columns)
+                
+                # Initialize output variables
+                wm_infos=""
+                cur_mon=-1
+                
+                # Configure FIFO formatting
+                IFS=':'
+                set -- ${line#?}
+
+                # Parse each item
+                while [ $# -gt 0 ]
+                do
+
+                    # Always use $1; use 'shift' to get to the other items
+                    item=$1
+                    name=${item#?}
+
+                    case $item in
+
+                        M*) # Active monitor
+                            cur_mon=$((cur_mon + 1))
+                            wm_infos=""
+                            if [ $num_mon -gt 1 ]
+                            then
+                                wm_infos="$wm_infos %{F$black}%{B$blue} ${name} %{B-}%{F-}  "
+                            fi
+                            ;;
+
+                        m*) # Inactive monitor
+                            cur_mon=$((cur_mon + 1))
+                            wm_infos=""
+                            if [ $num_mon -gt 1 ]
+                            then
+                                wm_infos="$wm_infos %{F$black}%{B$yellow} ${name} %{B-}%{F-}  "
+                            fi
+                            ;;
+
+                        O*) # Focused occupied desktop
+                            wm_infos="$wm_infos%{F$black}%{B$blue} ${name} %{B-}%{F-}"
+                            ;;
+
+                        F*) # Focused free desktop
+                            wm_infos="$wm_infos%{F$black}%{B$blue} ${name} %{B-}%{F-}"
+                            ;;
+
+                        U*) # Focused urgent desktop
+                            wm_infos="$wm_infos%{F$black}%{B$red} ${name} %{B-}%{F-}"
+                            ;;
+
+                        o*) # Occupied desktop
+                            wm_infos="$wm_infos%{F$blue}%{B$black} ${name} %{B-}%{F-}"
+                            ;;
+
+                        f*) # Free desktop
+                            wm_infos="$wm_infos%{F$foreground0}%{B$black} ${name} %{B-}%{F-}"
+                            ;;
+
+                        u*) # Urgent desktop
+                            wm_infos="$wm_infos%{F$red}%{B$black} ${name} %{B-}%{F-}"
+                            ;;
+
+                        L*) # Layout
+                            wm_infos="$wm_infos %{F$magenta}%{B$black} ${name} %{B-}%{F-}"
+                            ;;
+
+                    esac
+
+                    # Go to the next item, and append the current formatted item
+                    # to the output for the desired monitor.
+                    shift
+                    wm_info_array[cur_mon]="$wm_infos"
+
+                done
+                ;;
+
+        esac
+
+        # Set lemonbar formatting depending on number of monitors
+        if [ $num_mon -eq 1 ]
+        then
+            fmt="%{l} ${wm_info_array[0]} %{c} ${title} %{r} ${percent} ${date} "
+        elif [ $num_mon -eq 2 ]
+        then
+            fmt="%{l} ${wm_info_array[0]} %{c} ${title} %{S+}%{l} ${wm_info_array[1]} %{r} ${percent} ${date} "
+        else
+            # For now, a copy/paste of the 2-monitor format; I haven't
+            # written formats for 3+ monitors yet.
+            fmt="%{l} ${wm_info_array[0]} %{c} ${title} %{S+}%{l} ${wm_info_array[1]} %{r} ${percent} ${date} "
+        fi
+        
+        # Send this mess to stdout for piping
+        printf "%s\n" "$fmt"
+    done
+}
+ 
+## Run the above parser, piped into lemonbar ###########################
+
+panel_bar |                                            \
+    lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT_FAMILY" \
+             -F "$foreground3" -B "$black" &
+
+## Machine-specific tweaks go here #####################################
+
+HOSTNAME=$(hostname)
+
+if [ $HOSTNAME == "Melkor" ]
+then
+    bat_percent > "$PANEL_FIFO" &
+fi
+
+## Wait ################################################################
+
+wait
+
+## EOF #################################################################

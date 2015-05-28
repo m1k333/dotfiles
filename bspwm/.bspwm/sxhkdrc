@@ -3,9 +3,13 @@
 
 ## bspwm commands ######################################################
 
-# Quit bspwm or reload keybindings
-super + {shift + ,_}Escape
-    {bspc quit,pkill --exact --signal SIGUSR1 sxhkd}
+# Quit bspwm
+super + shift + Escape
+    killall -9 bspwm-panel; bspc quit
+
+# Reload keybindings
+super + Escape 
+    pkill --exact --signal SIGUSR1 sxhkd
 
 ## Desktop commands ####################################################
 
@@ -99,13 +103,17 @@ super + n
 
 # dmenu
 super + r
-    dmenu_launcher
-#   dmenu_run -l 5 -nb black -nf white -sb green -sf black \
-#   -fn 'Inconsolata-14:normal'
+    bspwm-dmenu
 
 # Applications
 super + {Return,e,w}
     {urxvt,emacs,firefox}
+
+# Toggle panel
+super + shift + b
+    bspc config top_padding 0
+super + b
+    source ~/.bspwm/panelrc && bspc config top_padding $PANEL_HEIGHT
 
 # Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}

@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 ## ~/.zshrc ############################################################
 
 ## Autocompletion ######################################################
@@ -8,9 +10,12 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 setopt completealiases correct extendedglob globdots nocaseglob
 
 ## Beep OFF; one of these should work ##################################
-[[ "$TERM" == 'linux' ]] && setterm -blength 0
-set bell-style none
-unsetopt beep
+if [[ "$TERM" == 'linux' ]]
+then
+    setterm -blength 0
+    set bell-style none
+    unsetopt beep
+fi
 
 ## Dirstack ############################################################
 DIRSTACKSIZE=10
@@ -24,7 +29,6 @@ setopt histignoredups histignorespace histsavenodups sharehistory
 
 ## Interactive settings ################################################
 setopt interactivecomments multios notify
-ulimit -c 0
 
 ## Editor settings #####################################################
 
@@ -96,7 +100,8 @@ zsh-vi-mode
 PROMPT="[%~]-%# "
 
 # Prompt settings
-if [[ "$TERM" == 'linux' ]] ; then
+if [[ "$TERM" == 'linux' ]]
+then
     # Send escape char to get block cursor in linux console
     function precmd { RPROMPT=''; echo -en "\e[?6c"; }
 else
@@ -116,18 +121,7 @@ alias mv='mv -i'
 alias rm='rm -i'
 alias sushell="sudo -E ${SHELL}"
 
-# Info
-alias bat='acpi -V'
-
 # Applications
-alias bsptree='bspc query -T'
-alias emc='emacsclient -c'
-alias emcd='emacs --daemon'
-alias emcd-kill="emacsclient --eval '(kill-emacs)'"
-alias ncmpc="ncmpcpp"
-alias pac='sudo -E pacman'
 alias tmat='tmux attach || tmux new-session'
-alias xbspwm='startx ~/.xinitrc bspwm'
-alias xstumpwm='startx ~/.xinitrc stumpwm'
 
 ## EOF #################################################################

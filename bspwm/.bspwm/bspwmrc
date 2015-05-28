@@ -1,21 +1,40 @@
 #!/bin/bash
 
-# Borders
-bspc config border_width          1
-bspc config focused_frame_opacity 0
-bspc config normal_frame_opacity  0
-bspc config window_gap            1
+## Borders #############################################################
 
-# Colours
-yellow="#b58900"
-orange="#cb4b16"
-red="#dc322f"
-magenta="#d33682"
-violet="#6c71c4"
-blue="#268bd2"
-cyan="#2aa198"
-green="#859900"
-grey="#657b83"
+## Settings
+
+bspc config border_width       1
+bspc config window_gap         1
+bspc config borderless_monocle false
+bspc config gapless_monocle    false
+
+## Colours
+
+source ${HOME}/.bspwm/panelrc
+
+black="#$black"
+white="#$white"
+
+red="#$red"
+orange="#$orange"
+yellow="#$yellow"
+green="#$green"
+cyan="#$cyan"
+blue="#$blue"
+magenta="#$magenta"
+violet="#$violet"
+
+base0="#$base0"
+base1="#$base1"
+
+foreground0="#$foreground0"
+foreground1="#$foreground1"
+foreground2="#$foreground2"
+foreground3="#$foreground3"
+
+light0="#$light0"
+light1="#$light1"
 
 bspc config focused_border_color         "$magenta"
 bspc config focused_locked_border_color  "$magenta"
@@ -35,30 +54,47 @@ bspc config normal_private_border_color  "$orange"
 bspc config presel_border_color          "$yellow"
 bspc config urgent_border_color          "$red"
 
-# Behaviour
-bspc config auto_alternate        true
+## Behaviour ###########################################################
+
 bspc config auto_cancel           true
-bspc config borderless_monocle    true
-bspc config focus_follows_pointer true
-bspc config gapless_monocle       true
 bspc config split_ratio           0.50
 
-# Make BSPWM desktops after everything else is set up
+bspc config auto_alternate        true
+
+bspc config focus_follows_pointer true
+
+## Set up BSPWM desktops (AFTER setting everything else!) ##############
+
 xsetroot -solid black
 xsetroot -cursor_name left_ptr
 bspc monitor -d 1 2 3 4 5 6 7 8 9 0
 
-# Configure X
+## Configure X server ##################################################
+
+## Keyboard settings
+
 setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
 xmodmap -e "keycode 135 = Super_R"
 [ -e ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
-xset -b 
-xset s 1800
-xset dpms 1800 1800 1800
-xrdb -merge ~/.Xresources
-[ -e ${HOME}/.config/redshift.conf ] && redshift
 
-# Make QT pick up on GTK themes and icons
+## Screen settings
+
+xset -b s 1800 dpms 1800 1800 1800
+xrdb -merge ~/.Xresources
+
+if [ -e ${HOME}/.config/redshift.conf ]
+then    
+    redshift_pid="$(pidof redshift)"
+    [ -n "$redshift_pid" ] && kill ${redshift_pid}
+    redshift &
+fi
+
+## Make QT pick up on GTK themes and icons 
+
 export DESKTOP_SESSION=gnome
+
+## Run BSPWM panel #####################################################
+
+bspwm-panel &
 
 # EOF

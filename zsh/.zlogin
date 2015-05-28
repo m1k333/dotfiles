@@ -7,7 +7,7 @@
 startx -- vt$XDG_VTNR &> /dev/null
 
 ## Start a linux console ###############################################
-[ $TERM == linux ] && \
+[ $TERM = linux ] && \
 echo '' # New line for prettiness
 
 ## EOF #################################################################

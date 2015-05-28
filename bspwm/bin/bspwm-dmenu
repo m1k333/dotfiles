@@ -3,9 +3,8 @@
 source ${HOME}/.bspwm/panelrc
 
 dmenu_run -i                           \
--p '>>>'                               \
 -h $PANEL_HEIGHT                       \
 -fn "\'${PANEL_FONT_FAMILY}\'"         \
 -nf "#${foreground3}" -nb "#${black}"  \
--sf "#${blue}"        -sb "#${black}"
+-sf "#${black}"        -sb "#${blue}"
 

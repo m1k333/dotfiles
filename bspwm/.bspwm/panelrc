@@ -20,8 +20,8 @@ blue='268bd2'
 magenta='d33682'
 violet='6c71c4'
 
-base0='002b36'
-base1='073642'
+dark0='002b36'
+dark1='073642'
 
 foreground0='586e75'
 foreground1='657b83'

@@ -1,19 +1,23 @@
+# Window manager
 bspwm
 sxhkd
 
-dmenu2
+# Panel
+ttf-dejavu
 lemonbar-xft-git
+dmenu2
 xtitle-git
+bc
 procps-ng
 psmisc
-bc
 
+# GUI theme
 gtk-theme-equinox
 faenza-icon-theme
 xcursor-openzone
-ttf-dejavu
 redshift-minimal
 
+# Xorg utils
 xorg-setxkbmap
 xorg-xmodmap
 xorg-xrdb
@@ -22,6 +26,8 @@ xorg-xset
 xorg-xinit
 xdotool
 
+# Applications
 rxvt-unicode
 urxvt-perls
 alsa-utils
+imagemagick

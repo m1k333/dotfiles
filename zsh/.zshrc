@@ -59,7 +59,7 @@ function zsh-vi-mode
     function zle-keymap-select
     {
         RPROMPT=''
-        [[ $KEYMAP = vicmd ]] && RPROMPT="(CMD)"
+        [ $KEYMAP = vicmd ] && RPROMPT="(CMD)"
         function { return $__prompt_status; }
         zle reset-prompt
     }

@@ -3,14 +3,18 @@
 ## ~/.zshrc ############################################################
 
 ## Autocompletion ######################################################
-autoload -Uz compinit && compinit
-compinit -d $HOME/.zcompdump
-zstyle ':completion:*' menu select
+
+autoload -Uz compinit && compinit -d $HOME/.zcompdump
+zmodload zsh/complist
+
+zstyle ':completion:*' menu select 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
 setopt completealiases correct extendedglob globdots nocaseglob
 
 ## Beep OFF; one of these should work ##################################
-if [[ "$TERM" == 'linux' ]]
+
+if [ $TERM = linux ]
 then
     setterm -blength 0
     set bell-style none
@@ -18,16 +22,19 @@ then
 fi
 
 ## Dirstack ############################################################
+
 DIRSTACKSIZE=10
 setopt autocd autopushd pushdminus pushdsilent pushdtohome
 
 ## History #############################################################
+
 HISTFILE=$HOME/.zhistory
 HISTSIZE=1000
 SAVEHIST=$HISTSIZE
 setopt histignoredups histignorespace histsavenodups sharehistory
 
 ## Interactive settings ################################################
+
 setopt interactivecomments multios notify
 
 ## Editor settings #####################################################
@@ -53,6 +60,7 @@ function zsh-vi-mode
     bindkey -a 'u'    undo
     bindkey -a '\e[A' history-beginning-search-backward
     bindkey -a '\e[B' history-beginning-search-forward
+    bindkey -M menuselect '^[[Z' reverse-menu-complete
 
     # Right prompt '(CMD)' in command mode; be sure to
     # reset 'RPROMPT' in precmd (see 'Prompt' section)
@@ -89,6 +97,7 @@ function zsh-emacs-mode
     bindkey -e '^[h'  backward-delete-word
     bindkey -e '\e[A' history-beginning-search-backward
     bindkey -e '\e[B' history-beginning-search-forward
+    bindkey -M menuselect '^[[Z' reverse-menu-complete
 }
 
 # Pick an editor mode
@@ -97,17 +106,20 @@ zsh-vi-mode
 ## Prompt ##############################################################
 
 # Prompt definition
-PROMPT="[%~]-%# "
+PROMPT="[%~]~(%?)~%# "
 
 # Prompt settings
-if [[ "$TERM" == 'linux' ]]
-then
+if [ $TERM = linux ]
     # Send escape char to get block cursor in linux console
-    function precmd { RPROMPT=''; echo -en "\e[?6c"; }
-else
+    then function precmd { RPROMPT=''; echo -en "\e[?6c"; }
     # Empty RPROMPT is needed for zle's vi mode indication
-    function precmd { RPROMPT=''; }
+    else function precmd { RPROMPT=''; }
 fi
+
+# Syntax highlighting plugin
+SYNTAXHLFILE="/usr/share/zsh/plugins/zsh-syntax-highlighting"
+SYNTAXHLFILE="${SYNTAXHLFILE}/zsh-syntax-highlighting.zsh"
+[ -f $SYNTAXHLFILE ] && source $SYNTAXHLFILE
 
 ## Aliases #############################################################
 

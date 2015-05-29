@@ -11,6 +11,18 @@ super + shift + Escape
 super + Escape 
     pkill --exact --signal SIGUSR1 sxhkd
 
+# Launcher
+super + p
+    source $\{HOME\}/.bspwm/panelrc && bspwm-dmenu
+
+# Banish mouse
+super + x
+    xdotool mousemove 25000 25000
+
+# Terminal
+super + Return
+    urxvt
+
 ## Desktop commands ####################################################
 
 # Focus or move a window to desktop X
@@ -21,29 +33,73 @@ super + {_,shift + }{1-9,0}
 super + {_,shift + }bracket{left,right}
     bspc {desktop -f,window focused -d} {prev,next}
 
-# Switch to last used {window,desktop}
-super + {_,shift + }Tab
-    bspc {window,desktop} -f last
+# Switch to last used desktop
+super + shift + Tab
+    bspc desktop -f last
 
-## Window commands #####################################################
+# Circulate the leaves of the focused desktop's binary tree
+super + shift + {comma,period}
+    bspc desktop -C {backward,forward}
+
+## Window manipulation commands ########################################
+
+# {close,kill} window
+super + {_,ctrl + alt + }w
+    bspc window -{c,k}
+
+# Switch to last used window
+super + Tab
+    bspc window -f last
+
+# Cycle through all windows
+super + {_,shift + }c
+    bspc window {next,prev} -f
+
+# Balance windows
+super + b
+    bspc desktop -B
+
+## Moving window commands ##############################################
+
+# Convention: super + {_,shift + }[h,j,k,l]
 
 # Focus or move window
 super + {_,shift + }{h,j,k,l}
     bspc window -{f,s} {left,down,up,right}
 
+# Swap window position with {largest,last used window}
+super + {m,s}
+    bspc window -s {biggest,last}
+
+# Move window to last preselection
+super + y
+    bspc window -w last.manual
+
+## Resizing window commands ############################################
+
+# Convention: super + alt + {_,shift + }[h,j,k,l]
+
 # Extend (or shrink) a window (for windows touching walls)
 super + alt + {h,j,k,l}
-    {bspc window -e left  -10 || bspc window -e right -10,\
-     bspc window -e down  +10 || bspc window -e up    +10,\
-     bspc window -e up    -10 || bspc window -e down  -10,\
-     bspc window -e right +10 || bspc window -e left  +10}
+    {                                                       \
+      bspc window -e left  -10 || bspc window -e right -10, \
+      bspc window -e down  +10 || bspc window -e up    +10, \
+      bspc window -e up    -10 || bspc window -e down  -10, \
+      bspc window -e right +10 || bspc window -e left  +10  \
+    }
 
 # Shrink (or expand) a window (for windows not touching walls)
 super + alt + shift + {h,j,k,l}
-    {bspc window -e right -10 || bspc window -e left  -10,\
-     bspc window -e up    +10 || bspc window -e down  +10,\
-     bspc window -e down  -10 || bspc window -e up    -10,\
-     bspc window -e left  +10 || bspc window -e right +10}
+    {                                                       \
+      bspc window -e right -10 || bspc window -e left  -10, \
+      bspc window -e up    +10 || bspc window -e down  +10, \
+      bspc window -e down  -10 || bspc window -e up    -10, \
+      bspc window -e left  +10 || bspc window -e right +10  \
+    }
+
+## Preselection commands ###############################################
+
+# Convention: super + ctrl + {[h,j,k,l],[1-9]}
 
 # Preselect part of a window
 super + ctrl + {h,j,k,l}
@@ -53,33 +109,37 @@ super + ctrl + {h,j,k,l}
 super + ctrl + {1-9}
     bspc window -r 0.{1-9}
 
-# Move window to last preselection
-super + y
-    bspc window -w last.manual
+## Layout commands #####################################################
 
-# Cancel preselections
-super + c
-    bspc desktop -c
+# Convention: super + shift + [a-z]
 
-# Swap window position with {largest,last used window}
-super + {m,t}
-    bspc window -s {biggest,last}
-
-# {float,fullscreen,lock,sticky,private} windows
-super + {space,x,s,p}
-    bspc window -t {floating,locked,sticky,private}
+# {float,fullscreen,pseudotile} windows
+super + {space,F,P}
+    bspc window -t {floating,fullscreen,pseudo_tiled}
 
 # Toggle monocle mode for focused window
-super + f
+super + M
     bspc desktop -l next
 
-# Balance windows
-super + equal
-    bspc desktop -B
+# Toggle panel
+super + B
+    source $\{HOME\}/.bspwm/panelrc;           \
+    if [ -f $\{PANEL_HIDDEN_FLAG\} ]; then     \
+        rm -f $\{PANEL_HIDDEN_FLAG\};          \
+        bspc config top_padding $PANEL_HEIGHT; \
+    else                                       \
+        touch $\{PANEL_HIDDEN_FLAG\};          \
+        bspc config top_padding 0;             \
+    fi;
 
-# Close window
-super + q
-    bspc window -c
+# {in,de}crease useless gaps
+super + {minus,plus}
+    bspc config -d focused window_gap \
+    $((`bspc config -d focused window_gap` {+,-} 1))
+
+# Reset window gaps
+super + equal
+    bspc config -d focused window_gap 1
 
 ## Mouse controls ######################################################
 
@@ -95,23 +155,18 @@ super + {!,@}button{1,2,3}
 super + button{1,2,3}
     bspc pointer -g {move,resize_side,resize_corner}
 
-# Banish mouse
-super + n
-    xdotool mousemove 25000 25000
-
 ## External commands ###################################################
 
-# dmenu
-super + r
-    bspwm-dmenu
+# Convention: {super + ctrl + [a-z],(XF86MEDIAKEYS),super + F[1-12]}
 
-# Applications
-super + {Return,e,w}
-    {urxvt,emacs,firefox}
+# Launch applications
+super + ctrl + {e,w}
+    {emacs,firefox}
 
-# Toggle panel
-super + b
-    bspwm-toggledecorations
+# Create an invisible tile
+super + ctrl + i
+    urxvt -tr -shading 100 -title '' -name 'bspwm-placeholder-tile' \
+    -e sh -c 'tput civis; sleep 1000000'
 
 # Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}
@@ -119,7 +174,7 @@ XF86Audio{RaiseVolume,LowerVolume,Mute}
 super + F{11,10,9}
     amixer set Master {5%+,5%-,toggle}
 
-# Media keys to control MPC
+# Control MPC
 XF86Audio{Play,Stop,Prev,Next}
     mpc {toggle,stop,prev,next}
 super + F{5,6,7,8}
@@ -127,6 +182,7 @@ super + F{5,6,7,8}
 
 # Screenshot
 {_,shift + }Print
-    import -window {$(xdotool getwindowfocus),root} ~/$(date +%F_%T).jpg
+    import -window {$(xdotool getwindowfocus),root} \
+    $\{HOME\}/$(date +%F_%T).jpg
 
 ## EOF #################################################################

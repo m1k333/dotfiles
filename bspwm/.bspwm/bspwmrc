@@ -2,15 +2,6 @@
 
 ## Borders #############################################################
 
-## Settings
-
-bspc config border_width       1
-bspc config window_gap         1
-bspc config borderless_monocle false
-bspc config gapless_monocle    false
-
-## Colours
-
 source ${HOME}/.bspwm/panelrc
 
 black="#$black"
@@ -47,12 +38,12 @@ bspc config active_sticky_border_color   "$magenta"
 bspc config active_private_border_color  "$magenta"
 
 bspc config normal_border_color          "$blue"
-bspc config normal_locked_border_color   "$grey"
-bspc config normal_sticky_border_color   "$green"
-bspc config normal_private_border_color  "$orange"
-
 bspc config presel_border_color          "$yellow"
 bspc config urgent_border_color          "$red"
+
+bspc config normal_locked_border_color   "$red"
+bspc config normal_sticky_border_color   "$green"
+bspc config normal_private_border_color  "$green"
 
 ## Behaviour ###########################################################
 
@@ -65,19 +56,33 @@ bspc config focus_follows_pointer true
 
 ## Set up BSPWM desktops (AFTER setting everything else!) ##############
 
-xsetroot -solid black
+# Wallpaper
+WPFILE="$(ls ${HOME}/.bspwm | grep wallpaper)"
+if [ -n $WPFILE ]
+    then feh --no-fehbg --bg-fill ${HOME}/.bspwm/${WPFILE}
+    else xsetroot -solid black
+fi
+
+# Cursor
 xsetroot -cursor_name left_ptr
+
+# Desktops
 bspc monitor -d 1 2 3 4 5 6 7 8 9 0
+
+## Window rules ########################################################
+
+# Rule for our hack-y placeholder invisible tile
+bspc rule -a bspwm-placeholder-tile border=off
 
 ## Configure X server ##################################################
 
-## Keyboard settings
+# Keyboard settings
 
 setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
 xmodmap -e "keycode 135 = Super_R"
 [ -e ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
 
-## Screen settings
+# Screen settings
 
 xset -b s 1800 dpms 1800 1800 1800
 xrdb -merge ~/.Xresources
@@ -89,7 +94,7 @@ then
     redshift &
 fi
 
-## Make QT pick up on GTK themes and icons 
+# Make QT pick up on GTK themes and icons 
 
 export DESKTOP_SESSION=gnome
 

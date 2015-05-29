@@ -11,11 +11,12 @@ bc
 procps-ng
 psmisc
 
-# GUI theme
+# Theme
 gtk-theme-equinox
 faenza-icon-theme
 xcursor-openzone
 redshift-minimal
+feh
 
 # Xorg utils
 xorg-setxkbmap
@@ -31,3 +32,6 @@ rxvt-unicode
 urxvt-perls
 alsa-utils
 imagemagick
+zsh
+zsh-completions
+zsh-syntax-highlighting

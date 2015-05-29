@@ -48,64 +48,11 @@ mkfifo "$PANEL_FIFO"
 
 ## Ready BSPWM for the bar #############################################
 
+# Remove the 'panel is hidden' flag
+[ -f ${PANEL_HIDDEN_FLAG } ] && rm -f ${PANEL_HIDDEN_FLAG}
+
+# Add padding ('unhide the panel')
 bspc config top_padding $PANEL_HEIGHT
-
-## Run programs into the FIFO ##########################################
-
-# Window manager info
-bspc control --subscribe > "$PANEL_FIFO" &
-xtitle -sf 'T%s' > "$PANEL_FIFO" &
-
-## Clock
-
-function clock
-{
-    while true
-    do
-        date +"S%F %T"
-        sleep 1
-    done
-}
-
-clock > "$PANEL_FIFO" &
-
-## Battery monitor
-
-BAT="/sys/class/power_supply/BAT0"
-
-function bat_percent
-{
-    while true
-    do
-        CHARGE_NOW=`cat $BAT/charge_now`
-        CHARGE_FULL=`cat $BAT/charge_full`
-        PERCENT=`echo "($CHARGE_NOW * 100)/$CHARGE_FULL" | bc`
-        BSTATUS=`cat $BAT/status`
-
-        if [ $BSTATUS == "Charging" ]
-        then
-            BSTATUS="+"
-        elif [ $BSTATUS == "Discharging" ]
-        then
-            BSTATUS="-"
-        else
-            BSTATUS=""
-        fi
-
-        if [ $PERCENT -gt 66 ]
-        then
-            BCOLOUR="%{F$green}"
-        elif [ $PERCENT -gt 33 ]
-        then
-            BCOLOUR="%{F$yellow}"
-        else
-            BCOLOUR="%{F$red}"
-        fi
-
-        echo "B$BCOLOUR$BSTATUS$PERCENT%{F-}"
-        sleep 5
-    done
-}
 
 ## Parse the FIFO output for lemonbar ##################################
 
@@ -237,15 +184,76 @@ function panel_bar
  
 ## Run the above parser, piped into lemonbar ###########################
 
-panel_bar |                                            \
-    lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT_FAMILY" \
-             -F "$foreground3" -B "$black" &
+# Give bspc and xtitle time to work
+#sleep 1
+
+# Run the damn thing
+panel_bar | lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT_FAMILY" \
+                     -F "$foreground3" -B "$black" &
+
+## Run programs into the FIFO ##########################################
+
+## Window manager info
+
+bspc control --subscribe > "$PANEL_FIFO" &
+xtitle -s -f 'T%s' > "$PANEL_FIFO" &
+
+## Clock
+
+function clock
+{
+    while true
+    do
+        date +"S%F %T"
+        sleep 1
+    done
+}
+
+clock > "$PANEL_FIFO" &
+
+## Battery monitor
+
+BAT="/sys/class/power_supply/BAT1"
+
+function bat_percent
+{
+    while true
+    do
+        CHARGE_NOW=`cat $BAT/charge_now`
+        CHARGE_FULL=`cat $BAT/charge_full`
+        PERCENT=`echo "($CHARGE_NOW * 100)/$CHARGE_FULL" | bc`
+        BSTATUS=`cat $BAT/status`
+
+        if [ $BSTATUS == "Charging" ]
+        then
+            BSTATUS="+"
+        elif [ $BSTATUS == "Discharging" ]
+        then
+            BSTATUS="-"
+        else
+            BSTATUS=""
+        fi
+
+        if [ $PERCENT -gt 66 ]
+        then
+            BCOLOUR="%{F$green}"
+        elif [ $PERCENT -gt 33 ]
+        then
+            BCOLOUR="%{F$yellow}"
+        else
+            BCOLOUR="%{F$red}"
+        fi
+
+        echo "B$BCOLOUR$BSTATUS$PERCENT%{F-}"
+        sleep 5
+    done
+}
 
 ## Machine-specific tweaks go here #####################################
 
 HOSTNAME=$(hostname)
 
-if [ $HOSTNAME == "Melkor" ]
+if [ $HOSTNAME == "melkor" ]
 then
     bat_percent > "$PANEL_FIFO" &
 fi

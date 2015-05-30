@@ -1,8 +1,10 @@
-#!/bin/bash
+#!/bin/dash
 
 ## Borders #############################################################
 
-source ${HOME}/.bspwm/panelrc
+. ${HOME}/.bspwm/panelrc
+
+bspc config window_gap $WINDOW_GAP
 
 black="#$black"
 white="#$white"
@@ -74,6 +76,9 @@ bspc monitor -d 1 2 3 4 5 6 7 8 9 0
 # Rule for our hack-y placeholder invisible tile
 bspc rule -a bspwm-placeholder-tile border=off
 
+# Qbittorrent
+#bspc rule -a Qbittorrent desktop=0
+
 ## Configure X server ##################################################
 
 # Keyboard settings
@@ -100,6 +105,8 @@ export DESKTOP_SESSION=gnome
 
 ## Run BSPWM panel #####################################################
 
-bspwm-panel &
+bspwm-panel > /dev/null 2>&1 &
+sleep 1 && \
+xdotool search --name 'bar' set_window --name 'bspwmpanelbar' &
 
 # EOF

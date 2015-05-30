@@ -1,6 +1,7 @@
 # Window manager
 bspwm
 sxhkd
+dash
 
 # Panel
 ttf-dejavu

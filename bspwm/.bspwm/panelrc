@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/dash
 
 ## Panel settings
 
@@ -6,6 +6,10 @@ PANEL_FIFO='/tmp/bspwm-panel-fifo'
 PANEL_FONT_FAMILY='xft:DejaVu Sans Mono:bold:size=11'
 PANEL_HEIGHT=18
 PANEL_HIDDEN_FLAG='/tmp/bspwm-panel-hidden'
+
+## BSPWM settings
+
+WINDOW_GAP=8
 
 ## Solarized colours
 
@@ -34,13 +38,13 @@ light1='fdf6e3'
 
 ## dmenu settings
 
-function bspwm-dmenu
+bspwm_dmenu()
 {
-    dmenu_run -i                           \
-    -h $PANEL_HEIGHT                       \
-    -fn "\'${PANEL_FONT_FAMILY}\'"         \
-    -nf "#${foreground3}" -nb "#${black}"  \
-    -sf "#${black}"        -sb "#${blue}"  \
+    dmenu_run -i                      \
+    -h ${PANEL_HEIGHT}                \
+    -fn "\'$PANEL_FONT_FAMILY\'"      \
+    -nf "#$foreground3" -nb "#$black" \
+    -sf "#$black"       -sb "#$blue"  \
     ;
 }
 

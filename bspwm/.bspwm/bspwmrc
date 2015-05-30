@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 
 ## Borders #############################################################
 
@@ -94,8 +94,10 @@ xrdb -merge ~/.Xresources
 
 if [ -e ${HOME}/.config/redshift.conf ]
 then    
-    redshift_pid="$(pidof redshift)"
-    [ -n "$redshift_pid" ] && kill ${redshift_pid}
+    while pgrep redshift > /dev/null 2>&1
+    do
+        pkill -x -9 redshift 2> /dev/null
+    done
     redshift &
 fi
 

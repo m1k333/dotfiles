@@ -15,7 +15,7 @@ fi
 setxkbmap -option terminate:ctrl_alt_bksp
 
 # Run WM
-SXHKD_SHELL='/bin/dash' sxhkd -c ${HOME}/.bspwm/sxhkdrc &
+SXHKD_SHELL='/bin/sh' sxhkd -c ${HOME}/.bspwm/sxhkdrc &
 exec bspwm -c ${HOME}/.bspwm/bspwmrc
 
 # EOF

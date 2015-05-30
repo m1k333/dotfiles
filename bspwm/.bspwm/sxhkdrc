@@ -5,12 +5,14 @@
 
 # Quit bspwm
 super + ctrl + alt + Escape
-    killall -q -9 bspwm-panel; \
+    while pgrep -x bspwm-panel > /dev/null 2>&1; do \
+        pkill -x -9 bspwm-panel 2> /dev/null;       \
+    done;                                           \
     bspc quit
 
 # Reload keybindings
 super + Escape 
-    pkill --exact --signal SIGUSR1 sxhkd
+    pkill -x --signal SIGUSR1 sxhkd
 
 # Launcher
 super + p

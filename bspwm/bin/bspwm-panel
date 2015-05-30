@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 
 ## Load config #########################################################
 
@@ -29,15 +29,17 @@ light1="#FF${light1}"
 
 proc_clean()
 {
-    PROC_COUNT=$(pgrep -cx $i 2> /dev/null)
-    [ -v $PROC_COUNT ] && PROC_COUNT=0
-    while [ $PROC_COUNT -gt 1 ]
+    while pgrep -x $i > /dev/null 2>&1
     do
-        pkill -ox -9 $i > /dev/null 2>&1
+        pkill -ox -9 $i 2> /dev/null
     done;
 }
 
-proc_clean 'bspwm-panel' 'xtitle' 'bspc control --subscribe'
+proc_clean xtitle 
+proc_clean bspc
+
+PANEL_PROC_COUNT=$(pgrep -cx bspwm-panel)
+[ $PANEL_PROC_COUNT -gt 1 ] && pkill -ox -9 bspwm-panel 2> /dev/null
 
 ## Make FIFO ###########################################################
 

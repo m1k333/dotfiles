@@ -10,7 +10,6 @@ dmenu2
 xtitle-git
 bc
 procps-ng
-psmisc
 
 # Theme
 gtk-theme-equinox

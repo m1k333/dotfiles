@@ -2,7 +2,7 @@
 ;;;; By Michael Richer
 ;;;; Since May 5th, 2014
 
-;;;; Initialize stuff
+;;;; Initialize stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Load path
 (add-to-list 'load-path "~/.emacs.d/lisp")
@@ -16,23 +16,23 @@
 ;;; Common lisp functionality
 (require 'cl)
 
-;;; Packages
+;;;; Packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Add the package repositories and intialize
+;;; Add the package repositories and intialize
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/")
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
-;; Define `package-required-list'
+;;; Define `package-required-list'
 (defvar package-required-list
   '(color-theme-solarized slime stumpwm-mode)
   "A list of packages that should be installed for this Emacs
 configuration.  If any are not installed, they should be able
 to be installed by running `package-populate'.")
 
-;; Test for missing packages
+;;; Test for missing packages
 (defun package-missing ()
   "Test for missing packages from the list of desired packages in
 the `package-required-list' variable."
@@ -42,7 +42,7 @@ the `package-required-list' variable."
       (unless (package-installed-p pkg)
         (throw 'done t)))))
 
-;; Populate the system with the desired packages
+;;; Populate the system with the desired packages
 (defun package-populate ()
   "If packages from `package-required-list' are missing, install them."
   (interactive)
@@ -53,34 +53,12 @@ the `package-required-list' variable."
         (package-install pkg)))
     (package-initialize)))
 
-;; Do the package installs if required
+;;; Do the package installs if required
 (package-populate)
 
-;;; StumpWM swank sever
+;;;; Appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Minor mode for sending StumpWM commands
-(require 'stumpwm-mode)
-(setq stumpwm-shell-program "~/.stumpwm.d/modules/util/stumpish/stumpish")
-
-;; Connect to StumpWM's swank server
-(defun stumpwm-connect ()
-  "Connect to StumpWM's swank server at 127.0.0.1:4005."
-  (interactive)
-  (stumpwm-mode 1)
-  (slime-connect "127.0.0.1" 4005))
-
-;; Disconnect from StumpWM's swank server
-(defun stumpwm-disconnect ()
-  "Close the current connection."
-  (interactive)
-  (stumpwm-mode -1)
-  (slime-disconnect))
-
-;;;; Set up Emacs
-
-;;; Appearance
-
-;; GUI settings
+;;; GUI settings
 (blink-cursor-mode -1)
 (show-paren-mode 1)
 (setq echo-keystrokes 0.1
@@ -95,6 +73,37 @@ the `package-required-list' variable."
   (setq color-theme-is-global t)
   (color-theme-initialize)
   (color-theme-solarized))
+
+;;; Mode line
+(setq display-time-24hr-format t
+      show-help-function nil)
+(column-number-mode)
+(display-battery-mode)
+(display-time-mode)
+(line-number-mode)
+(size-indication-mode)
+(tooltip-mode -1)
+
+;;;; Keybindings and mouse bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Keyboard
+(global-set-key (kbd "M-?") 'mark-paragraph)
+(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
+(global-set-key (kbd "M-h") 'backward-kill-word)
+(global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(global-set-key (kbd "C-x h") 'help-command)
+(global-set-key (kbd "C-x C-h") 'mark-whole-buffer)
+(global-set-key (kbd "C-(") 'kmacro-start-macro-or-insert-counter)
+(global-set-key (kbd "C-)") 'kmacro-end-or-call-macro)
+(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "M-RET") 'newline-and-indent)
+(global-set-key (kbd "M-SPC") 'cycle-spacing)
+
+;;; Mouse
+(setq mouse-yank-at-point t)
+
+;;;; Emacs settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Apropos
 (setq apropos-do-all t)
@@ -235,50 +244,10 @@ This command does the inverse of `fill-region'."
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 
-;;; Mode line
-(setq display-time-24hr-format t
-      show-help-function nil)
-(column-number-mode)
-(display-battery-mode)
-(display-time-mode)
-(line-number-mode)
-(size-indication-mode)
-(tooltip-mode -1)
-
 ;;; Saveplace
 (require 'saveplace)
 (setq-default save-place t)
 (setq save-place-file "~/.emacs.d/saveplace-file")
-
-;;; SLIME
-
-;; Quicklisp path
-(defvar quicklisp-path
-  (expand-file-name "~/quicklisp/")
-  "The path to my quicklisp installation.")
-
-;; Quicklisp SLIME helper
-(defvar quicklisp-slime-helper
-  (concat quicklisp-path "slime-helper.el")
-  "The location of the quicklisp-slime-helper elisp file.")
-
-;; Initialize SLIME and helpers
-(require 'slime)
-(when (file-exists-p quicklisp-slime-helper)
-  (load quicklisp-slime-helper))
-(setq inferior-lisp-program "/usr/bin/sbcl")
-
-;;; TRAMP
-
-;;; Edit a file as root using sudo (from `what the .emacs.d?!')
-(defun sudo-edit (&optional arg)
-  "Edit a file as root."
-  (interactive "p")
-  (if (or arg (not buffer-file-name))
-      (find-file
-        (concat "/sudo:root@localhost:" (read-file-name "File: ")))
-    (find-alternate-file
-      (concat "/sudo:root@localhost:" buffer-file-name))))
 
 ;;; Startup screen
 (setq inhibit-startup-screen t
@@ -330,23 +299,54 @@ vertical split."
       x-select-enable-primary t
       save-interprogram-paste-before-kill t)
 
-;;;; Keybindings and mouse bindings
+;;;; SLIME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Keyboard
-(global-set-key (kbd "M-?") 'mark-paragraph)
-(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
-(global-set-key (kbd "M-h") 'backward-kill-word)
-(global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
-(global-set-key (kbd "C-x C-r") 'recentf-open-files)
-(global-set-key (kbd "C-x h") 'help-command)
-(global-set-key (kbd "C-x C-h") 'mark-whole-buffer)
-(global-set-key (kbd "C-(") 'kmacro-start-macro-or-insert-counter)
-(global-set-key (kbd "C-)") 'kmacro-end-or-call-macro)
-(global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "M-RET") 'newline-and-indent)
-(global-set-key (kbd "M-SPC") 'cycle-spacing)
+;; Quicklisp path
+(defvar quicklisp-path
+  (expand-file-name "~/quicklisp/")
+  "The path to my quicklisp installation.")
 
-;;; Mouse
-(setq mouse-yank-at-point t)
+;; Quicklisp SLIME helper
+(defvar quicklisp-slime-helper
+  (concat quicklisp-path "slime-helper.el")
+  "The location of the quicklisp-slime-helper elisp file.")
 
-;;;; EOF
+;; Initialize SLIME and helpers
+(require 'slime)
+(when (file-exists-p quicklisp-slime-helper)
+  (load quicklisp-slime-helper))
+(setq inferior-lisp-program "/usr/bin/sbcl")
+
+;;;; StumpWM swank sever ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Minor mode for sending StumpWM commands
+(require 'stumpwm-mode)
+(setq stumpwm-shell-program "~/.stumpwm.d/modules/util/stumpish/stumpish")
+
+;;; Connect to StumpWM's swank server
+(defun stumpwm-connect ()
+  "Connect to StumpWM's swank server at 127.0.0.1:4005."
+  (interactive)
+  (stumpwm-mode 1)
+  (slime-connect "127.0.0.1" 4005))
+
+;;; Disconnect from StumpWM's swank server
+(defun stumpwm-disconnect ()
+  "Close the current connection."
+  (interactive)
+  (stumpwm-mode -1)
+  (slime-disconnect))
+
+;;;; TRAMP ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Edit a file as root using sudo (from `what the .emacs.d?!')
+(defun sudo-edit (&optional arg)
+  "Edit a file as root."
+  (interactive "p")
+  (if (or arg (not buffer-file-name))
+      (find-file
+        (concat "/sudo:root@localhost:" (read-file-name "File: ")))
+    (find-alternate-file
+      (concat "/sudo:root@localhost:" buffer-file-name))))
+
+;;;; EOF ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

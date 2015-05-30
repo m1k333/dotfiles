@@ -1,0 +1,113 @@
+#!/bin/sh
+
+# Global settings that are sourced by bspwm-panel, sxhkd, etc., should
+# go in this file.  ${HOME}/.bspwm/bspwmrc will source often-changed
+# settings from this file, but my set-and-forget settings are in
+# ${HOME}/.bspwm/bspwmrc.
+
+## Panel settings ######################################################
+
+PANEL_FIFO='/tmp/bspwm-panel-fifo'
+PANEL_FONT_FAMILY='xft:DejaVu Sans Mono:bold:size=11'
+PANEL_HEIGHT=18
+PANEL_HIDDEN_FLAG='/tmp/bspwm-panel-hidden'
+
+## BSPWM settings ######################################################
+
+BORDER_WIDTH=1
+WINDOW_GAP=8
+FOCUS_FOLLOWS_POINTER='true'
+
+## Desktop settings ####################################################
+
+# Put a wallpaper.(jpg|png) file in ${HOME}/.bspwm and it will be 
+# detected and used.  Requires feh.
+
+# Save a script for setting up monitors/desktops for your machines into
+# ${HOME}/.bspwm/desktops.  If absent, bspwm will set up 10 desktops.
+
+## Configure X server ##################################################
+
+configure_x()
+{
+    # Keyboard settings
+    setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
+    xmodmap -e "keycode 135 = Super_R"
+    [ -e ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
+
+    # X settings
+    xset -b s 1800 dpms 1800 1800 1800
+    xrdb -merge ~/.Xresources
+
+    # Redshift
+    if [ -e ${HOME}/.config/redshift.conf ]
+    then    
+        while pgrep redshift > /dev/null 2>&1
+        do
+            pkill -x -9 redshift 2> /dev/null
+        done
+        redshift &
+    fi
+
+    # Make QT pick up on GTK themes and icons 
+    export DESKTOP_SESSION=gnome;
+}
+
+## Colour scheme #######################################################
+
+black='000000'
+white='FFFFFF'
+
+red='dc322f'
+orange='cb4b16'
+yellow='b58900'
+green='859900'
+cyan='2aa198'
+blue='268bd2'
+magenta='d33682'
+violet='6c71c4'
+
+dark0='002b36'
+dark1='073642'
+
+foreground0='586e75'
+foreground1='657b83'
+foreground2='839496'
+foreground3='93a1a1'
+
+light0='eee8d5'
+light1='fdf6e3'
+
+## Border colours ######################################################
+
+import_border_colors()
+{
+    bspc config focused_border_color         "#$magenta";
+    bspc config focused_locked_border_color  "#$magenta";
+    bspc config focused_sticky_border_color  "#$magenta";
+    bspc config focused_private_border_color "#$magenta";
+    bspc config active_border_color          "#$magenta";
+    bspc config active_locked_border_color   "#$magenta";
+    bspc config active_sticky_border_color   "#$magenta";
+    bspc config active_private_border_color  "#$magenta";
+    bspc config normal_border_color          "#$blue";
+    bspc config presel_border_color          "#$yellow";
+    bspc config urgent_border_color          "#$red";
+    bspc config normal_locked_border_color   "#$red";
+    bspc config normal_sticky_border_color   "#$green";
+    bspc config normal_private_border_color  "#$green";
+}
+
+## dmenu settings ######################################################
+
+bspwm_dmenu()
+{
+    dmenu_run -i                      \
+    -h ${PANEL_HEIGHT}                \
+    -fn "\'$PANEL_FONT_FAMILY\'"      \
+    -nf "#$foreground3" -nb "#$black" \
+    -sf "#$black"       -sb "#$blue"  \
+    ;
+}
+
+## EOF #################################################################

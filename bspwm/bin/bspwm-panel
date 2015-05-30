@@ -2,7 +2,7 @@
 
 ## Load config #########################################################
 
-. ${HOME}/.bspwm/panelrc
+. ${HOME}/.bspwm/settings
 
 ## Convert colours to lemonbar format ##################################
 

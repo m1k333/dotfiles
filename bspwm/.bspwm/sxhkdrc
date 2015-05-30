@@ -16,7 +16,7 @@ super + Escape
 
 # Launcher
 super + p
-    . $\{HOME\}/.bspwm/panelrc && bspwm_dmenu
+    . $\{HOME\}/.bspwm/settings && bspwm_dmenu
 
 # Banish mouse
 super + x
@@ -126,7 +126,7 @@ super + M
 
 # Toggle panel
 super + B
-    . $\{HOME\}/.bspwm/panelrc;                            \
+    . $\{HOME\}/.bspwm/settings;                           \
     if [ -f $\{PANEL_HIDDEN_FLAG\} ]; then                 \
         rm -f $\{PANEL_HIDDEN_FLAG\};                      \
         xdotool search --name 'bspwmpanelbar' windowmap;   \
@@ -144,7 +144,7 @@ super + {minus,plus}
 
 # Reset window gaps
 super + equal
-    . $\{HOME\}/.bspwm/panelrc; \
+    . $\{HOME\}/.bspwm/settings; \
     bspc config -d focused window_gap $WINDOW_GAP
 
 ## Mouse controls ######################################################

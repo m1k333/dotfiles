@@ -1,114 +1,53 @@
 #!/bin/sh
 
-## Borders #############################################################
+## Read settings #######################################################
 
-. ${HOME}/.bspwm/panelrc
+. ${HOME}/.bspwm/settings
 
-bspc config window_gap $WINDOW_GAP
+## Appearance ##########################################################
 
-black="#$black"
-white="#$white"
+# Border widths and window gaps 
+bspc config border_width $BORDER_WIDTH
+bspc config window_gap   $WINDOW_GAP
 
-red="#$red"
-orange="#$orange"
-yellow="#$yellow"
-green="#$green"
-cyan="#$cyan"
-blue="#$blue"
-magenta="#$magenta"
-violet="#$violet"
-
-base0="#$base0"
-base1="#$base1"
-
-foreground0="#$foreground0"
-foreground1="#$foreground1"
-foreground2="#$foreground2"
-foreground3="#$foreground3"
-
-light0="#$light0"
-light1="#$light1"
-
-bspc config focused_border_color         "$magenta"
-bspc config focused_locked_border_color  "$magenta"
-bspc config focused_sticky_border_color  "$magenta"
-bspc config focused_private_border_color "$magenta"
-
-bspc config active_border_color          "$magenta"
-bspc config active_locked_border_color   "$magenta"
-bspc config active_sticky_border_color   "$magenta"
-bspc config active_private_border_color  "$magenta"
-
-bspc config normal_border_color          "$blue"
-bspc config presel_border_color          "$yellow"
-bspc config urgent_border_color          "$red"
-
-bspc config normal_locked_border_color   "$red"
-bspc config normal_sticky_border_color   "$green"
-bspc config normal_private_border_color  "$green"
+# Set border colours
+import_border_colors
 
 ## Behaviour ###########################################################
 
+# Preselection settings
 bspc config auto_cancel           true
 bspc config split_ratio           0.50
 
+# bspc commands change depending on bspwm's state
 bspc config auto_alternate        true
 
-bspc config focus_follows_pointer true
+# Mouse mode
+bspc config focus_follows_pointer $FOCUS_FOLLOWS_POINTER
 
 ## Set up BSPWM desktops (AFTER setting everything else!) ##############
 
 # Wallpaper
 WPFILE="$(ls ${HOME}/.bspwm | grep wallpaper)"
-if [ -n $WPFILE ]
-    then feh --no-fehbg --bg-fill ${HOME}/.bspwm/${WPFILE}
-    else xsetroot -solid black
-fi
+[ -n $WPFILE ] && feh --no-fehbg --bg-fill ${HOME}/.bspwm/${WPFILE}
 
 # Cursor
 xsetroot -cursor_name left_ptr
 
 # Desktops
+[ -f ${HOME}/.bspwm/desktops ] && . ${HOME}/.bspwm/desktops || \
 bspc monitor -d 1 2 3 4 5 6 7 8 9 0
 
-## Window rules ########################################################
+# Configure X server
+configure_x    
 
-# Rule for our hack-y placeholder invisible tile
-bspc rule -a bspwm-placeholder-tile border=off
+## BSPWM panel #########################################################
 
-# Qbittorrent
-#bspc rule -a Qbittorrent desktop=0
-
-## Configure X server ##################################################
-
-# Keyboard settings
-
-setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
-xmodmap -e "keycode 135 = Super_R"
-[ -e ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
-
-# Screen settings
-
-xset -b s 1800 dpms 1800 1800 1800
-xrdb -merge ~/.Xresources
-
-if [ -e ${HOME}/.config/redshift.conf ]
-then    
-    while pgrep redshift > /dev/null 2>&1
-    do
-        pkill -x -9 redshift 2> /dev/null
-    done
-    redshift &
-fi
-
-# Make QT pick up on GTK themes and icons 
-
-export DESKTOP_SESSION=gnome
-
-## Run BSPWM panel #####################################################
-
+# Run the script
 bspwm-panel > /dev/null 2>&1 &
+
+# Let panel load, then change its name
 sleep 1 && \
 xdotool search --name 'bar' set_window --name 'bspwmpanelbar' &
 
-# EOF
+## EOF #################################################################

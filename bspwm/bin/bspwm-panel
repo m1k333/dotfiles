@@ -1,8 +1,9 @@
 #!/bin/sh
 
-## Load config #########################################################
+## Load config and exit if panel is already running ####################
 
 . ${HOME}/.bspwm/settings
+[ -f $BSPWM_INITIALIZED_FLAG ] && exit 1
 
 ## Convert colours to lemonbar format ##################################
 

@@ -5,14 +5,12 @@
 
 # Quit bspwm
 super + ctrl + alt + Escape
-    while pgrep -x bspwm-panel > /dev/null 2>&1; do \
-        pkill -x -9 bspwm-panel 2> /dev/null;       \
-    done;                                           \
-    bspc quit
+    . $\{HOME\}/.bspwm/settings; \
+    bspwm_quit;
 
-# Reload keybindings
-super + Escape 
-    pkill -x --signal SIGUSR1 sxhkd
+# Reload {bspwm,sxhkd} settings
+super + {shift + ,_}Escape 
+    {$\{HOME\}/.bspwm/bspwmrc,pkill -x --signal SIGUSR1 sxhkd}
 
 # Launcher
 super + p
@@ -168,11 +166,6 @@ super + button{1,2,3}
 # Launch applications
 super + ctrl + {e,w}
     {emacs,firefox}
-
-# Create an invisible tile
-super + ctrl + i
-    urxvt -tr -shading 100 -title '' -name 'bspwm-placeholder-tile' \
-    -e dash -c 'tput civis; sleep 1000000'
 
 # Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}

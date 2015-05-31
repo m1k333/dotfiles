@@ -1,0 +1,41 @@
+#!/bin/sh
+
+arg=$1 # Pass the WM to set up as arg $1
+
+# Configure the script below depending on which WM was chosen
+case $arg in
+    bspwm)
+        BGDIR="${HOME}/.bspwm"
+        ;;
+    spectrwm) 
+        BGDIR="${HOME}/.spectrwm.d"
+        ;;
+esac
+
+# Keyboard settings
+setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
+xmodmap -e "keycode 135 = Super_R"
+[ -e ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
+
+# X settings
+xset -b s 1800 dpms 1800 1800 1800
+xrdb -merge ~/.Xresources
+
+# Root window
+feh --no-fehbg --bg-fill ${BGDIR}/wallpaper* 2> /dev/null || xsetroot -solid black
+xsetroot -cursor_name left_ptr
+
+# Redshift
+if [ -e ${HOME}/.config/redshift.conf ]
+then    
+    while pgrep redshift > /dev/null 2>&1
+    do
+        pkill -x -9 redshift 2> /dev/null
+    done
+    redshift &
+fi
+
+# Make QT pick up on GTK themes and icons 
+export DESKTOP_SESSION=gnome;
+
+# EOF

@@ -7,6 +7,8 @@
 PANEL_FIFO='/tmp/bspwm-panel-fifo'
 PANEL_FONT_FAMILY='xft:DejaVu Sans Mono:bold:size=11'
 PANEL_HEIGHT=18
+# BAT='/sys/class/power_supply/BAT1'
+BAT='AC' # BAT='NONE' to disable bat. monitor; BAT='AC' to show "A/C"
 
 ## BSPWM state flags ###################################################
 PANEL_HIDDEN_FLAG='/tmp/bspwm-panel-hidden'
@@ -25,7 +27,7 @@ GAPLESS_MONOCLE='true'
 
 ## Colour scheme #######################################################
 black='000000'
-white='FFFFFF'
+white='B0B0B0'
 red='dc322f'
 orange='cb4b16'
 yellow='b58900'
@@ -62,17 +64,17 @@ import_border_colors()
     bspc config active_sticky_border_color   "#$magenta";
     bspc config active_private_border_color  "#$magenta";
     bspc config normal_border_color          "#$blue";
-    bspc config presel_border_color          "#$yellow";
+    bspc config presel_border_color          "#$green";
     bspc config urgent_border_color          "#$red";
     bspc config normal_locked_border_color   "#$red";
-    bspc config normal_sticky_border_color   "#$green";
-    bspc config normal_private_border_color  "#$green";
+    bspc config normal_sticky_border_color   "#$yellow";
+    bspc config normal_private_border_color  "#$yellow";
 }
 
 ## Monitor settings ####################################################
 import_monitors()
 {   
-    bspc -d 1 2 3 4 5 6 7 8 9 0;
+    bspc monitor -d 1 2 3 4 5 6 7 8 9 0 ;
 }
 
 ## BSPWM quit script ###################################################

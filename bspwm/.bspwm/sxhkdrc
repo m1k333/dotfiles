@@ -83,19 +83,19 @@ super + y
 # Extend (or shrink) a window (for windows touching walls)
 super + alt + {h,j,k,l}
     {                                                       \
-      bspc window -e left  -10 || bspc window -e right -10, \
-      bspc window -e down  +10 || bspc window -e up    +10, \
-      bspc window -e up    -10 || bspc window -e down  -10, \
-      bspc window -e right +10 || bspc window -e left  +10  \
+      bspc window -e left  -40 || bspc window -e right -40, \
+      bspc window -e down  +40 || bspc window -e up    +40, \
+      bspc window -e up    -40 || bspc window -e down  -40, \
+      bspc window -e right +40 || bspc window -e left  +40  \
     }
 
 # Shrink (or expand) a window (for windows not touching walls)
 super + alt + shift + {h,j,k,l}
     {                                                       \
-      bspc window -e right -10 || bspc window -e left  -10, \
-      bspc window -e up    +10 || bspc window -e down  +10, \
-      bspc window -e down  -10 || bspc window -e up    -10, \
-      bspc window -e left  +10 || bspc window -e right +10  \
+      bspc window -e right -96 || bspc window -e left  -96, \
+      bspc window -e up    +96 || bspc window -e down  +96, \
+      bspc window -e down  -96 || bspc window -e up    -96, \
+      bspc window -e left  +96 || bspc window -e right +96  \
     }
 
 ## Preselection commands ###############################################
@@ -136,14 +136,17 @@ super + B
     fi;
 
 # {in,de}crease useless gaps
-super + {minus,plus}
+super + {equal,minus}
     bspc config -d focused window_gap \
     $(( $(bspc config -d focused window_gap) {+,-} 2 ))
 
-# Reset window gaps
-super + equal
-    . $\{HOME\}/.bspwm/settings; \
-    bspc config -d focused window_gap $WINDOW_GAP
+# {reset,remove} window gaps
+super + {plus,underscore}
+    {                                                    \
+        . $\{HOME\}/.bspwm/settings;                     \
+        bspc config -d focused window_gap $WINDOW_GAP; , \
+        bspc config -d focused window_gap 0;             \
+    }
 
 ## Mouse controls ######################################################
 
@@ -164,8 +167,8 @@ super + button{1,2,3}
 # Convention: {super + ctrl + [a-z],(XF86MEDIAKEYS),super + F[1-12]}
 
 # Launch applications
-super + ctrl + {e,w}
-    {emacs,firefox}
+super + ctrl + {e,m,w}
+    {emacs,urxvt -e ncmpcpp,firefox}
 
 # Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}

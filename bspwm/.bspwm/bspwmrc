@@ -23,13 +23,12 @@ bspc config auto_alternate true
 
 ## Set up X server and monitors, autorun external programs #############
 
+# Set up BSPWM desktops (AFTER configuring BSPWM itself)
+import_monitors
+
+# Only do stuff below here the first time
 if [ ! -f $BSPWM_INITIALIZED_FLAG ]
 then
-    # Set initialized flag
-    touch $BSPWM_INITIALIZED_FLAG
-
-    # Set up BSPWM desktops (AFTER setting everything else!)
-    import_monitors
 
     #Configure X server
     xautorun bspwm
@@ -40,6 +39,9 @@ then
     # Let panel load, then change its name
     sleep 1
     xdotool search --name 'bar' set_window --name 'bspwmpanelbar'
+
+    # Set initialized flag
+    touch $BSPWM_INITIALIZED_FLAG
 fi
 
 ## EOF #################################################################

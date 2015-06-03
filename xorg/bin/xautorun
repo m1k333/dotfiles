@@ -6,23 +6,22 @@ arg=$1 # Pass the WM to set up as arg $1
 case $arg in
     bspwm)
         BGDIR="${HOME}/.bspwm"
+        FALLBACKCOLOR='rgb:00/2B/36'
         ;;
     spectrwm) 
         BGDIR="${HOME}/.spectrwm.d"
+        FALLBACKCOLOR='rgb:10/10/10'
         ;;
 esac
 
-# Keyboard settings
-setxkbmap -option ctrl:nocaps -option terminate:ctrl_alt_bksp
-xmodmap -e "keycode 135 = Super_R"
-[ -e ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
-
 # X settings
+[ -e ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
+command -v xcape > /dev/null 2>&1 && xcape -e 'Control_L=Escape'
 xset -b s 1800 dpms 1800 1800 1800
 xrdb -merge ~/.Xresources
 
 # Root window
-feh --no-fehbg --bg-fill ${BGDIR}/wallpaper* 2> /dev/null || xsetroot -solid black
+feh --no-fehbg --bg-fill ${BGDIR}/wallpaper* 2> /dev/null || xsetroot -solid $FALLBACKCOLOR
 xsetroot -cursor_name left_ptr
 
 # Redshift

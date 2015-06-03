@@ -4,8 +4,8 @@
 "" Appearance ##########################################################
 
 " Visuals
-colorscheme solarized
 set background=dark noerrorbells novisualbell t_vb=
+colorscheme solarized
 
 " Information
 set laststatus=2 modeline shortmess=atI showcmd 
@@ -59,7 +59,7 @@ set expandtab shiftround smarttab
 set shiftwidth=4 tabstop=4
 
 " Tab-completion
-set wildmenu
+set wildmenu wildmode=list:longest,full
 
 "" Wrap ################################################################
 set backspace=indent,eol,start 

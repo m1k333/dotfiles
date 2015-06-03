@@ -32,7 +32,9 @@ URxvt*intensityStyles: false
 !#define S_base3  #fdf6e3
 
 !! Light
-#define S_base03 #fdf6e3
+! Grey background instead of weird solarized beige
+!#define S_base03 #fdf6e3
+#define S_base03 #f3f3f3
 #define S_base02 #eee8d5
 #define S_base01 #93a1a1
 #define S_base00 #839496

@@ -1,19 +1,15 @@
 #!/bin/zsh
 
-## ~/.zshrc ############################################################
+## Settings ############################################################
 
-## Autocompletion ######################################################
-
+## Autocompletion
 autoload -Uz compinit && compinit -d $HOME/.zcompdump
 zmodload zsh/complist
-
 zstyle ':completion:*' menu select 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-
 setopt completealiases correct extendedglob globdots nocaseglob
 
-## Beep OFF; one of these should work ##################################
-
+## Beep OFF; one of these should work
 if [ $TERM = linux ]
 then
     setterm -blength 0
@@ -21,20 +17,17 @@ then
     unsetopt beep
 fi
 
-## Dirstack ############################################################
-
+## Dirstack
 DIRSTACKSIZE=10
 setopt autocd autopushd pushdminus pushdsilent pushdtohome
 
-## History #############################################################
-
+## History
 HISTFILE=$HOME/.zhistory
 HISTSIZE=1000
 SAVEHIST=$HISTSIZE
 setopt histignoredups histignorespace histsavenodups sharehistory
 
-## Interactive settings ################################################
-
+## Interactive settings
 setopt interactivecomments multios notify
 
 ## Editor settings #####################################################
@@ -62,21 +55,16 @@ function zsh-vi-mode
     bindkey -a '\e[B' history-beginning-search-forward
     bindkey -M menuselect '^[[Z' reverse-menu-complete
 
-    # Right prompt '(CMD)' in command mode; be sure to
-    # reset 'RPROMPT' in precmd (see 'Prompt' section)
-    function zle-keymap-select
+    # Behaviour when initializing prompt or changing vi mode:
+    # Prompt reflects vi mode; vi mode change preserves return status
+    function zle-keymap-select zle-line-init
     {
-        RPROMPT=''
-        [ $KEYMAP = vicmd ] && RPROMPT="(CMD)"
-        function { return $__prompt_status; }
+        [ $KEYMAP = vicmd ] && VIMODE="@" || VIMODE='%#'
+        PROMPT="${PROMPT_STATIC}${VIMODE} "
+        typeset -g __prompt_status="$?"
+        function { return $__prompt_status }
         zle reset-prompt
     }
-
-    # Preserve return statuses
-    function zle-line-init
-    { typeset -g __prompt_status="$?"; }
-
-    # Load the functions defined above
     zle -N zle-keymap-select
     zle -N zle-line-init
 }
@@ -91,6 +79,7 @@ function zsh-emacs-mode
     zle -N zle-line-init blank
     zle -D zle-keymap-select 
     zle -D zle-line-init 
+    unfunction blank
 
     # Emacs-like keybindings; '-e': emacs 
     bindkey -e
@@ -98,6 +87,9 @@ function zsh-emacs-mode
     bindkey -e '\e[A' history-beginning-search-backward
     bindkey -e '\e[B' history-beginning-search-forward
     bindkey -M menuselect '^[[Z' reverse-menu-complete
+
+    # Prompt -- simpler than in vi mode
+    PROMPT="${PROMPT_STATIC}%# "
 }
 
 # Pick an editor mode
@@ -106,15 +98,10 @@ zsh-vi-mode
 ## Prompt ##############################################################
 
 # Prompt definition
-PROMPT="[%~]~(%?)~%# "
+PROMPT_STATIC='[%~]~(%?)~'
 
-# Prompt settings
-if [ $TERM = linux ]
-    # Send escape char to get block cursor in linux console
-    then function precmd { RPROMPT=''; echo -en "\e[?6c"; }
-    # Empty RPROMPT is needed for zle's vi mode indication
-    else function precmd { RPROMPT=''; }
-fi
+# Send escape char to get block cursor in linux console
+[ $TERM = linux ] && function precmd { echo -en "\e[?6c" }
 
 # Syntax highlighting plugin
 SYNTAXHLFILE="/usr/share/zsh/plugins/zsh-syntax-highlighting"
@@ -123,17 +110,50 @@ SYNTAXHLFILE="${SYNTAXHLFILE}/zsh-syntax-highlighting.zsh"
 
 ## Aliases #############################################################
 
-# Coreutils and friends
+# GNU system-specific options
+if ls --version | grep coreutils &> /dev/null
+then
+    LS_GNUOPTS='--color=auto --group-directories-first '
+    GREP_GNUOPTS='--color=auto '
+    eval $(dircolors -b)
+fi
+
+# coreutils and friends
+alias l="ls ${LS_GNUOPTS}-p"
+alias ls="ls ${LS_GNUOPTS}-p"
+alias la="ls ${LS_GNUOPTS}-ap"
+alias ll="ls ${LS_GNUOPTS}-ahlp"
 alias cp='cp -i'
-alias grep='grep --color=auto'
-alias la='ls -ap --color=auto --group-directories-first'
-alias ll='ls -ahlp --color=auto --group-directories-first'
-alias ls='ls -p --color=auto --group-directories-first'
 alias mv='mv -i'
 alias rm='rm -i'
-alias sushell="sudo -E ${SHELL}"
+alias mkdir='mkdir -pv'
+alias grep="grep ${GREP_GNUOPTS}"
+alias sush="sudo -E ${SHELL}"
+alias sued="sudoedit"
 
 # Applications
+alias pacman='pacman --color auto'
 alias tmat='tmux attach || tmux new-session'
+
+# nvim shit
+function vim-env
+{
+    if [ $1 = vim ]
+    then
+        function { export EDITOR=vim && unalias vim }        \
+        && echo "\nOk. 'vim' runs original vim.\n"           \
+        || echo "\nError. Try resetting manually.\n" 1>&2
+    elif [ $1 = nvim ]
+    then
+        function { export EDITOR=nvim && alias vim=nvim }    \
+        &&  echo "\nOk. 'vim' runs neovim.\n"                \
+        || function { echo "\nError. Resetting env:\n" 1>&2
+                      vim-env vim } 
+    else
+        echo "\nUsage: vim-env (vim|nvim).\n"
+        return 1
+    fi
+}
+vim-env nvim > /dev/null
 
 ## EOF #################################################################

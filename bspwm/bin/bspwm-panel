@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# vim: set nowrap:
+
 ## Load config and exit if panel is already running ####################
 
 . ${HOME}/.bspwm/settings
@@ -72,141 +74,139 @@ panel_bar()
     while read line < $PANEL_FIFO
     do
 
-    # Not indenting into the 'while' loop -- the depth is too damn high!
-    case $line in
+        case $line in
 
-        S*) # Clock output
-            date="${line#?}"
+            S*) # Clock output
+                date="%{F$black}%{B$green} ${line#?} %{B-}%{F-}"
+                ;;
+
+            B*) # Battery output (function sets its own colours)
+                percent="${line#?}"
+                ;;
+
+            T*) # Xtitle output
+                title="%{F$white}${line#?}%{F-}"
+                ;;
+
+            W*) # BSPWM internal state output (RIP 80 columns)
+
+                # Initialize output variables
+                wm_infos=''
+                cur_mon=-1
+
+                # Configure FIFO formatting
+                IFS=':'
+                set -- ${line#?}
+
+                # Parse each item
+                while [ $# -gt 0 ]
+                do
+
+                    # RIP 80 columns; never forget
+                    # Always use $1; use 'shift' to get to the other items
+                    item=$1
+                    name=${item#?}
+
+                    case $item in
+
+                        M*) # Active monitor
+                            cur_mon=$((cur_mon + 1))
+                            wm_infos=''
+                            if [ $num_mon -gt 1 ]
+                            then
+                                wm_infos="${wm_infos} %{F$black}%{B$blue} ${name} %{B-}%{F-}  "
+                            fi
+                            ;;
+
+                        m*) # Inactive monitor
+                            cur_mon=$((cur_mon + 1))
+                            wm_infos=''
+                            if [ $num_mon -gt 1 ]
+                            then
+                                wm_infos="${wm_infos} %{F$black}%{B$yellow} ${name} %{B-}%{F-}  "
+                            fi
+                            ;;
+
+                        O*) # Focused occupied desktop
+                            wm_infos="${wm_infos}%{F$black}%{B$blue} ${name} %{B-}%{F-}"
+                            ;;
+
+                        F*) # Focused free desktop
+                            wm_infos="${wm_infos}%{F$black}%{B$blue} ${name} %{B-}%{F-}"
+                            ;;
+
+                        U*) # Focused urgent desktop
+                            wm_infos="${wm_infos}%{F$black}%{B$red} ${name} %{B-}%{F-}"
+                            ;;
+
+                        o*) # Occupied desktop
+                            wm_infos="${wm_infos}%{F$magenta} ${name} %{F-}"
+                            ;;
+
+                        f*) # Free desktop
+                            wm_infos="${wm_infos} ${name} "
+                            ;;
+
+                        u*) # Urgent desktop
+                            wm_infos="${wm_infos}%{F$black}%{B$red} ${name} %{B-}%{F-}"
+                            ;;
+
+                        L*) # Layout
+                            wm_infos="${wm_infos}    %{F$black}%{B$green} ${name} %{B-}%{F-}"
+                            ;;
+
+                    esac
+
+                    # Go to the next item, and append the current formatted item
+                    # to the output for the desired monitor.
+
+                    shift
+
+                    case $cur_mon in
+                        0) wm_info_mon0="$wm_infos";;
+                        1) wm_info_mon1="$wm_infos";;
+                        2) wm_info_mon2="$wm_infos";;
+                        3) wm_info_mon3="$wm_infos";;
+                    esac
+
+                # Done with parsing BSPWM's internal state
+                done
             ;;
 
-        B*) # Battery output
-            percent=" ${line#?} "
-            ;;
+        # Done parsing everything
+        esac
 
-        T*) # Xtitle output
-            title="${line#?}"
-            ;;
+        # Set lemonbar formatting depending on number of monitors
+        if [ $num_mon -eq 1 ]
+        then
+            fmt="%{l}${wm_info_mon0} %{c} ${title} %{r} ${mpdtitle}${percent}${date}"
+        elif [ $num_mon -eq 2 ]
+        then
+            fmt="%{l}${wm_info_mon0} %{c} ${title} %{S+}%{l} ${wm_info_mon1} %{r} ${percent}${date}"
+        else
+            # For now, a copy/paste of the 2-monitor format; I haven't
+            # written formats for 3+ monitors yet.
+            fmt="%{l}${wm_info_mon0} %{c} ${title} %{S+}%{l} ${wm_info_mon1} %{r} ${percent}${date}"
+        fi
 
-        W*) # BSPWM internal state output (RIP 80 columns)
-            
-            # Initialize output variables
-            wm_infos=''
-            cur_mon=-1
-                
-            # Configure FIFO formatting
-            IFS=':'
-            set -- ${line#?}
+        # Send this mess to stdout for piping
+        printf "%s\n" "$fmt"
 
-            # Parse each item
-            while [ $# -gt 0 ]
-            do
-
-            # RIP 80 columns; never forget
-            # Always use $1; use 'shift' to get to the other items
-            item=$1
-            name=${item#?}
-
-            case $item in
-
-                M*) # Active monitor
-                    cur_mon=$((cur_mon + 1))
-                    wm_infos=''
-                    if [ $num_mon -gt 1 ]
-                    then
-                        wm_infos="${wm_infos} %{F$black}%{B$blue} ${name} %{B-}%{F-}  "
-                    fi
-                    ;;
-
-                m*) # Inactive monitor
-                    cur_mon=$((cur_mon + 1))
-                    wm_infos=''
-                    if [ $num_mon -gt 1 ]
-                    then
-                        wm_infos="${wm_infos} %{F$black}%{B$yellow} ${name} %{B-}%{F-}  "
-                    fi
-                    ;;
-
-                O*) # Focused occupied desktop
-                    wm_infos="${wm_infos}%{F$black}%{B$blue} ${name} %{B-}%{F-}"
-                    ;;
-
-                F*) # Focused free desktop
-                    wm_infos="${wm_infos}%{F$black}%{B$blue} ${name} %{B-}%{F-}"
-                    ;;
-
-                U*) # Focused urgent desktop
-                    wm_infos="${wm_infos}%{F$black}%{B$red} ${name} %{B-}%{F-}"
-                    ;;
-
-                o*) # Occupied desktop
-                    wm_infos="${wm_infos}%{F$orange} ${name} %{F-}"
-                    ;;
-
-                f*) # Free desktop
-                    wm_infos="${wm_infos} ${name} "
-                    ;;
-
-                u*) # Urgent desktop
-                    wm_infos="${wm_infos}%{F$black}%{B$red} ${name} %{B-}%{F-}"
-                    ;;
-
-                L*) # Layout
-                    wm_infos="${wm_infos}   %{F$black}%{B$green} ${name} %{B-}%{F-}"
-                    ;;
-
-            esac
-
-            # Go to the next item, and append the current formatted item
-            # to the output for the desired monitor.
-            
-            shift
-
-            case $cur_mon in
-                0) wm_info_mon0="$wm_infos";;
-                1) wm_info_mon1="$wm_infos";;
-                2) wm_info_mon2="$wm_infos";;
-                3) wm_info_mon3="$wm_infos";;
-            esac
-
-            # Done with parsing BSPWM's internal state
-            done
-            ;;
-
-    # Done parsing everything
-    esac
-
-    # Set lemonbar formatting depending on number of monitors
-    if [ $num_mon -eq 1 ]
-    then
-        fmt="%{l} ${wm_info_mon0} %{c} ${title} %{r} ${percent} ${date}  "
-    elif [ $num_mon -eq 2 ]
-    then
-        fmt="%{l} ${wm_info_mon0} %{c} ${title} %{S+}%{l} ${wm_info_mon1} %{r} ${percent} ${date}  "
-    else
-        # For now, a copy/paste of the 2-monitor format; I haven't
-        # written formats for 3+ monitors yet.
-        fmt="%{l} ${wm_info_mon0} %{c} ${title} %{S+}%{l} ${wm_info_mon1} %{r} ${percent} ${date}  "
-    fi
-    
-    # Send this mess to stdout for piping
-    printf "%s\n" "$fmt"
-
-    # Close that 'while' loop we didn't indent into
     done
 }
- 
+
 ## Run the above parser, piped into lemonbar ###########################
 
 # Run the damn thing
 panel_bar | lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT_FAMILY" \
-                     -F "$foreground3" -B "$black" &
+    -F "$foreground3" -B "$black" &
 
 ## Run programs into the FIFO ##########################################
 
 ## Window manager info
 
 bspc control --subscribe > $PANEL_FIFO &
-xtitle -s -f 'T%s' > $PANEL_FIFO &
+xtitle -s -f 'T%.150s' > $PANEL_FIFO &
 
 ## Clock
 
@@ -223,47 +223,51 @@ clock > $PANEL_FIFO &
 
 ## Battery monitor
 
-BAT='/sys/class/power_supply/BAT1'
-
 bat_percent()
 {
     while true
     do
-        CHARGE_NOW=$(cat ${BAT}/charge_now)
-        CHARGE_FULL=$(cat ${BAT}/charge_full)
-        PERCENT=$(echo "($CHARGE_NOW * 100) / $CHARGE_FULL" | bc)
-        BSTATUS=$(cat ${BAT}/status)
+        if [ -e $BAT ]
+        then
+            BSTATUS=$(cat ${BAT}/status)
+            CHARGE_NOW=$(cat ${BAT}/charge_now)
+            CHARGE_FULL=$(cat ${BAT}/charge_full)
+            PERCENT=$(echo "($CHARGE_NOW * 100) / $CHARGE_FULL" | bc)
 
-        if [ $BSTATUS = Charging ]
-        then
-            BSTATUS='+'
-        elif [ $BSTATUS = Discharging ]
-        then
-            BSTATUS='-'
+            if [ $BSTATUS = Charging ]
+            then
+                BSTATUS='+'
+            elif [ $BSTATUS = Discharging ]
+            then
+                BSTATUS='-'
+            else
+                BSTATUS=''
+            fi
+
+            if [ $PERCENT -gt 66 ]
+            then
+                BCOLOUR="%{B$green}"
+            elif [ $PERCENT -gt 33 ]
+            then
+                BCOLOUR="%{B$yellow}"
+            else
+                BCOLOUR="%{B$red}"
+            fi
         else
-            BSTATUS=''
+            BCOLOUR="%{B$yellow}"
+            BSTATUS='A/C'
+            PERCENT=''
         fi
 
-        if [ $PERCENT -gt 66 ]
-        then
-            BCOLOUR="%{F$green}"
-        elif [ $PERCENT -gt 33 ]
-        then
-            BCOLOUR="%{F$yellow}"
-        else
-            BCOLOUR="%{F$red}"
-        fi
-
-        echo "B${BCOLOUR}${BSTATUS}${PERCENT}%{F-}"
-        sleep 5
+        echo "B%{F$black}${BCOLOUR} ${BSTATUS}${PERCENT} %{B-}%{F-}    "
+        sleep 10
     done
 }
 
-## Machine-specific tweaks go here #####################################
-
-MACHINE=$(hostname)
-
-if [ $MACHINE = melkor ]
+if [ $BAT = AC ]
+then
+    echo "B%{F$black}%{B$yellow} A/C %{B-}%{F-}    " > $PANEL_FIFO
+elif [ ! $BAT = NONE ]
 then
     bat_percent > $PANEL_FIFO &
 fi

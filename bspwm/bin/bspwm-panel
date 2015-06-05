@@ -77,7 +77,7 @@ panel_bar()
         case $line in
 
             S*) # Clock output
-                date="%{F$black}%{B$green} ${line#?} %{B-}%{F-}"
+                date="%{F$black}%{B$blue} ${line#?} %{B-}%{F-}"
                 ;;
 
             B*) # Battery output (function sets its own colours)

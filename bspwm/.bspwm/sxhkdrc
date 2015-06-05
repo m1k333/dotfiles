@@ -1,12 +1,11 @@
-## bspwm sxhkd setup ###################################################
+## bspwm sxhkd setup ###########################################################
 ## MSR 2014
 
-## bspwm commands ######################################################
+## bspwm commands ##############################################################
 
 # Quit bspwm
 super + ctrl + alt + Escape
-    . $\{HOME\}/.bspwm/settings; \
-    bspwm_quit;
+    . $\{HOME\}/.bspwm/settings && bspwm_quit
 
 # Reload {bspwm,sxhkd} settings
 super + {shift + ,_}Escape 
@@ -14,7 +13,7 @@ super + {shift + ,_}Escape
 
 # Launcher
 super + p
-    . $\{HOME\}/.bspwm/settings && bspwm_dmenu
+    . $\{HOME\}/.bspwm/settings && bspwm_dmenu_run
 
 # Banish mouse
 super + x
@@ -24,7 +23,7 @@ super + x
 super + Return
     urxvt
 
-## Desktop commands ####################################################
+## Desktop commands ############################################################
 
 # Focus or move a window to desktop X
 super + {_,shift + }{1-9,0}
@@ -42,7 +41,7 @@ super + shift + Tab
 super + shift + {comma,period}
     bspc desktop -C {backward,forward}
 
-## Window manipulation commands ########################################
+## Window manipulation commands ################################################
 
 # {close,kill} window
 super + {_,ctrl + alt + }w
@@ -60,7 +59,7 @@ super + {_,shift + }c
 super + b
     bspc desktop -B
 
-## Moving window commands ##############################################
+## Moving window commands ######################################################
 
 # Convention: super + {_,shift + }[h,j,k,l]
 
@@ -76,7 +75,7 @@ super + {m,s}
 super + y
     bspc window -w last.manual
 
-## Resizing window commands ############################################
+## Resizing window commands ####################################################
 
 # Convention: super + alt + {_,shift + }[h,j,k,l]
 
@@ -98,7 +97,7 @@ super + alt + shift + {h,j,k,l}
       bspc window -e left  +96 || bspc window -e right +96  \
     }
 
-## Preselection commands ###############################################
+## Preselection commands #######################################################
 
 # Convention: super + ctrl + {[h,j,k,l],[1-9]}
 
@@ -110,7 +109,7 @@ super + ctrl + {h,j,k,l}
 super + ctrl + {1-9}
     bspc window -r 0.{1-9}
 
-## Layout commands #####################################################
+## Layout commands #############################################################
 
 # Convention: super + shift + [a-z]
 
@@ -124,31 +123,18 @@ super + M
 
 # Toggle panel
 super + B
-    . $\{HOME\}/.bspwm/settings;                           \
-    if [ -f $\{PANEL_HIDDEN_FLAG\} ]; then                 \
-        rm -f $\{PANEL_HIDDEN_FLAG\};                      \
-        xdotool search --name 'bspwmpanelbar' windowmap;   \
-        bspc config top_padding $PANEL_HEIGHT;             \
-    else                                                   \
-        touch $\{PANEL_HIDDEN_FLAG\};                      \
-        xdotool search --name 'bspwmpanelbar' windowunmap; \
-        bspc config top_padding 0;                         \
-    fi;
+    . $\{HOME\}/.bspwm/settings && bspwm_panel_toggle
 
 # {in,de}crease useless gaps
-super + {equal,minus}
+super + {plus,minus}
     bspc config -d focused window_gap \
     $(( $(bspc config -d focused window_gap) {+,-} 2 ))
 
-# {reset,remove} window gaps
-super + {plus,underscore}
-    {                                                    \
-        . $\{HOME\}/.bspwm/settings;                     \
-        bspc config -d focused window_gap $WINDOW_GAP; , \
-        bspc config -d focused window_gap 0;             \
-    }
+# Reset useless gaps
+super + equal
+    . $\{HOME\}/.bspwm/settings && bspc config -d focused window_gap $WINDOW_GAP
 
-## Mouse controls ######################################################
+## Mouse controls ##############################################################
 
 # Track and send pointer coordinates
 super + {!,@}button{1,2,3}
@@ -162,7 +148,7 @@ super + {!,@}button{1,2,3}
 super + button{1,2,3}
     bspc pointer -g {move,resize_side,resize_corner}
 
-## External commands ###################################################
+## External commands ###########################################################
 
 # Convention: {super + ctrl + [a-z],(XF86MEDIAKEYS),super + F[1-12]}
 
@@ -187,4 +173,4 @@ super + F{5,6,7,8}
     import -window {$(xdotool getwindowfocus),root} \
     $\{HOME\}/$(date +%F_%T).jpg
 
-## EOF #################################################################
+## EOF #########################################################################

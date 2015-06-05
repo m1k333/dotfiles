@@ -59,7 +59,7 @@ function zsh-vi-mode
     # Prompt reflects vi mode; vi mode change preserves return status
     function zle-keymap-select zle-line-init
     {
-        [ $KEYMAP = vicmd ] && VIMODE="@" || VIMODE='%#'
+        [ $KEYMAP = vicmd ] && VIMODE="%F{blue}@%f" || VIMODE='%F{magenta}%#%f'
         PROMPT="${PROMPT_STATIC}${VIMODE} "
         typeset -g __prompt_status="$?"
         function { return $__prompt_status }
@@ -89,7 +89,7 @@ function zsh-emacs-mode
     bindkey -M menuselect '^[[Z' reverse-menu-complete
 
     # Prompt -- simpler than in vi mode
-    PROMPT="${PROMPT_STATIC}%# "
+    PROMPT="${PROMPT_STATIC}%F{magenta}%#%f "
 }
 
 # Pick an editor mode
@@ -98,7 +98,8 @@ zsh-vi-mode
 ## Prompt ##############################################################
 
 # Prompt definition
-PROMPT_STATIC='[%~]~(%?)~'
+autoload -U colors && colors
+PROMPT_STATIC="[%~]~(%?)~"
 
 # Send escape char to get block cursor in linux console
 [ $TERM = linux ] && function precmd { echo -en "\e[?6c" }
@@ -108,7 +109,7 @@ SYNTAXHLFILE="/usr/share/zsh/plugins/zsh-syntax-highlighting"
 SYNTAXHLFILE="${SYNTAXHLFILE}/zsh-syntax-highlighting.zsh"
 [ -f $SYNTAXHLFILE ] && source $SYNTAXHLFILE
 
-## Aliases #############################################################
+## Aliases and functions ###############################################
 
 # GNU system-specific options
 if ls --version | grep coreutils &> /dev/null
@@ -135,7 +136,16 @@ alias sued="sudoedit"
 alias pacman='pacman --color auto'
 alias tmat='tmux attach || tmux new-session'
 
-# nvim shit
+# Make .bak files
+function bak
+{
+    for i in $@
+    do
+        cp ${i} ${i}.bak
+    done
+}
+
+# Neovim testing environment
 function vim-env
 {
     if [ $1 = vim ]

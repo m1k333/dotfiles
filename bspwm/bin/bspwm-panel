@@ -1,68 +1,57 @@
 #!/bin/sh
-
 # vim: set nowrap:
 
-## Load config and exit if panel is already running ####################
+### Setup 
 
+# Get set up
 . ${HOME}/.bspwm/settings
-[ -f $BSPWM_INITIALIZED_FLAG ] && exit 1
+mkdir /tmp/bspwm/ 2> /dev/null
 
-## Convert colours to lemonbar format ##################################
-
+# Convert colours to lemonbar format
+foreground="#FF${foreground}"
+background="#FF${background}"
 black="#FF${black}"
-white="#FF${white}"
-red="#FF${red}"
-orange="#FF${orange}"
-yellow="#FF${yellow}"
-green="#FF${green}"
-cyan="#FF${cyan}"
 blue="#FF${blue}"
+cyan="#FF${cyan}"
+green="#FF${green}"
 magenta="#FF${magenta}"
+orange="#FF${orange}"
+red="#FF${red}"
 violet="#FF${violet}"
-dark0="#FF${base0}"
-dark1="#FF${base1}"
-foreground0="#FF${foreground0}"
-foreground1="#FF${foreground1}"
-foreground2="#FF${foreground2}"
-foreground3="#FF${foreground3}"
-light0="#FF${light0}"
-light1="#FF${light1}"
+white="#FF${white}"
+yellow="#FF${yellow}"
 
-## Cleanup #############################################################
-
-proc_clean()
-{
-    while pgrep -x $i > /dev/null 2>&1
-    do
-        pkill -ox -9 $i 2> /dev/null
-    done;
-}
-
-proc_clean xtitle 
-proc_clean bspc
-
+# Clean up running panels
 PANEL_PROC_COUNT=$(pgrep -cx bspwm-panel)
-[ $PANEL_PROC_COUNT -gt 1 ] && pkill -ox -9 bspwm-panel 2> /dev/null
+while [ $PANEL_PROC_COUNT -gt 1 ]
+do
+    pkill -ox -9 bspwm-panel 2> /dev/null
+    PANEL_PROC_COUNT=$(pgrep -cx bspwm-panel)
+done
+unset PANEL_PROC_COUNT
 
-## Make FIFO ###########################################################
+# Clean up orphaned running programs from dead panels
+for ARG in xtitle bspc
+do
+    while pgrep -x $ARG > /dev/null 2>&1
+    do
+        pkill -ox -9 $ARG 2> /dev/null
+    done
+done
+unset ARG
 
-# Sending status updates to a FIFO
+# Trap signals; try to kill the script cleanly
 trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
 
-# Make FIFO
-## CHANGED [ -e ${PANEL_FIFO} ] && rm ${PANEL_FIFO} "$XXX" to ${XXX}
+# Create the FIFO
 [ -e $PANEL_FIFO ] && rm $PANEL_FIFO
 mkfifo $PANEL_FIFO
 
-## Ready BSPWM for the bar #############################################
-
-# Remove the 'panel is hidden' flag
+# Ready BSPWM for the bar
 [ -f $PANEL_HIDDEN_FLAG ] && rm -f $PANEL_HIDDEN_FLAG
-
-# Add padding ('unhide the panel')
 bspc config top_padding $PANEL_HEIGHT
 
-## Parse the FIFO output for lemonbar ##################################
+### Parse the FIFO output
 
 # Initialize variables for monitor-specific output
 num_mon=$(bspc query -M | wc -l)
@@ -73,42 +62,27 @@ panel_bar()
 {
     while read line < $PANEL_FIFO
     do
-
         case $line in
 
-            S*) # Clock output
+            C*) # Clock output
                 date="%{F$black}%{B$blue} ${line#?} %{B-}%{F-}"
                 ;;
-
             B*) # Battery output (function sets its own colours)
-                percent="${line#?}"
+                batinfo="${line#?}"
                 ;;
-
             T*) # Xtitle output
                 title="%{F$white}${line#?}%{F-}"
                 ;;
-
             W*) # BSPWM internal state output (RIP 80 columns)
-
-                # Initialize output variables
                 wm_infos=''
                 cur_mon=-1
-
-                # Configure FIFO formatting
                 IFS=':'
                 set -- ${line#?}
-
-                # Parse each item
                 while [ $# -gt 0 ]
                 do
-
-                    # RIP 80 columns; never forget
-                    # Always use $1; use 'shift' to get to the other items
                     item=$1
                     name=${item#?}
-
                     case $item in
-
                         M*) # Active monitor
                             cur_mon=$((cur_mon + 1))
                             wm_infos=''
@@ -117,7 +91,6 @@ panel_bar()
                                 wm_infos="${wm_infos} %{F$black}%{B$blue} ${name} %{B-}%{F-}  "
                             fi
                             ;;
-
                         m*) # Inactive monitor
                             cur_mon=$((cur_mon + 1))
                             wm_infos=''
@@ -126,154 +99,116 @@ panel_bar()
                                 wm_infos="${wm_infos} %{F$black}%{B$yellow} ${name} %{B-}%{F-}  "
                             fi
                             ;;
-
                         O*) # Focused occupied desktop
                             wm_infos="${wm_infos}%{F$black}%{B$blue} ${name} %{B-}%{F-}"
                             ;;
-
                         F*) # Focused free desktop
                             wm_infos="${wm_infos}%{F$black}%{B$blue} ${name} %{B-}%{F-}"
                             ;;
-
                         U*) # Focused urgent desktop
                             wm_infos="${wm_infos}%{F$black}%{B$red} ${name} %{B-}%{F-}"
                             ;;
-
                         o*) # Occupied desktop
                             wm_infos="${wm_infos}%{F$magenta} ${name} %{F-}"
                             ;;
-
                         f*) # Free desktop
                             wm_infos="${wm_infos} ${name} "
                             ;;
-
                         u*) # Urgent desktop
                             wm_infos="${wm_infos}%{F$black}%{B$red} ${name} %{B-}%{F-}"
                             ;;
-
                         L*) # Layout
                             wm_infos="${wm_infos}    %{F$black}%{B$green} ${name} %{B-}%{F-}"
                             ;;
-
                     esac
-
-                    # Go to the next item, and append the current formatted item
-                    # to the output for the desired monitor.
-
                     shift
-
                     case $cur_mon in
                         0) wm_info_mon0="$wm_infos";;
                         1) wm_info_mon1="$wm_infos";;
                         2) wm_info_mon2="$wm_infos";;
                         3) wm_info_mon3="$wm_infos";;
                     esac
-
-                # Done with parsing BSPWM's internal state
                 done
             ;;
-
-        # Done parsing everything
         esac
 
-        # Set lemonbar formatting depending on number of monitors
         if [ $num_mon -eq 1 ]
         then
-            fmt="%{l}${wm_info_mon0} %{c} ${title} %{r} ${mpdtitle}${percent}${date}"
+            fmt="%{l}${wm_info_mon0} %{c} ${title} %{r} ${batinfo}${date}"
         elif [ $num_mon -eq 2 ]
         then
-            fmt="%{l}${wm_info_mon0} %{c} ${title} %{S+}%{l} ${wm_info_mon1} %{r} ${percent}${date}"
+            fmt="%{l}${wm_info_mon0} %{c} ${title} %{S+}%{l} ${wm_info_mon1} %{r} ${batinfo}${date}"
         else
-            # For now, a copy/paste of the 2-monitor format; I haven't
-            # written formats for 3+ monitors yet.
-            fmt="%{l}${wm_info_mon0} %{c} ${title} %{S+}%{l} ${wm_info_mon1} %{r} ${percent}${date}"
+            fmt="YOU NEED TO WRITE A FORMAT FOR 3+ MONITORS"
         fi
 
-        # Send this mess to stdout for piping
         printf "%s\n" "$fmt"
-
     done
 }
 
-## Run the above parser, piped into lemonbar ###########################
+# Run the panel itself
+xdotool search --sync --name 'bar' set_window --name '_bspwmpanelbar_' &
+panel_bar | lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT" -F "$foreground" -B "$background" &
 
-# Run the damn thing
-panel_bar | lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT_FAMILY" \
-    -F "$foreground3" -B "$black" &
+### Run programs into the FIFO
 
-## Run programs into the FIFO ##########################################
-
-## Window manager info
-
+# Window manager info
 bspc control --subscribe > $PANEL_FIFO &
 xtitle -s -f 'T%.150s' > $PANEL_FIFO &
 
-## Clock
-
+# Clock
 clock()
 {
-    while true
+    while sleep 1
     do
-        date +'S%F %T'
-        sleep 1
-    done
+        date +'C%F %T'
+    done;
 }
-
 clock > $PANEL_FIFO &
 
-## Battery monitor
-
-bat_percent()
-{
-    while true
-    do
-        if [ -e $BAT ]
-        then
-            BSTATUS=$(cat ${BAT}/status)
-            CHARGE_NOW=$(cat ${BAT}/charge_now)
-            CHARGE_FULL=$(cat ${BAT}/charge_full)
-            PERCENT=$(echo "($CHARGE_NOW * 100) / $CHARGE_FULL" | bc)
-
-            if [ $BSTATUS = Charging ]
+# Battery Monitor
+if [ ! $BATTERY_LOC = NONE ] # If some battery location is specified
+then
+    bat_percent()
+    {
+        while true
+        do
+            if [ -e $BAT ]
             then
-                BSTATUS='+'
-            elif [ $BSTATUS = Discharging ]
-            then
-                BSTATUS='-'
+                BPERCENT=$(echo "($BATTERY_NOW * 100) / $BATTERY_FULL" | bc)
+                if [ $BATTERY_STATUS = Charging ]
+                then
+                    BSTATUS='+'
+                elif [ $BATTERY_STATUS = Discharging ]
+                then
+                    BSTATUS='-'
+                else
+                    BSTATUS=''
+                fi
+
+                if [ $BPERCENT -gt 66 ]
+                then
+                    BCOLOUR="%{B$green}"
+                elif [ $BPERCENT -gt 33 ]
+                then
+                    BCOLOUR="%{B$yellow}"
+                else
+                    BCOLOUR="%{B$red}"
+                fi
             else
-                BSTATUS=''
-            fi
-
-            if [ $PERCENT -gt 66 ]
-            then
-                BCOLOUR="%{B$green}"
-            elif [ $PERCENT -gt 33 ]
-            then
                 BCOLOUR="%{B$yellow}"
-            else
-                BCOLOUR="%{B$red}"
+                BSTATUS='A/C'
+                BPERCENT=''
             fi
-        else
-            BCOLOUR="%{B$yellow}"
-            BSTATUS='A/C'
-            PERCENT=''
-        fi
-
-        echo "B%{F$black}${BCOLOUR} ${BSTATUS}${PERCENT} %{B-}%{F-}    "
-        sleep 10
-    done
-}
-
-if [ $BAT = AC ]
-then
-    echo "B%{F$black}%{B$yellow} A/C %{B-}%{F-}    " > $PANEL_FIFO
-elif [ ! $BAT = NONE ]
-then
+            echo "B%{F$black}${BCOLOUR} ${BSTATUS}${BPERCENT} %{B-}%{F-}    "
+            sleep 10
+        done;
+    }
     bat_percent > $PANEL_FIFO &
 fi
 
-## Wait ################################################################
+### Keep waiting for new FIFO activity
 
 wait
 
-## EOF #################################################################
+### EOF

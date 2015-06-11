@@ -13,7 +13,7 @@ super + {shift + ,_}Escape
 
 # Launcher
 super + p
-    . $\{HOME\}/.bspwm/settings && bspwm_dmenu_run
+    . $\{HOME\}/.bspwm/settings && panel_dmenu
 
 # Banish mouse
 super + x
@@ -123,7 +123,7 @@ super + M
 
 # Toggle panel
 super + B
-    . $\{HOME\}/.bspwm/settings && bspwm_panel_toggle
+    . $\{HOME\}/.bspwm/settings && panel_toggle
 
 # {in,de}crease useless gaps
 super + {plus,minus}

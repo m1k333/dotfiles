@@ -27,7 +27,7 @@
 
 ;;; Define `package-required-list'
 (defvar package-required-list
-  '(color-theme-solarized slime stumpwm-mode)
+  '(color-theme-solarized evil slime)
   "A list of packages that should be installed for this Emacs
 configuration.  If any are not installed, they should be able
 to be installed by running `package-populate'.")

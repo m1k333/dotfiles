@@ -1,95 +1,84 @@
 #!/bin/sh
 
-## Panel variables #####################################################
-
-PANEL_FIFO='/tmp/bspwm-panel-fifo'
-PANEL_FONT_FAMILY='xft:DejaVu Sans Mono:bold:size=11'
+## Panel variables
+PANEL_FONT='xft:DejaVu Sans Mono:bold:size=11'
 PANEL_HEIGHT=18
-#BAT='/sys/class/power_supply/BAT1'
-BAT='NONE' # BAT='NONE' to disable bat. monitor; BAT='AC' to show "A/C"
+PANEL_FIFO='/tmp/bspwm/panel-fifo'
+PANEL_HIDDEN_FLAG='/tmp/bspwm/panel-hidden'
+BATTERY_LOC='NONE' # BATTERY='NONE' to disable bat. monitor
+BATTERY_NOW="${BATTERY_LOC}/current"                         
+BATTERY_FULL="${BATTERY_LOC}/full"                         
+BATTERY_STATUS="${BATTERY_LOC}/status"                         
 
-## BSPWM variables #####################################################
-
+## BSPWM variables
 BORDER_WIDTH=1
 WINDOW_GAP=1
-PANEL_HIDDEN_FLAG='/tmp/bspwm-panel-hidden'
-BSPWM_INITIALIZED_FLAG='/tmp/bspwm-initialized'
+BSPWM_INITIALIZED_FLAG='/tmp/bspwm/initialized'
 
-## Colour scheme #######################################################
-
+## Colour scheme
+foreground='93a1a1'
+background='000000'
 black='000000'
-white='B0B0B0'
-red='dc322f'
-orange='cb4b16'
-yellow='b58900'
-green='859900'
-cyan='2aa198'
 blue='268bd2'
+cyan='2aa198'
+green='859900'
 magenta='d33682'
+orange='cb4b16'
+red='dc322f'
 violet='6c71c4'
-foreground0='586e75'
-foreground1='657b83'
-foreground2='839496'
-foreground3='93a1a1'
-dark0='002b36'
-dark1='073642'
-light0='eee8d5'
-light1='fdf6e3'
+white='B0B0B0'
+yellow='b58900'
 
-## dmenu ###############################################################
+## Get set up
+mkdir /tmp/bspwm/ 2> /dev/null
 
-bspwm_dmenu_run()
+## Toggle panel visibility
+panel_toggle()
 {
-    # Top padding if needed
-    [ -e $PANEL_HIDDEN_FLAG ] && bspc config top_padding $PANEL_HEIGHT
-   
-    # Parse $PATH, check for changes to cache 
-    CACHE=${XDG_CACHE_HOME:-"${HOME}/.cache"}/dmenu_run
-    IFS=:
-    stest -dqr -n $CACHE $PATH && stest -flx $PATH | sort -u > $CACHE
-    
-    # Use dmenu (requires dmenu2) to pick an option from the cache
-    dmenu -i -h ${PANEL_HEIGHT} -fn "\'$PANEL_FONT_FAMILY\'"           \
-          -nf "#$foreground3" -nb "#$black" -sf "#$black" -sb "#$blue" \
-        < $CACHE
-   
-    # Remove top padding  if needed
-    [ -e $PANEL_HIDDEN_FLAG ] && bspc config top_padding 0;
-}
-
-## Show/hide panel #####################################################
-
-bspwm_panel_toggle()
-{
-    if [ -f ${PANEL_HIDDEN_FLAG} ]
+    if [ -e $PANEL_HIDDEN_FLAG ]
     then
-        rm -f ${PANEL_HIDDEN_FLAG}
-        xdotool search --name 'bspwmpanelbar' windowmap
+        xdotool search --name '_bspwmpanelbar_' windowmap
         bspc config top_padding $PANEL_HEIGHT
+        rm -f $PANEL_HIDDEN_FLAG
     else
-        touch ${PANEL_HIDDEN_FLAG}
-        xdotool search --name 'bspwmpanelbar' windowunmap
+        xdotool search --name '_bspwmpanelbar_' windowunmap
         bspc config top_padding 0
+        touch $PANEL_HIDDEN_FLAG
     fi;
 }
 
-## BSPWM quit script ###################################################
+## Modified version of suckless' dmenu_run (requires dmenu2)
+panel_dmenu()
+{
+    [ -e $PANEL_HIDDEN_FLAG ] && bspc config top_padding $PANEL_HEIGHT
 
+    CACHE="${XDG_CACHE_HOME:-"${HOME}/.cache"}/dmenu_run"
+    IFS=:
+    stest -dqr -n $CACHE $PATH && stest -flx $PATH | sort -u > $CACHE
+
+    DMENU_CMD="$(                                           \
+        dmenu -i -h ${PANEL_HEIGHT} -fn "\'${PANEL_FONT}\'" \
+        -nf "#$foreground" -nb "#$background"               \
+        -sf "#$black"      -sb "#$blue"                     \
+        < ${CACHE}                                          \
+    )"
+    eval $DMENU_CMD &
+
+    [ -e $PANEL_HIDDEN_FLAG ] && bspc config top_padding 0;
+}
+
+## Safely kill bspwm
 bspwm_quit()
 {
-    rm -f $PANEL_HIDDEN_FLAG
-    rm -f $BSPWM_INITIALIZED_FLAG
+    rm -Rf /tmp/bspwm/
 
-    while pgrep -x bspwm-panel > /dev/null 2>&1
+    for ARG in bspwm-panel xtitle bspc redshift
     do
-        pkill -x -9 bspwm-panel 2> /dev/null
+        while pgrep -x $ARG > /dev/null 2>&1
+        do
+            pkill -x -9 $ARG 2> /dev/null
+        done
     done
-
-    while pgrep -x redshift > /dev/null 2>&1
-    do
-        pkill -x -9 redshift 2> /dev/null
-    done
-
     bspc quit;
 }
 

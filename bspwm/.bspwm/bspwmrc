@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Read settings
+## Read settings
 . ${HOME}/.bspwm/settings
 
-# Appearance
+## Appearance
 bspc config border_width                 $BORDER_WIDTH
 bspc config window_gap                   $WINDOW_GAP
 bspc config borderless_monocle           true
@@ -23,52 +23,40 @@ bspc config normal_locked_border_color   "#$red"
 bspc config normal_sticky_border_color   "#$yellow"
 bspc config normal_private_border_color  "#$yellow"
 
-# Behaviour
+## Behaviour
 bspc config focus_follows_pointer true
 bspc config auto_cancel           true
 bspc config split_ratio           0.50
 bspc config auto_alternate        true
 
-# Set up BSPWM desktops (AFTER configuring BSPWM itself)
+## Set up BSPWM desktops (AFTER configuring BSPWM itself)
 bspc monitor -d 1 2 3 4 5 6 7 8 9 0
 
-# Only do stuff below here the first time
+# X settings
+[ -e ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
+xset -b s 1800 dpms 1800 1800 1800
+xrdb -load ~/.Xresources
+
+# Root window
+feh --no-fehbg --bg-fill ${HOME}/.bspwm/wallpaper* 2> /dev/null \
+    || xsetroot -solid rgb:00/2B/36
+xsetroot -cursor_name left_ptr
+
+# Redshift
+    while pgrep redshift > /dev/null 2>&1
+    do
+        pkill -x -9 redshift 2> /dev/null
+    done
+    redshift &
+
+# Make QT pick up on GTK themes and icons
+export DESKTOP_SESSION=gnome
+
+# Run the panel (only once (EVER))
 if [ ! -e $BSPWM_INITIALIZED_FLAG ]
 then
-
-    # X settings
-    [ -e ${HOME}/.xmodmap ] && xmodmap ${HOME}/.xmodmap
-    command -v xcape > /dev/null 2>&1 && xcape -e 'Control_L=Escape'
-    xset -b dpms 1800 1800 1800
-    xrdb -merge ~/.Xresources
-
-    # Root window
-    feh --no-fehbg --bg-fill ${HOME}/.bspwm/wallpaper* 2> /dev/null \
-        || xsetroot -solid rgb:00/2B/36
-    xsetroot -cursor_name left_ptr
-
-    # Redshift
-    if [ -e ${HOME}/.config/redshift.conf ]
-    then
-        while pgrep redshift > /dev/null 2>&1
-        do
-            pkill -x -9 redshift 2> /dev/null
-        done
-        redshift &
-    fi
-
-    # Make QT pick up on GTK themes and icons
-    export DESKTOP_SESSION=gnome
-
-    # Run panel script
     bspwm-panel > /dev/null 2>&1 &
-
-    # Let panel load, then change its name
-    sleep 1
-    xdotool search --name 'bar' set_window --name 'bspwmpanelbar'
-
-    # Set initialized flag
     touch $BSPWM_INITIALIZED_FLAG
 fi
 
-## EOF #################################################################
+## EOF

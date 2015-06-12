@@ -27,7 +27,7 @@
 
 ;;; Define `package-required-list'
 (defvar package-required-list
-  '(color-theme-solarized evil slime)
+  '(slime)
   "A list of packages that should be installed for this Emacs
 configuration.  If any are not installed, they should be able
 to be installed by running `package-populate'.")
@@ -59,7 +59,6 @@ the `package-required-list' variable."
 ;;;; Appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; GUI settings
-(blink-cursor-mode -1)
 (show-paren-mode 1)
 (setq echo-keystrokes 0.1
       font-lock-maximum-decoration t
@@ -68,18 +67,12 @@ the `package-required-list' variable."
 (menu-bar-mode -1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(when (window-system)
-  (require 'color-theme)
-  (setq color-theme-is-global t)
-  (color-theme-initialize)
-  (color-theme-solarized))
+(when (window-system) (load-theme 'solarized t))
 
 ;;; Mode line
 (setq display-time-24hr-format t
       show-help-function nil)
 (column-number-mode)
-(display-battery-mode)
-(display-time-mode)
 (line-number-mode)
 (size-indication-mode)
 (tooltip-mode -1)
@@ -176,29 +169,6 @@ the `package-required-list' variable."
 (require 'calendar)
 (calendar-set-date-style 'iso)
 
-;; Date function; returns the date in specified format
-(defvar time-string-standard "%F %T" "The preferred stfrtime format.")
-(defun date (&optional format)
-  "Return the date in specified stfrtime format."
-  (if format
-    (progn
-      (if (stringp format)
-          (if (= 0 (length format))
-              (format-time-string time-string-standard)
-              (format-time-string format))
-          (error "Argument passed must be a string")))
-    (format-time-string time-string-standard)))
-
-;; Insert the date interactively
-(defun insert-date (&optional format)
-  (interactive "MStfrtime format [RET for default]: ")
-  (insert (date format)))
-
-;; Insert the date quickly
-(defun insert-standard-date ()
-  (interactive)
-  (insert (date)))
-
 ;;; Case sensitivity
 (setq completion-ignore-case t
       read-file-name-completion-ignore-case t
@@ -260,10 +230,6 @@ This command does the inverse of `fill-region'."
 (prefer-coding-system 'utf-8)
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-;;; Username
-(setq user-full-name "Michael Richer"
-      user-mail-address "msricher1993@gmail.com")
-
 ;;; Window/frame management
 
 ;;; Toggle a 2-window split between horizontal and vertical split
@@ -316,26 +282,6 @@ vertical split."
 (when (file-exists-p quicklisp-slime-helper)
   (load quicklisp-slime-helper))
 (setq inferior-lisp-program "/usr/bin/sbcl")
-
-;;;; StumpWM swank sever ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Minor mode for sending StumpWM commands
-(require 'stumpwm-mode)
-(setq stumpwm-shell-program "~/.stumpwm.d/modules/util/stumpish/stumpish")
-
-;;; Connect to StumpWM's swank server
-(defun stumpwm-connect ()
-  "Connect to StumpWM's swank server at 127.0.0.1:4005."
-  (interactive)
-  (stumpwm-mode 1)
-  (slime-connect "127.0.0.1" 4005))
-
-;;; Disconnect from StumpWM's swank server
-(defun stumpwm-disconnect ()
-  "Close the current connection."
-  (interactive)
-  (stumpwm-mode -1)
-  (slime-disconnect))
 
 ;;;; TRAMP ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -111,7 +111,7 @@ zsh-vi-mode
 ## Aliases and functions #######################################################
 
 # GNU system-specific options
-if ls --version | grep coreutils &> /dev/null
+if ls --version &> /dev/null | grep coreutils &> /dev/null
 then
     LS_GNUOPTS='--color=auto --group-directories-first '
     GREP_GNUOPTS='--color=auto '

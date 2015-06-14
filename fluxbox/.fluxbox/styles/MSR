@@ -1,85 +1,97 @@
-toolbar:                             raised solid
-toolbar.color:                       #222222
-toolbar.height:                      22
-toolbar.justify:                     Center
-toolbar.windowLabel:                 parentrelative
+#####################################################
+# Underground Systems (Negative) Fluxbox style v0.2 #
+# Author: Narada                      Date: 05.2009 #
+#####################################################
 
-toolbar.button:                      flat solid
-toolbar.button.color:                #222222
-toolbar.button.picColor:             #888888
-toolbar.button.pressed:              sunken flat
-toolbar.button.pressed.color:        #333333
+#######################
+# Begin Configuration #
+#######################
 
-toolbar.clock:                       flat solid
-toolbar.clock.color:                 #222222
-toolbar.clock.textColor:             #aaaaaa
+*.font:                                 Gohufont
+borderColor:                            black
+bevelWidth:                             1
+borderWidth:                            1
+handleWidth:                            5
 
-toolbar.iconbar.empty:               flat solid
-toolbar.iconbar.empty.color:         #222222
+menu.borderColor:                       #000000
+menu.borderWidth:                       1
+menu.bullet:                            triangle
+menu.bullet.position:                   right
+menu.frame:                             flat solid
+menu.frame.color:                       #DDDDDD
+menu.frame.textColor:                   #000000
+menu.frame.disableColor:                #1464F4
+menu.frame.justify:                     left
+menu.height:                            25
+menu.hilite.color:                      #000000
+menu.hilite.textColor:                  #FFFFFF
+menu.title.color:                       #000000
+menu.title.justify:                     center
+menu.title.textColor:                   #FFFFFF
 
-toolbar.iconbar.focused:             flat solid
-toolbar.iconbar.focused.color:       #222222
-toolbar.iconbar.focused.textColor:   #cccccc
+toolbar.borderWidth:                    1
+toolbar.borderColor:                    #000000
+toolbar.button:                         flat solid
+toolbar.button.borderColor:             #000000
+toolbar.button.borderWidth:             1
+toolbar.button.color:                   #DDDDDD
+toolbar.button.picColor:                #000000
+toolbar.button.pressed:                 flat solid
+toolbar.button.pressed.color:           #1464F4
+toolbar.clock.borderWidth:              1
+toolbar.clock.borderColor:              #000000
+toolbar.clock.color:                    #DDDDDD
+toolbar.clock.textColor:                #000000
+toolbar.height:                         17
+toolbar.iconbar.borderColor:            #000000
+toolbar.iconbar.borderWidth:            1
+toolbar.iconbar.empty:                  flat solid
+toolbar.iconbar.empty.color:            #DDDDDD
+toolbar.iconbar.focused:                flat solid
+toolbar.iconbar.focused.color:          #000000
+toolbar.iconbar.focused.textColor:      #FFFFFF
+toolbar.iconbar.unfocused:              flat solid
+toolbar.iconbar.unfocused.color:        #DDDDDD
+toolbar.iconbar.unfocused.textColor:    #000000
+toolbar.justify:                        center
+toolbar.systray:                        flat solid
+toolbar.systray.color:                  #DDDDDD
+toolbar.workspace:                      flat solid
+toolbar.workspace.borderWidth:          1
+toolbar.workspace.borderColor:          #000000
+toolbar.workspace.color:                #DDDDDD
+toolbar.workspace.textColor:            #000000
+toolbar.label.color:                    #DDDDDD
+toolbar.label.textColor:                #000000
 
-toolbar.iconbar.unfocused:           flat solid
-toolbar.iconbar.unfocused.color:     #222222
-toolbar.iconbar.unfocused.textColor: #888888
+window.borderWidth:                     1
+window.borderColor:                     #000000
+window.button.focus.color:              #DDDDDD
+window.button.focus.picColor:           #000000
+window.button.unfocus.color:            #DDDDDD
+window.button.unfocus.picColor:         #000000
+window.button.pressed.color:            #1464F4
+window.grip.focus.color:                #DDDDDD
+window.grip.unfocus.color:              #000000
+window.handleWidth:                     2
+window.handle.focus:                    flat solid
+window.handle.focus.color:              #000000
+window.handle.unfocus.color:            #DDDDDD
+window.justify:                         center
+window.label.focus:                     flat solid
+window.label.focus.color:               #000000
+window.label.focus.textColor:           #FFFFFF
+window.label.unfocus:                   flat solid
+window.label.unfocus.color:             #DDDDDD
+window.label.unfocus.textColor:         #000000
+window.title.height:                    17
+window.title.focus:                     flat solid
+window.title.focus.color:               #DDDDDD
+window.title.unfocus:                   flat solid
+window.title.unfocus.color:             #DDDDDD
 
-toolbar.label:                       parentrelative
-toolbar.label.textColor:             #cccccc
-
-window.button.focus:                 parentrelative
-window.button.focus.picColor:        #cccccc
-window.button.unfocus:               parentrelative
-window.button.unfocus.picColor:      #888888
-window.button.pressed:               sunken flat
-window.button.pressed.color:         #333333
-
-menu.bullet:                         triangle
-menu.bullet.position:                right
-
-menu.frame:                          flat solid
-menu.frame.color:                    #cccccc
-menu.frame.textColor:                #111111
-menu.frame.justify:                  left
-
-menu.hilite:                         flat solid
-menu.hilite.textColor:               #cccccc
-menu.hilite.color:                   #222222
-
-menu.title:                          raised solid
-menu.title.color:                    #222222
-menu.title.textColor:                #cccccc
-menu.title.justify:                  center
-
-window.justify:                      center
-
-window.grip.focus:                   raised solid
-window.grip.focus.color:             #222222
-window.grip.unfocus:                 raised solid
-window.grip.unfocus.color:           #333333
-
-window.handle.focus:                 raised solid
-window.handle.focus.color:           #555555
-window.handle.unfocus:               raised solid
-window.handle.unfocus.color:         #333333
-
-window.label.focus:                  parentrelative
-window.label.focus.textColor:        #cccccc
-window.label.unfocus:                parentrelative
-window.label.unfocus.textColor:      #777777
-
-window.title.focus:                  raised solid
-window.title.focus.color:            #222222
-window.title.height:                 20
-window.title.unfocus:                raised solid
-window.title.unfocus.color:          #333333
-
-bevelWidth:                          3
-borderColor:                         #000000
-handleWidth:                         4
-*font:                               DeJavu Sans-10
-menu.borderWidth:                    1
-toolbar.bevelWidth:                  1
-toolbar.borderWidth:                 1
-window.borderWidth:                  1
+slit:                                   flat solid
+slit.bevelWidth:                        0
+slit.borderWidth:                       1
+slit.borderColor:                       #000000
+slit.color:                             #DDDDDD

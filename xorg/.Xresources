@@ -84,7 +84,7 @@ URxvt*keysym.C-A-v: perl:clipboard:paste_escaped
 URxvt*cursorBlinks: true
 
 !! Font
-URxvt*font:     xft:DejaVu Sans Mono:bold:size=10
+URxvt*font:     xft:Gohufont:size=11
 URxvt*boldFont:
 
 !! History

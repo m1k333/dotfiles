@@ -18,7 +18,19 @@ fi
 setxkbmap -option terminate:ctrl_alt_bksp
 
 ## Run a window manager ################################################
-SXHKD_SHELL='/bin/sh' sxhkd -c ${HOME}/.bspwm/sxhkdrc &
-exec bspwm -c ${HOME}/.bspwm/bspwmrc
+
+    ##################
+        WM=bspwm
+    ##################
+
+case $WM in
+    bspwm)
+        SXHKD_SHELL='/bin/sh' sxhkd -c ${HOME}/.bspwm/sxhkdrc &
+        exec bspwm -c ${HOME}/.bspwm/bspwmrc
+        ;;
+    fluxbox)
+        exec startfluxbox
+        ;;
+esac
 
 ## EOF #################################################################

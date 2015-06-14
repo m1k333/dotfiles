@@ -7,12 +7,6 @@
 ;;; Load path
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
-;;; Determine operating system
-(defun linuxp () "True if running GNU/Linux."
-       (if (or (eq system-type 'gnu/linux) (eq system-type 'linux)) t nil))
-(defun windowsp () "True if running Windows."
-       (if (or (eq system-type 'windows-nt) (eq system-type 'cygwin)) t nil))
-
 ;;; Common lisp functionality
 (require 'cl)
 
@@ -27,7 +21,7 @@
 
 ;;; Define `package-required-list'
 (defvar package-required-list
-  '(slime)
+  '(auctex magit solarized-theme slime undo-tree)
   "A list of packages that should be installed for this Emacs
 configuration.  If any are not installed, they should be able
 to be installed by running `package-populate'.")
@@ -67,7 +61,7 @@ the `package-required-list' variable."
 (menu-bar-mode -1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(when (window-system) (load-theme 'solarized t))
+(when (window-system) (load-theme 'solarized-light t))
 
 ;;; Mode line
 (setq display-time-24hr-format t
@@ -131,7 +125,7 @@ the `package-required-list' variable."
       recentf-save-file "~/.emacs.d/recentf-file")
 (recentf-mode 1)
 
-;;; Delete current buffer file
+;; Delete current buffer file
 (defun delete-current-buffer-file ()
   "Removes file connected to current buffer and kills buffer."
   (interactive)
@@ -145,7 +139,7 @@ the `package-required-list' variable."
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
-;;; Rename current buffer file
+;; Rename current buffer file
 (defun rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
   (interactive)
@@ -201,6 +195,9 @@ This command does the inverse of `fill-region'."
   (let ((fill-column most-positive-fixnum))
     (fill-region start end)))
 
+;;; Git
+(setq magit-last-seen-setup-instructions "1.4.0")
+
 ;;; LISP interaction stuff
 
 ;; Eval and replace last sexp function
@@ -232,7 +229,7 @@ This command does the inverse of `fill-region'."
 
 ;;; Window/frame management
 
-;;; Toggle a 2-window split between horizontal and vertical split
+;; Toggle a 2-window split between horizontal and vertical split
 (defun toggle-window-split ()
   "Toggle a two-window-split layout between horizontal and
 vertical split."
@@ -260,6 +257,9 @@ vertical split."
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
+;;; Undo Tree
+(global-undo-tree-mode)
+
 ;;; X windows options
 (setq x-select-enable-clipboard t
       x-select-enable-primary t
@@ -278,7 +278,6 @@ vertical split."
   "The location of the quicklisp-slime-helper elisp file.")
 
 ;; Initialize SLIME and helpers
-(require 'slime)
 (when (file-exists-p quicklisp-slime-helper)
   (load quicklisp-slime-helper))
 (setq inferior-lisp-program "/usr/bin/sbcl")

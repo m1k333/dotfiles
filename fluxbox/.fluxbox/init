@@ -55,7 +55,7 @@ session.screen0.strftimeFormat:	%T
 session.screen0.edgeSnapThreshold:	10
 session.screen0.focusSameHead:	false
 session.screen0.clickRaises:	true
-session.screen0.workspaces:	4
+session.screen0.workspaces:	10
 session.screen0.tooltipDelay:	500
 session.screen0.workspaceNames:	, 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 ,
 session.configVersion:	13

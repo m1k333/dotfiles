@@ -56,7 +56,7 @@ Mod1 6 :Tab 6
 Mod1 7 :Tab 7
 Mod1 8 :Tab 8
 Mod1 9 :Tab 9
-Mod1 10 :Tab 10
+Mod1 0 :Tab 10
 
 # open stuff
 Mod4 Return :Exec urxvt
@@ -89,12 +89,12 @@ Mod1 space :WindowMenu
 Control Mod1 Mod4 Escape :Exit
 
 # change to previous/next workspace
-Mod4 Left :PrevWorkspace
-Mod4 Right :NextWorkspace
+Mod4 bracketleft :PrevWorkspace
+Mod4 bracketright :NextWorkspace
 
 # send the current window to previous/next workspace
-Mod4 Shift Left :SendToPrevWorkspace
-Mod4 Shift Right :SendToNextWorkspace
+Mod4 Shift bracketleft :SendToPrevWorkspace
+Mod4 Shift bracketright :SendToNextWorkspace
 
 # change to a specific workspace
 Mod4 1 :Workspace 1
@@ -106,7 +106,7 @@ Mod4 6 :Workspace 6
 Mod4 7 :Workspace 7
 Mod4 8 :Workspace 8
 Mod4 9 :Workspace 9
-Mod4 10 :Workspace 10
+Mod4 0 :Workspace 10
 
 # send the current window to a specific workspace
 Mod4 Shift 1 :SendToWorkspace 1
@@ -118,5 +118,5 @@ Mod4 Shift 6 :SendToWorkspace 6
 Mod4 Shift 7 :SendToWorkspace 7
 Mod4 Shift 8 :SendToWorkspace 8
 Mod4 Shift 9 :SendToWorkspace 9
-Mod4 Shift 10 :SendToWorkspace 10
+Mod4 Shift 0 :SendToWorkspace 10
 

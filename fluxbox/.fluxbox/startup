@@ -5,13 +5,6 @@
 xset -b s 1800 dpms 1800 1800 1800
 xrdb -load ~/.Xresources
 
-# Redshift
-while pgrep redshift > /dev/null 2>&1
-do
-    pkill -x -9 redshift 2> /dev/null
-done
-redshift &
-
 # Make QT pick up on GTK themes and icons
 export DESKTOP_SESSION=gnome
 

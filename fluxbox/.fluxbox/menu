@@ -3,17 +3,21 @@
 [encoding] {UTF-8}
     [exec] (Run...) {fbrun}
     [exec] (Terminal) {urxvt}
-    [exec] (Emacs) {emacs}
-    [exec] (Firefox) {firefox}
-    [exec] (Thunderbird) {thunderbird}
+    [submenu] (Programs)
+        [exec] (Emacs) {emacs}
+        [exec] (Firefox) {firefox}
+        [exec] (GIMP) {gimp}
+        [exec] (Skype) {skype}
+        [exec] (Steam) {steam}
+        [exec] (Thunderbird) {thunderbird}
+    [end]
     [submenu] (Fluxbox)
         [config] (Configure)
-        [submenu] (Styles) {Choose a style...}
-            [stylesdir] (~/.fluxbox/styles)
-        [end]
-        [workspaces] (Workspace List)
-        [commanddialog] (Fluxbox command)
-        [reconfig] (Reload config)
+        #[submenu] (Styles) {Choose a style...}
+        #    [stylesdir] (~/.fluxbox/styles)
+        #[end]
+        [commanddialog] (Command)
+        #[reconfig] (Reload config)
         [restart] (Restart)
         [exit] (Exit)
     [end]

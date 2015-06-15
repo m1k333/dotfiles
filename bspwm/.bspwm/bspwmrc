@@ -45,13 +45,6 @@ feh --no-fehbg --bg-fill ${HOME}/.bspwm/wallpaper* 2> /dev/null \
     || xsetroot -solid rgb:00/2B/36
 xsetroot -cursor_name left_ptr
 
-# Redshift
-    while pgrep redshift > /dev/null 2>&1
-    do
-        pkill -x -9 redshift 2> /dev/null
-    done
-    redshift &
-
 # Make QT pick up on GTK themes and icons
 export DESKTOP_SESSION=gnome
 

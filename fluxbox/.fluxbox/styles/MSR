@@ -18,7 +18,7 @@ menu.borderWidth:                       1
 menu.bullet:                            triangle
 menu.bullet.position:                   right
 menu.frame:                             flat solid
-menu.frame.color:                       #DDDDDD
+menu.frame.color:                       #CDCDCD
 menu.frame.textColor:                   #000000
 menu.frame.disableColor:                #1464F4
 menu.frame.justify:                     left
@@ -34,64 +34,64 @@ toolbar.borderColor:                    #000000
 toolbar.button:                         flat solid
 toolbar.button.borderColor:             #000000
 toolbar.button.borderWidth:             1
-toolbar.button.color:                   #DDDDDD
+toolbar.button.color:                   #CDCDCD
 toolbar.button.picColor:                #000000
 toolbar.button.pressed:                 flat solid
 toolbar.button.pressed.color:           #1464F4
 toolbar.clock.borderWidth:              1
 toolbar.clock.borderColor:              #000000
-toolbar.clock.color:                    #DDDDDD
+toolbar.clock.color:                    #CDCDCD
 toolbar.clock.textColor:                #000000
 toolbar.height:                         17
 toolbar.iconbar.borderColor:            #000000
 toolbar.iconbar.borderWidth:            1
 toolbar.iconbar.empty:                  flat solid
-toolbar.iconbar.empty.color:            #DDDDDD
+toolbar.iconbar.empty.color:            #CDCDCD
 toolbar.iconbar.focused:                flat solid
 toolbar.iconbar.focused.color:          #000000
 toolbar.iconbar.focused.textColor:      #FFFFFF
 toolbar.iconbar.unfocused:              flat solid
-toolbar.iconbar.unfocused.color:        #DDDDDD
+toolbar.iconbar.unfocused.color:        #CDCDCD
 toolbar.iconbar.unfocused.textColor:    #000000
 toolbar.justify:                        center
 toolbar.systray:                        flat solid
-toolbar.systray.color:                  #DDDDDD
+toolbar.systray.color:                  #CDCDCD
 toolbar.workspace:                      flat solid
 toolbar.workspace.borderWidth:          1
 toolbar.workspace.borderColor:          #000000
-toolbar.workspace.color:                #DDDDDD
+toolbar.workspace.color:                #CDCDCD
 toolbar.workspace.textColor:            #000000
-toolbar.label.color:                    #DDDDDD
+toolbar.label.color:                    #CDCDCD
 toolbar.label.textColor:                #000000
 
 window.borderWidth:                     1
 window.borderColor:                     #000000
-window.button.focus.color:              #DDDDDD
+window.button.focus.color:              #CDCDCD
 window.button.focus.picColor:           #000000
-window.button.unfocus.color:            #DDDDDD
+window.button.unfocus.color:            #CDCDCD
 window.button.unfocus.picColor:         #000000
 window.button.pressed.color:            #1464F4
-window.grip.focus.color:                #DDDDDD
+window.grip.focus.color:                #CDCDCD
 window.grip.unfocus.color:              #000000
 window.handleWidth:                     2
 window.handle.focus:                    flat solid
 window.handle.focus.color:              #000000
-window.handle.unfocus.color:            #DDDDDD
+window.handle.unfocus.color:            #CDCDCD
 window.justify:                         center
 window.label.focus:                     flat solid
 window.label.focus.color:               #000000
 window.label.focus.textColor:           #FFFFFF
 window.label.unfocus:                   flat solid
-window.label.unfocus.color:             #DDDDDD
+window.label.unfocus.color:             #CDCDCD
 window.label.unfocus.textColor:         #000000
 window.title.height:                    17
 window.title.focus:                     flat solid
-window.title.focus.color:               #DDDDDD
+window.title.focus.color:               #CDCDCD
 window.title.unfocus:                   flat solid
-window.title.unfocus.color:             #DDDDDD
+window.title.unfocus.color:             #CDCDCD
 
 slit:                                   flat solid
 slit.bevelWidth:                        0
 slit.borderWidth:                       1
 slit.borderColor:                       #000000
-slit.color:                             #DDDDDD
+slit.color:                             #CDCDCD

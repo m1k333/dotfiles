@@ -1,8 +1,8 @@
 #!/bin/sh
 
 ## Panel variables
-PANEL_FONT='xft:DejaVu Sans Mono:bold:size=11'
-PANEL_HEIGHT=18
+PANEL_FONT='Gohufont'
+PANEL_HEIGHT=16
 PANEL_FIFO='/tmp/bspwm/panel-fifo'
 PANEL_HIDDEN_FLAG='/tmp/bspwm/panel-hidden'
 BATTERY_LOC='NONE' # BATTERY='NONE' to disable bat. monitor
@@ -57,7 +57,7 @@ panel_dmenu()
     stest -dqr -n $CACHE $PATH && stest -flx $PATH | sort -u > $CACHE
 
     DMENU_CMD="$(                                           \
-        dmenu -i -h ${PANEL_HEIGHT} -fn "\'${PANEL_FONT}\'" \
+        dmenu -i -h ${PANEL_HEIGHT} -fn "${PANEL_FONT}"     \
         -nf "#$foreground" -nb "#$background"               \
         -sf "#$black"      -sb "#$blue"                     \
         < ${CACHE}                                          \
@@ -72,7 +72,7 @@ bspwm_quit()
 {
     rm -Rf /tmp/bspwm/
 
-    for ARG in bspwm-panel xtitle bspc redshift
+    for ARG in bspwm-panel xtitle bspc 
     do
         while pgrep -x $ARG > /dev/null 2>&1
         do

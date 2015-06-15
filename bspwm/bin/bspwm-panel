@@ -118,7 +118,7 @@ panel_bar()
                             wm_infos="${wm_infos}%{F$black}%{B$red} ${name} %{B-}%{F-}"
                             ;;
                         L*) # Layout
-                            wm_infos="${wm_infos}    %{F$black}%{B$green} ${name} %{B-}%{F-}"
+                            wm_infos="${wm_infos}   %{F$black}%{B$green} ${name} %{B-}%{F-}"
                             ;;
                     esac
                     shift
@@ -154,7 +154,7 @@ panel_bar | lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT" -F "$foreground" -B "$ba
 
 # Window manager info
 bspc control --subscribe > $PANEL_FIFO &
-xtitle -s -f 'T%.150s' > $PANEL_FIFO &
+xtitle -s -f 'T%.120s' > $PANEL_FIFO &
 
 # Clock
 clock()

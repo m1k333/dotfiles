@@ -2,7 +2,7 @@
 ;;;; By Michael Richer
 ;;;; Since May 5th, 2014
 
-;;;; Initialize stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Initialize stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Load path
 (add-to-list 'load-path "~/.emacs.d/lisp")
@@ -10,7 +10,7 @@
 ;;; Common lisp functionality
 (require 'cl)
 
-;;;; Packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Add the package repositories and intialize
 (require 'package)
@@ -21,7 +21,12 @@
 
 ;;; Define `package-required-list'
 (defvar package-required-list
-  '(auctex magit solarized-theme slime undo-tree)
+  '(async
+    auctex
+    evil evil-numbers evil-leader evil-org
+    magit
+    solarized-theme
+    slime)
   "A list of packages that should be installed for this Emacs
 configuration.  If any are not installed, they should be able
 to be installed by running `package-populate'.")
@@ -50,7 +55,7 @@ the `package-required-list' variable."
 ;;; Do the package installs if required
 (package-populate)
 
-;;;; Appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; GUI settings
 (show-paren-mode 1)
@@ -71,7 +76,7 @@ the `package-required-list' variable."
 (size-indication-mode)
 (tooltip-mode -1)
 
-;;;; Keybindings and mouse bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Keybindings and mouse bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Keyboard
 (global-set-key (kbd "M-?") 'mark-paragraph)
@@ -81,6 +86,10 @@ the `package-required-list' variable."
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
 (global-set-key (kbd "C-x h") 'help-command)
 (global-set-key (kbd "C-x C-h") 'mark-whole-buffer)
+(global-set-key (kbd "C-x m") 'evil-mode)
+(global-set-key (kbd "C-x M") 'evil-mode)
+(global-set-key (kbd "C-x n +") 'evil-numbers/inc-at-pt)
+(global-set-key (kbd "C-x n -") 'evil-numbers/dec-at-pt)
 (global-set-key (kbd "C-(") 'kmacro-start-macro-or-insert-counter)
 (global-set-key (kbd "C-)") 'kmacro-end-or-call-macro)
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -90,7 +99,7 @@ the `package-required-list' variable."
 ;;; Mouse
 (setq mouse-yank-at-point t)
 
-;;;; Emacs settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Emacs settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Apropos
 (setq apropos-do-all t)
@@ -257,15 +266,27 @@ vertical split."
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
-;;; Undo Tree
-(global-undo-tree-mode)
-
 ;;; X windows options
 (setq x-select-enable-clipboard t
       x-select-enable-primary t
       save-interprogram-paste-before-kill t)
 
-;;;; SLIME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Evil mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Evil leader mode
+(global-evil-leader-mode)
+(evil-leader/set-key "e" 'find-file)
+(evil-leader/set-key "h" 'help)
+(evil-leader/set-key "w" 'whitespace-cleanup)
+
+;; Evil-numbers (increment/decrement, as C-x and C-a do in vim)
+;;;;; ==> See Keybindings section
+
+;; Escape quits out of everything!
+(define-key evil-normal-state-map [escape] 'keyboard-quit)
+(define-key evil-visual-state-map [escape] 'keyboard-quit)
+
+;;;; SLIME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Quicklisp path
 (defvar quicklisp-path
@@ -282,7 +303,7 @@ vertical split."
   (load quicklisp-slime-helper))
 (setq inferior-lisp-program "/usr/bin/sbcl")
 
-;;;; TRAMP ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; TRAMP ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Edit a file as root using sudo (from `what the .emacs.d?!')
 (defun sudo-edit (&optional arg)
@@ -294,4 +315,4 @@ vertical split."
     (find-alternate-file
       (concat "/sudo:root@localhost:" buffer-file-name))))
 
-;;;; EOF ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; EOF ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -59,7 +59,7 @@ panel_dmenu()
     DMENU_CMD="$(                                           \
         dmenu -i -h ${PANEL_HEIGHT} -fn "${PANEL_FONT}"     \
         -nf "#$foreground" -nb "#$background"               \
-        -sf "#$black"      -sb "#$blue"                     \
+        -sf "#$blue"       -sb "#$background"               \
         < ${CACHE}                                          \
     )"
     eval $DMENU_CMD &

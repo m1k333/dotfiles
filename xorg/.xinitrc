@@ -20,8 +20,8 @@ setxkbmap -option terminate:ctrl_alt_bksp
 ## Run a window manager ################################################
 
     ##################
-        #WM=bspwm
-        WM=fluxbox
+        WM=bspwm
+        #WM=fluxbox
     ##################
 
 case $WM in

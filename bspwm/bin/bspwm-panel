@@ -65,7 +65,7 @@ panel_bar()
         case $line in
 
             C*) # Clock output
-                date="%{F$black}%{B$blue} ${line#?} %{B-}%{F-}"
+                date="%{F$white} ${line#?} %{F-}"
                 ;;
             B*) # Battery output (function sets its own colours)
                 batinfo="${line#?}"
@@ -100,26 +100,26 @@ panel_bar()
                             fi
                             ;;
                         O*) # Focused occupied desktop
-                            wm_infos="${wm_infos}%{F$black}%{B$blue} ${name} %{B-}%{F-}"
+                            wm_infos="${wm_infos}%{F$blue}%{U$magenta}%{+u} ${name} %{U-}%{-u}%{F-}"
                             ;;
                         F*) # Focused free desktop
-                            wm_infos="${wm_infos}%{F$black}%{B$blue} ${name} %{B-}%{F-}"
+                            wm_infos="${wm_infos}%{U$magenta}%{+u} ${name} %{U-}%{-u}"
                             ;;
                         U*) # Focused urgent desktop
-                            wm_infos="${wm_infos}%{F$black}%{B$red} ${name} %{B-}%{F-}"
+                            wm_infos="${wm_infos}%{F$red}%{U$magenta}%{+u} * %{U-}%{-u}%{F-}"
                             ;;
                         o*) # Occupied desktop
-                            wm_infos="${wm_infos}%{F$magenta} ${name} %{F-}"
+                            wm_infos="${wm_infos}%{F$blue} ${name} %{F-}"
                             ;;
                         f*) # Free desktop
                             wm_infos="${wm_infos} ${name} "
                             ;;
                         u*) # Urgent desktop
-                            wm_infos="${wm_infos}%{F$black}%{B$red} ${name} %{B-}%{F-}"
+                            wm_infos="${wm_infos}%{F$red} * %{F-}"
                             ;;
-                        L*) # Layout
-                            wm_infos="${wm_infos}   %{F$black}%{B$green} ${name} %{B-}%{F-}"
-                            ;;
+                        #L*) # Layout
+                        #    wm_infos="${wm_infos}   %{F$black}%{B$green} ${name} %{B-}%{F-}"
+                        #    ;;
                     esac
                     shift
                     case $cur_mon in

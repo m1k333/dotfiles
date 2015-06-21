@@ -4,7 +4,7 @@
 "" Appearance ##########################################################
 
 " Visuals
-set background=dark noerrorbells novisualbell t_vb=
+set noerrorbells novisualbell t_vb=
 colorscheme solarized
 
 " Information

@@ -98,7 +98,7 @@ function zsh-emacs-mode
 
 # Prompt definition
 autoload -U colors && colors
-PROMPT_STATIC="[%~]~(%?)~"
+PROMPT_STATIC="(%n@%M)~(%~)~(%?)~"
 
 # Syntax highlighting plugin
 SYNTAXHLFILE="/usr/share/zsh/plugins/zsh-syntax-highlighting"

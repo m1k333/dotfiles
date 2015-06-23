@@ -1,5 +1,26 @@
 #!/bin/zsh
 
+## Initializations #############################################################
+
+# Pre-prompt command will run $PROMPT_COMMAND; temporarily make $PROMPT blank,
+# because zsh will load the prompt after precmd, and we're re-loading it later
+# anyway -- better to not do it twice.
+PROMPT_COMMAND=''
+function precmd { eval "$PROMPT_COMMAND"}
+
+# Parse current git branch or return empty string
+prompt_git_branch=''
+function current-git-branch
+{
+    local git_branch=$(git branch | grep '\*' | sed 's/\* //')
+    [ -n "$git_branch" ] && \
+        prompt_git_branch="[${git_branch}]~" || prompt_git_branch=''
+}
+
+# Add git branch to prompt if git is installed
+command -v git &> /dev/null && \
+    PROMPT_COMMAND="${PROMPT_COMMAND} ; current-git-branch &> /dev/null"
+
 ## Settings ####################################################################
 
 ## Autocompletion
@@ -9,14 +30,15 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 setopt completealiases correct extendedglob globdots nocaseglob
 
+## Linux vconsole-specific options
 if [ $TERM = linux ]
 then
-    ## Beep OFF; one of these should work
+    # Beep off - these should cover all cases
     setterm -blength 0
     set bell-style none
     unsetopt beep
     # Send escape to get a block cursor
-    function precmd { echo -en "\e[?6c" }
+    PROMPT_COMMAND="${PROMPT_COMMAND} ; echo -en \"\e[?6c\""
 fi
 
 ## Dirstack
@@ -62,7 +84,7 @@ function zsh-vi-mode
     function zle-keymap-select zle-line-init
     {
         [ $KEYMAP = vicmd ] && VIMODE="%F{blue}@%f" || VIMODE='%F{magenta}%#%f'
-        PROMPT="${PROMPT_STATIC}${VIMODE} "
+        PROMPT="${prompt_git_branch}${PROMPT_STATIC}${VIMODE} "
         typeset -g __prompt_status="$?"
         function { return $__prompt_status }
         zle reset-prompt
@@ -74,15 +96,6 @@ function zsh-vi-mode
 # Emacs mode settings
 function zsh-emacs-mode
 {
-    # Get rid of vi mode zle functions if they have been defined --
-    # (re)initialize them with placeholder values, then delete them
-    function blank {}
-    zle -N zle-keymap-select blank
-    zle -N zle-line-init blank
-    zle -D zle-keymap-select 
-    zle -D zle-line-init 
-    unfunction blank
-
     # Emacs-like keybindings; '-e': emacs 
     bindkey -e
     bindkey -e '^[h'  backward-delete-word
@@ -91,7 +104,15 @@ function zsh-emacs-mode
     bindkey -M menuselect '^[[Z' reverse-menu-complete
 
     # Prompt -- simpler than in vi mode
-    PROMPT="${PROMPT_STATIC}%F{magenta}%#%f "
+    function zle-keymap-select zle-line-init
+    {
+        PROMPT="${prompt_git_branch}${PROMPT_STATIC}%F{magenta}%#%f "
+        typeset -g __prompt_status="$?"
+        function { return $__prompt_status }
+        zle reset-prompt
+    }
+    zle -N zle-keymap-select
+    zle -N zle-line-init
 }
 
 ## Prompt ######################################################################
@@ -142,26 +163,6 @@ function bak
     do
         cp -R ${i} ${i}.bak
     done
-}
-
-# Neovim testing environment
-function vim-env
-{
-    if [ $1 = vim ]
-    then
-        function { export EDITOR=vim && unalias vim }        \
-        && echo "\nOk. 'vim' runs original vim.\n"           \
-        || echo "\nError. Try resetting manually.\n" 1>&2
-    elif [ $1 = nvim ]
-    then
-        function { export EDITOR=nvim && alias vim=nvim }    \
-        &&  echo "\nOk. 'vim' runs neovim.\n"                \
-        || function { echo "\nError. Resetting env:\n" 1>&2
-                      vim-env vim } 
-    else
-        echo "\nUsage: vim-env (vim|nvim).\n"
-        return 1
-    fi
 }
 
 ## EOF #########################################################################

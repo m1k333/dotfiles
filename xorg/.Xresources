@@ -84,7 +84,7 @@ URxvt*keysym.C-A-v: perl:clipboard:paste_escaped
 URxvt*cursorBlinks: true
 
 !! Font
-URxvt*font:     xft:Gohufont
+URxvt*font:      -*-gohufont-medium-*-*-*-14-*-*-*-*-*-iso10646-*
 URxvt*boldFont:
 
 !! History

@@ -19,10 +19,7 @@ setxkbmap -option terminate:ctrl_alt_bksp
 
 ## Run a window manager ################################################
 
-    ##################
-        WM=bspwm
-        #WM=fluxbox
-    ##################
+WM=bspwm
 
 case $WM in
     bspwm)
@@ -31,6 +28,9 @@ case $WM in
         ;;
     fluxbox)
         exec startfluxbox
+        ;;
+    *)
+        exec $WM
         ;;
 esac
 

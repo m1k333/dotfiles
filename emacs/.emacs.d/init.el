@@ -2,7 +2,10 @@
 ;;;; By Michael Richer
 ;;;; Since May 5th, 2014
 
-;;;; Packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Initialize required libraries and packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Garbage collect less often; spare 50MiB
+(setq gc-cons-threshold 52428800)
 
 ;;; Common lisp functionality
 (require 'cl)
@@ -27,7 +30,6 @@
     evil-org
     evil-surround
     evil-visualstar
-    flx-ido
     ido-ubiquitous
     magit
     smartparens
@@ -64,7 +66,7 @@ the `package-required-list' variable."
 ;;; Do the package installs if required
 (package-populate)
 
-;;;; Appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Appearance settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; GUI settings
 (show-paren-mode 1)
@@ -77,65 +79,26 @@ the `package-required-list' variable."
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (when (window-system)
   (setq solarized-distinct-fringe-background t)
-  (load-theme 'solarized-light t))
+  (load-theme 'solarized-light t)
+  (cond ((x-list-fonts "GohuFont")
+         (set-frame-font "-*-gohufont-medium-*-*-*-14-*-*-*-*-*-iso10646-*" nil t))
+        ((x-list-fonts "Terminus")
+         (set-frame-font "-*-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-*" nil t))
+        ((x-list-fonts "DejaVu Sans Mono")
+         (set-frame-font "DejaVu Sans Mono-11" nil t))
+        (t nil))) 
 
 ;;; Mode line
 (setq display-time-24hr-format t
       show-help-function nil)
-(column-number-mode)
-(line-number-mode)
-(size-indication-mode)
+(column-number-mode 1)
+(line-number-mode 1)
+(size-indication-mode 1)
 (tooltip-mode -1)
 
 ;;; Vi tilde fringe
 (global-vi-tilde-fringe-mode)
 (diminish 'vi-tilde-fringe-mode)
-
-;;;; Keybindings and mouse bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Keyboard
-
-;; Mode map keys
-(define-prefix-command 'ctl-x-m-map)
-(global-set-key (kbd "C-x m") 'ctl-x-m-map)
-(define-key ctl-x-m-map (kbd "e") 'evil-mode)
-(define-key ctl-x-m-map (kbd "f") 'flyspell-prog-mode)
-(define-key ctl-x-m-map (kbd "p") 'smartparens-global-mode)
-(define-key ctl-x-m-map (kbd "s") 'flyspell-mode)
-(define-key ctl-x-m-map (kbd "s") 'yas-minor-mode)
-
-;; Top-level keys
-(global-set-key (kbd "<f1>") 'eshell)
-(global-set-key (kbd "C-<f1>") 'shell)
-(global-set-key (kbd "M-<f1>") 'ansi-term)
-(global-set-key (kbd "<f10>") 'menu-bar-mode)
-(global-set-key (kbd "M-?") 'mark-paragraph)
-(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
-(global-set-key (kbd "M-h") 'backward-kill-word)
-(global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-(global-set-key (kbd "C-x C-r") 'recentf-open-files)
-(global-set-key (kbd "C-x h") 'help-command)
-(global-set-key (kbd "C-x C-h") 'mark-whole-buffer)
-(global-set-key (kbd "C-x M") 'compose-mail)
-(global-set-key (kbd "C-c +") 'evil-numbers/inc-at-pt)
-(global-set-key (kbd "C-c -") 'evil-numbers/dec-at-pt)
-(global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "M-RET") 'newline-and-indent)
-(global-set-key (kbd "M-SPC") 'cycle-spacing)
-
-;; Keys that need to be defined later in the init file
-;; (define-key yas-minor-mode-map (kbd "<tab>") nil)
-;; (define-key yas-minor-mode-map (kbd "TAB") nil)
-;; (define-key yas-minor-mode-map (kbd "C-<tab>") 'yas-expand)
-
-;;; Mouse
-(setq mouse-yank-at-point t)
 
 ;;;; Emacs settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -217,24 +180,34 @@ the `package-required-list' variable."
 (setq disabled-command-hook nil)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;;; Evil mode
+;;; Eshell
 
-;; Evil functionality
-(global-evil-surround-mode 1)
-(global-evil-visualstar-mode 1)
+;; Parse git branch
+(defun eshell/current-git-branch ()
+  "Returns current git branch as a string, or the empty string if the
+working directory is not in a git repo (or the git command is not found)."
+  (interactive)
+  (let ((pwd (expand-file-name (eshell/pwd))))
+    (if (and (eshell-search-path "git") (locate-dominating-file pwd ".git"))
+        (shell-command-to-string
+         (concat "cd "
+                 (expand-file-name (eshell/pwd))
+                 " && git branch | grep '\*' | sed 's/\* //' | tr -d '\n'"))
+      (concat ""))))  
 
-;; Evil leader mode
-(global-evil-leader-mode)
-(evil-leader/set-key "e" 'find-file)
-(evil-leader/set-key "h" 'help-command)
-(evil-leader/set-key "w" 'whitespace-cleanup)
-
-;; Escape quits out of everything!
-(define-key evil-normal-state-map [escape] 'keyboard-quit)
-(define-key evil-visual-state-map [escape] 'keyboard-quit)
-
-;; Activate evil mode
-(evil-mode 1)
+;; Prompt
+(setq eshell-highlight-prompt nil
+      eshell-history-size 25000
+      eshell-prompt-function
+      (lambda ()
+        (concat
+         (let ((git-branch (eshell/current-git-branch)))
+           (if (= 0 (length git-branch))
+               "" (concat "[" git-branch "]~")))
+         "(" (user-login-name) "@" (system-name) ")~"
+         "(" (eshell/pwd) ")~"
+         (propertize (if (= (user-uid) 0) "#" "$") 'face `(:foreground "orchid"))
+         " ")))
 
 ;;; Fill
 
@@ -277,16 +250,10 @@ This command does the inverse of `fill-region'."
 (setq ido-enable-flex-matching t
       ido-everywhere t
       ido-save-directory-list-file (expand-file-name "ido-file" user-emacs-directory)
-      ido-use-faces nil
       org-completion-use-ido t
       magit-completing-read-function 'magit-ido-completing-read)
 (ido-mode 1)
-(flx-ido-mode 1)
 (ido-ubiquitous-mode 1)
-
-;; RAM is cheap now; let Ido use it
-(setq flx-ido-threshold 20000
-      gc-cons-threshold 20000000)
 
 ;;; LISP interaction stuff
 
@@ -338,6 +305,16 @@ This command does the inverse of `fill-region'."
 ;;; Tabs
 (setq-default indent-tabs-mode nil)
 
+;;; Terminal emulator
+
+;; Function for running $SHELL in ansi-term
+(defun ansi-term-shell ()
+  "Run the user's shell ($SHELL) in emacs' own ansi-term terminal emulator."
+  (interactive) (ansi-term (getenv "SHELL")))
+
+;; Don't show passwords
+(add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
+
 ;;; TRAMP
 
 ;; Edit a file as root using sudo (from `what the .emacs.d?!')
@@ -346,9 +323,9 @@ This command does the inverse of `fill-region'."
   (interactive "p")
   (if (or arg (not buffer-file-name))
       (find-file
-        (concat "/sudo:root@localhost:" (read-file-name "File: ")))
+       (concat "/sudo:root@localhost:" (read-file-name "File: ")))
     (find-alternate-file
-      (concat "/sudo:root@localhost:" buffer-file-name))))
+     (concat "/sudo:root@localhost:" buffer-file-name))))
 
 ;;; Undo tree
 (global-undo-tree-mode 1)
@@ -402,9 +379,88 @@ vertical split."
 
 ;;; Yasnippet
 (yas-global-mode 1)
+(diminish 'yas-minor-mode)
+
+;;;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Keyboard
+
+;; Top-level keys
+(global-set-key (kbd "<f1>") 'eshell)
+(global-set-key (kbd "C-<f1>") 'ansi-term)
+(global-set-key (kbd "M-<f1>") 'ansi-term-shell)
+(global-set-key (kbd "<f10>") 'menu-bar-mode)
+(global-set-key (kbd "M-?") 'mark-paragraph)
+(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
+(global-set-key (kbd "M-h") 'backward-kill-word)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") 'isearch-forward)
+(global-set-key (kbd "C-M-r") 'isearch-backward)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(global-set-key (kbd "C-x h") 'help-command)
+(global-set-key (kbd "C-x C-h") 'mark-whole-buffer)
+(global-set-key (kbd "C-x m") 'ctl-x-m-map)
+(global-set-key (kbd "C-x M") 'compose-mail)
+(global-set-key (kbd "C-c +") 'evil-numbers/inc-at-pt)
+(global-set-key (kbd "C-c -") 'evil-numbers/dec-at-pt)
+(global-set-key (kbd "C-c <up>") 'toggle-window-split)
+(global-set-key (kbd "C-c <down>") 'toggle-window-split)
+(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "M-RET") 'newline-and-indent)
+(global-set-key (kbd "M-SPC") 'cycle-spacing)
+
+;; Minor-mode keys
 (define-key yas-minor-mode-map (kbd "<tab>") nil)
 (define-key yas-minor-mode-map (kbd "TAB") nil)
 (define-key yas-minor-mode-map (kbd "C-<tab>") 'yas-expand)
-(diminish 'yas-minor-mode)
+
+;; C-x m map
+(define-prefix-command 'ctl-x-m-map)
+(define-key ctl-x-m-map (kbd "e") 'evil-mode)
+(define-key ctl-x-m-map (kbd "f") 'flyspell-prog-mode)
+(define-key ctl-x-m-map (kbd "p") 'smartparens-global-mode)
+(define-key ctl-x-m-map (kbd "s") 'flyspell-mode)
+(define-key ctl-x-m-map (kbd "w") 'whitespace-mode)
+(define-key ctl-x-m-map (kbd "y") 'yas-minor-mode)
+
+;; Evil mode functionality
+(global-evil-surround-mode 1)
+(global-evil-visualstar-mode 1)
+
+;; Evil leader mode
+(global-evil-leader-mode)
+(evil-leader/set-key
+  "f" 'find-file
+  "h" 'help-command
+  "m" 'ctl-x-m-map
+  "l" 'recenter-top-bottom
+  "t" 'untabify
+  "w" 'whitespace-cleanup
+  ";" 'comment-dwim
+  "<left>" 'winner-undo
+  "<right>" 'winner-redo
+  "<up>" 'toggle-window-split
+  "<down>" 'toggle-window-split)
+
+;; Escape quits out of everything in evil mode
+(define-key evil-normal-state-map [escape] 'keyboard-quit)
+(define-key evil-visual-state-map [escape] 'keyboard-quit)
+
+;; Activate evil mode
+(evil-mode 1)
+
+;;; Mouse
+
+;; Behaviour
+(setq mouse-yank-at-point t)
+
+;; Supplementary C-"right-click" bindings for mice without middle buttons
+(eval-after-load "flyspell"
+  '(progn
+     (define-key flyspell-mouse-map (kbd "C-<down-mouse-3>") #'flyspell-correct-word)
+     (define-key flyspell-mouse-map (kbd "C-<mouse-3>") 'undefined)))
 
 ;;;; EOF ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

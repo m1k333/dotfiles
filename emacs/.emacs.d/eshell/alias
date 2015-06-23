@@ -1,0 +1,12 @@
+alias l  ls -1p $*
+alias ls ls -p $*
+alias la ls -ap $*
+alias ll ls -ahlp $*
+
+alias cp cp -i $*
+alias mv mv -i $*
+alias rm rm -i $*
+alias mkdir mkdir -pv $*
+
+alias dir dired $1
+alias ff find-file $1

@@ -8,20 +8,20 @@ super + ctrl + alt + Escape
     . $\{HOME\}/.bspwm/settings && bspwm_quit
 
 # Reload {bspwm,sxhkd} settings
-super + {shift + ,_}Escape 
+super + {shift + ,_}Escape
     {$\{HOME\}/.bspwm/bspwmrc,pkill -x --signal SIGUSR1 sxhkd}
 
-# Launcher
-super + p
-    . $\{HOME\}/.bspwm/settings && panel_dmenu
+# Launcher (+ shift to launch program in floating mode)
+super + {_,shift + }p
+    . $\{HOME\}/.bspwm/settings && panel_dmenu {_,floating}
 
 # Banish mouse
 super + x
     xdotool mousemove 25000 25000
 
-# Terminal
-super + Return
-    urxvt
+# Terminal (+ shift for floating terminal)
+super + {shift + ,_}Return
+    {bspc rule -a urxvt -o floating=on && ,_}urxvt
 
 ## Desktop commands ############################################################
 
@@ -111,15 +111,15 @@ super + ctrl + {1-9}
 
 ## Layout commands #############################################################
 
-# Convention: super + shift + [a-z]
+# Convention: super + [shift + ][a-z]
 
-# {float,fullscreen,pseudotile} windows
-super + {space,F,P}
-    bspc window -t {floating,fullscreen,pseudo_tiled}
+# Toggle floating mode for {windows,desktops}
+super + {_,shift + }space
+    bspc {window -t floating,desktop focused -t floating}
 
-# Toggle monocle mode for focused window
-super + M
-    bspc desktop -l next
+# Toggle {monocle mode,fullscreen} for focused window
+super + {_,shift + }f
+    bspc {desktop -l next,window -t fullscreen}
 
 # Toggle panel
 super + B

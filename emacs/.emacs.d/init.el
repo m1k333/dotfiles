@@ -32,6 +32,7 @@
     evil-visualstar
     ido-ubiquitous
     magit
+    rainbow-delimiters
     smartparens
     solarized-theme
     slime
@@ -42,41 +43,37 @@
 configuration.  If any are not installed, they should be able
 to be installed by running `package-populate'.")
 
-;;; Test for missing packages
-(defun package-missing ()
-  "Test for missing packages from the list of desired packages in
-the `package-required-list' variable."
-  (catch 'done
-    (unless package-required-list (throw 'done nil))
-    (dolist (pkg package-required-list)
-      (unless (package-installed-p pkg)
-        (throw 'done t)))))
-
 ;;; Populate the system with the desired packages
 (defun package-populate ()
   "If packages from `package-required-list' are missing, install them."
   (interactive)
-  (when (package-missing)
-    (package-refresh-contents)
+  (let ((initialize-p nil))
     (dolist (pkg package-required-list)
       (unless (package-installed-p pkg)
-        (package-install pkg)))
-    (package-initialize)))
+        (progn (unless initialize-p (package-refresh-contents))
+               (package-install pkg)
+               (setq initialize-p t))))
+    (if initialize-p (package-initialize))))
 
 ;;; Do the package installs if required
 (package-populate)
 
 ;;;; Appearance settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; GUI settings
+;; Visual modes
+(menu-bar-mode -1)
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(blink-cursor-mode -1)
 (show-paren-mode 1)
+(global-vi-tilde-fringe-mode)
+(diminish 'vi-tilde-fringe-mode)
+
+;;; GUI settings
 (setq echo-keystrokes 0.1
       font-lock-maximum-decoration t
       global-font-lock-mode t
       show-paren-delay 0)
-(menu-bar-mode -1)
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (when (window-system)
   (setq solarized-distinct-fringe-background t)
   (load-theme 'solarized-light t)
@@ -86,19 +83,23 @@ the `package-required-list' variable."
          (set-frame-font "-*-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-*" nil t))
         ((x-list-fonts "DejaVu Sans Mono")
          (set-frame-font "DejaVu Sans Mono-11" nil t))
-        (t nil))) 
+        (t nil)))
 
 ;;; Mode line
-(setq display-time-24hr-format t
-      show-help-function nil)
 (column-number-mode 1)
 (line-number-mode 1)
 (size-indication-mode 1)
 (tooltip-mode -1)
-
-;;; Vi tilde fringe
-(global-vi-tilde-fringe-mode)
-(diminish 'vi-tilde-fringe-mode)
+(setq show-help-function nil
+      display-time-24hr-format t)
+(setq-default mode-line-format
+              '("%e" mode-line-front-space
+                (:eval (if (= 0 (length vc-mode)) nil '(" " vc-mode)))
+                "  [%Z%*%@]  %p (%l,%c)  %b  "
+                mode-line-modes
+                " (" (:eval (user-login-name)) "@" (:eval (system-name)) ")  "
+                mode-line-misc-info
+                mode-line-end-spaces mode-line-end-spaces "%-"))
 
 ;;;; Emacs settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -122,7 +123,12 @@ the `package-required-list' variable."
       kept-new-versions 10
       kept-old-versions 5)
 
-;;; Buffers and files
+;;; Bookmarks
+(setq bookmark-default-file
+      (expand-file-name "bookmark-file"user-emacs-directory)
+      bookmark-save-flag 1)
+
+;;; Buffers
 
 ;; Various useful things
 (global-auto-revert-mode 1)
@@ -163,7 +169,7 @@ the `package-required-list' variable."
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
-;;; Calendar and date stuff
+;;; Calendar
 
 ;; Set up calendar
 (require 'calendar)
@@ -193,7 +199,7 @@ working directory is not in a git repo (or the git command is not found)."
          (concat "cd "
                  (expand-file-name (eshell/pwd))
                  " && git branch | grep '\*' | sed 's/\* //' | tr -d '\n'"))
-      (concat ""))))  
+      (concat ""))))
 
 ;; Prompt
 (setq eshell-highlight-prompt nil
@@ -258,7 +264,7 @@ This command does the inverse of `fill-region'."
 ;;; LISP interaction stuff
 
 ;; Eval and replace last sexp function
-(defun eval-and-replace ()
+(defun eval-replace-last-sexp ()
   "Replace the preceding sexp with its value."
   (interactive)
   (backward-kill-sexp)
@@ -294,6 +300,10 @@ This command does the inverse of `fill-region'."
 (setq-default save-place t)
 (setq save-place-file (expand-file-name "saveplace-file" user-emacs-directory))
 
+;;; Scrolling
+(setq scroll-margin 5
+      scroll-conservatively 101)
+
 ;;; Smex
 (setq smex-save-file (expand-file-name "smex-items-file" user-emacs-directory))
 (smex-initialize)
@@ -301,9 +311,6 @@ This command does the inverse of `fill-region'."
 ;;; Startup screen
 (setq inhibit-startup-screen t
       initial-scratch-message ";; *scratch*\n\n")
-
-;;; Tabs
-(setq-default indent-tabs-mode nil)
 
 ;;; Terminal emulator
 
@@ -339,6 +346,10 @@ This command does the inverse of `fill-region'."
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
+;;; Whitespace
+(setq-default indent-tabs-mode nil)
+(setq require-final-newline t)
+
 ;;; Window/frame management
 
 ;; Toggle a 2-window split between horizontal and vertical split
@@ -356,10 +367,9 @@ vertical split."
                                      (<= (cadr this-win-edges)
                                          (cadr next-win-edges)))))
              (splitter
-              (if (= (car this-win-edges)
-                     (car (window-edges (next-window))))
-                  'split-window-horizontally
-                'split-window-vertically)))
+              (if (= (car this-win-edges) (car (window-edges (next-window))))
+                  'split-window-horizontally 'split-window-vertically))
+             )
         (delete-other-windows)
         (let ((first-win (selected-window)))
           (funcall splitter)
@@ -367,7 +377,10 @@ vertical split."
           (set-window-buffer (selected-window) this-win-buffer)
           (set-window-buffer (next-window) next-win-buffer)
           (select-window first-win)
-          (if this-win-2nd (other-window 1))))))
+          (if this-win-2nd (other-window 1)))
+        )
+    )
+  )
 
 ;; Winner mode
 (winner-mode 1)
@@ -380,6 +393,9 @@ vertical split."
 ;;; Yasnippet
 (yas-global-mode 1)
 (diminish 'yas-minor-mode)
+(push 'yas-hippie-try-expand hippie-expand-try-functions-list)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+(define-key yas-minor-mode-map (kbd "<tab>") nil)
 
 ;;;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -412,25 +428,21 @@ vertical split."
 (global-set-key (kbd "M-RET") 'newline-and-indent)
 (global-set-key (kbd "M-SPC") 'cycle-spacing)
 
-;; Minor-mode keys
-(define-key yas-minor-mode-map (kbd "<tab>") nil)
-(define-key yas-minor-mode-map (kbd "TAB") nil)
-(define-key yas-minor-mode-map (kbd "C-<tab>") 'yas-expand)
-
 ;; C-x m map
 (define-prefix-command 'ctl-x-m-map)
-(define-key ctl-x-m-map (kbd "e") 'evil-mode)
+(define-key ctl-x-m-map (kbd "e") 'evil-toggle-vim-emacs-state)
 (define-key ctl-x-m-map (kbd "f") 'flyspell-prog-mode)
 (define-key ctl-x-m-map (kbd "p") 'smartparens-global-mode)
+(define-key ctl-x-m-map (kbd "r") 'rainbow-delimiters-mode)
 (define-key ctl-x-m-map (kbd "s") 'flyspell-mode)
 (define-key ctl-x-m-map (kbd "w") 'whitespace-mode)
 (define-key ctl-x-m-map (kbd "y") 'yas-minor-mode)
 
-;; Evil mode functionality
-(global-evil-surround-mode 1)
-(global-evil-visualstar-mode 1)
+;; Evil - activate evil mode
+(evil-mode 1)
 
-;; Evil leader mode
+;; Evil top-level keys (default <leader> is (evil-leader/set-leader "\\"))
+(define-key evil-motion-state-map (kbd "SPC") 'evil-execute-in-emacs-state)
 (global-evil-leader-mode)
 (evil-leader/set-key
   "f" 'find-file
@@ -445,12 +457,58 @@ vertical split."
   "<up>" 'toggle-window-split
   "<down>" 'toggle-window-split)
 
-;; Escape quits out of everything in evil mode
+;; Evil toggle between normal and emacs state
+(defun evil-toggle-vim-emacs-state ()
+  "Toggle between evil's vim and emacs states."
+  (interactive)
+  (if (eq evil-state 'emacs)
+      (evil-normal-state) (evil-emacs-state)))
+
+;; Evil-aware minibuffer quit command
+(defun minibuffer-keyboard-quit ()
+  "Abort recursive edit.
+In Delete Selection mode, if the mark is active, just deactivate it;
+then it takes a second \\[keyboard-quit] to abort the minibuffer."
+  (interactive)
+  (if (and delete-selection-mode transient-mark-mode mark-active)
+      (setq deactivate-mark  t)
+    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+    (abort-recursive-edit)))
+
+;; Evil - ESC quits out of everything
+;; (Evil recognizes [escape] as a single press of ESC)
 (define-key evil-normal-state-map [escape] 'keyboard-quit)
 (define-key evil-visual-state-map [escape] 'keyboard-quit)
+(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
-;; Activate evil mode
-(evil-mode 1)
+;; Evil settings
+(global-evil-surround-mode 1)
+(global-evil-visualstar-mode 1)
+(let ((grey "#586e75")
+      (green "#859900")
+      (violet "#6c71c4")
+      (magenta "#d33682")
+      (red "#dc322f"))
+  (setq evil-move-cursor-back nil
+        evil-mode-line-format (cons 'after 'mode-line-front-space)
+        evil-emacs-state-cursor    '(grey    box)
+        evil-insert-state-cursor   '(magenta bar)
+        evil-normal-state-cursor   '(green   box)
+        evil-motion-state-cursor   '(green   box)
+        evil-operator-state-cursor '(red     hollow)
+        evil-replace-state-cursor  '(red     bar)
+        evil-visual-state-cursor   '(violet  box)
+        evil-emacs-state-tag    "<EMACS>"
+        evil-insert-state-tag   "<INSERT>"
+        evil-motion-state-tag   "<MOTION>"
+        evil-normal-state-tag   "<NORMAL>"
+        evil-operator-state-tag "<OPERATOR>"
+        evil-replace-state-tag  "<REPLACE>"
+        evil-visual-state-tag   "<VISUAL>"))
 
 ;;; Mouse
 

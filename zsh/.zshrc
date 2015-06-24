@@ -153,6 +153,7 @@ alias sush="sudo -E ${SHELL}"
 alias sued="sudoedit"
 
 # Applications
+alias emc='emacs -nw'
 alias pacman='pacman --color auto'
 alias tmat='tmux attach || tmux new-session'
 

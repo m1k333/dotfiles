@@ -5,7 +5,12 @@
 
 " Visuals
 set noerrorbells novisualbell t_vb=
-colorscheme solarized
+if has("gui_running")
+    colorscheme solarized
+else
+    set background=dark
+    colorscheme elflord
+endif
 
 " Information
 set laststatus=2 modeline shortmess=atI showcmd 

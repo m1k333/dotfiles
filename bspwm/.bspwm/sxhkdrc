@@ -11,9 +11,9 @@ super + ctrl + alt + Escape
 super + {shift + ,_}Escape
     {$\{HOME\}/.bspwm/bspwmrc,pkill -x --signal SIGUSR1 sxhkd}
 
-# Launcher (+ shift to launch program in floating mode)
+# Launcher
 super + {_,shift + }p
-    . $\{HOME\}/.bspwm/settings && panel_dmenu {_,floating}
+    . $\{HOME\}/.bspwm/settings && panel_dmenu{_, float}
 
 # Banish mouse
 super + x
@@ -113,9 +113,9 @@ super + ctrl + {1-9}
 
 # Convention: super + [shift + ][a-z]
 
-# Toggle floating mode for {windows,desktops}
-super + {_,shift + }space
-    bspc {window -t floating,desktop focused -t floating}
+# Toggle floating mode for windows
+super + space
+    bspc window -t floating
 
 # Toggle {monocle mode,fullscreen} for focused window
 super + {_,shift + }f
@@ -153,8 +153,8 @@ super + button{1,2,3}
 # Convention: {super + ctrl + [a-z],(XF86MEDIAKEYS),super + F[1-12]}
 
 # Launch applications
-super + ctrl + {e,m,w}
-    {emacs,urxvt -e ncmpcpp,firefox}
+super + ctrl + {e,f,n,t}
+    {emacs,firefox,urxvt -e ncmpcpp,thunderbird}
 
 # Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}

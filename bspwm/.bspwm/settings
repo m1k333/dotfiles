@@ -47,25 +47,28 @@ panel_toggle()
     fi;
 }
 
-## Modified version of suckless' dmenu_run
+## Modified version of suckless' dmenu_run -- call with any argument from
+## within bspwm to float the window spawned from the dmenu input
 panel_dmenu()
 {
     [ -e $PANEL_HIDDEN_FLAG ] && bspc config top_padding $PANEL_HEIGHT
-    [ -n "$1" ] && bspc desktop focused -t floating=on
+
+    [ -n "$1" ] && bspc rule -a \* -o floating=on
 
     CACHE="${XDG_CACHE_HOME:-"${HOME}/.cache"}/dmenu_run"
     IFS=:
     stest -dqr -n $CACHE $PATH && stest -flx $PATH | sort -u > $CACHE
 
-    DMENU_CMD="$(                                          \
-        dmenu -i -f -h ${PANEL_HEIGHT} -fn "${PANEL_FONT}" \
-        -nf "#$foreground" -nb "#$background"              \
-        -sf "#$blue"       -sb "#$background"              \
-        < ${CACHE}                                         \
+    DMENU_CMD=                                              \
+    "$(                                                     \
+        dmenu -i -f -h ${PANEL_HEIGHT} -fn "${PANEL_FONT}"  \
+        -nf "#$foreground" -nb "#$background"               \
+        -sf "#$blue"       -sb "#$background"               \
+        < ${CACHE}                                          \
     )"
-    eval $DMENU_CMD &
 
-    [ -n "$1"] && bspc desktop focused -t floating=off
+    (eval $DMENU_CMD || [ -n "$1" ] && bspc rule -r \*) &
+
     [ -e $PANEL_HIDDEN_FLAG ] && bspc config top_padding 0;
 }
 

@@ -22,6 +22,7 @@
   '(anzu
     async
     auctex
+    auto-complete
     diminish
     evil
     evil-anzu
@@ -30,7 +31,9 @@
     evil-org
     evil-surround
     evil-visualstar
+    fuzzy
     ido-ubiquitous
+    jedi
     magit
     rainbow-delimiters
     smartparens
@@ -86,20 +89,20 @@ to be installed by running `package-populate'.")
         (t nil)))
 
 ;;; Mode line
-(column-number-mode 1)
 (line-number-mode 1)
-(size-indication-mode 1)
+(column-number-mode 1)
 (tooltip-mode -1)
 (setq show-help-function nil
       display-time-24hr-format t)
 (setq-default mode-line-format
-              '("%e" mode-line-front-space
-                (:eval (if (= 0 (length vc-mode)) nil '(" " vc-mode)))
-                "  [%Z%*%@]  %p (%l,%c)  %b  "
-                mode-line-modes
-                " (" (:eval (user-login-name)) "@" (:eval (system-name)) ")  "
-                mode-line-misc-info
-                mode-line-end-spaces mode-line-end-spaces "%-"))
+              '(" " (:eval (substring-no-properties evil-mode-line-tag 0 nil))
+                "  (%b)  "
+                (:eval (if vc-mode
+                           (concat "("
+                                   (substring-no-properties vc-mode 1 nil)
+                                   ")  ")))
+                "(%z%*%@)  (" (:eval (system-name)) ")  (%p of %I)  (%l,%c)  "
+                "%[(" mode-name mode-line-process minor-mode-alist "%n)%]  "))
 
 ;;;; Emacs settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -109,6 +112,22 @@ to be installed by running `package-populate'.")
 ;;; Anzu
 (global-anzu-mode 1)
 (diminish 'anzu-mode)
+
+;;; Auto-complete
+
+;; Default set up (use this function for future compatibility
+;; despite it enabling global-auto-complete-mode by default)
+(ac-config-default)
+(setq ac-comphist-file
+      (expand-file-name "ac-comp-history-file" user-emacs-directory))
+(setq ac-auto-start nil)
+(diminish 'auto-complete-mode)
+
+;; Python auto-complete via Jedi python backend.  M-x jedi:install-server is
+;; required on first run.  jed:install-server is dependent on the virtualenv
+;; python library, which is available as python-virtualenv in the Arch repos.
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
 
 ;;; Backups and autosave
 (defvar backup-dir (expand-file-name "backup" user-emacs-directory))
@@ -217,8 +236,11 @@ working directory is not in a git repo (or the git command is not found)."
 
 ;;; Fill
 
-;; Default fill column
-(setq-default fill-column 80)
+;; Set up auto-fill
+(setq-default fill-column 80
+              auto-fill-function 'do-auto-fill)
+(setq comment-auto-fill-only-comments t)
+(diminish 'auto-fill-function)
 
 ;; Remove hard wrapping/filling for paragraph
 (defun unfill-paragraph ()
@@ -289,12 +311,6 @@ This command does the inverse of `fill-region'."
   (load quicklisp-slime-helper))
 (setq inferior-lisp-program "/usr/bin/sbcl")
 
-;;; Recentf mode
-(setq recentf-max-saved-items 50
-      recentf-max-menu-items recentf-max-saved-items
-      recentf-save-file (expand-file-name "recentf-file" user-emacs-directory))
-(recentf-mode 1)
-
 ;;; Saveplace
 (require 'saveplace)
 (setq-default save-place t)
@@ -323,6 +339,10 @@ This command does the inverse of `fill-region'."
 (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
 
 ;;; TRAMP
+
+;; Settings
+(setq tramp-persistency-file-name
+      (expand-file-name"tramp-file" user-emacs-directory))
 
 ;; Edit a file as root using sudo (from `what the .emacs.d?!')
 (defun sudo-edit (&optional arg)
@@ -406,7 +426,12 @@ vertical split."
 (global-set-key (kbd "C-<f1>") 'ansi-term)
 (global-set-key (kbd "M-<f1>") 'ansi-term-shell)
 (global-set-key (kbd "<f10>") 'menu-bar-mode)
+(global-set-key (kbd "M-%") 'anzu-query-replace)
+(global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
+(global-set-key (kbd "C-/") 'hippie-expand)
+(global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "M-?") 'mark-paragraph)
+(global-set-key (kbd "C-<tab>") 'auto-complete)
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "M-h") 'backward-kill-word)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
@@ -415,7 +440,6 @@ vertical split."
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-(global-set-key (kbd "C-x C-r") 'recentf-open-files)
 (global-set-key (kbd "C-x h") 'help-command)
 (global-set-key (kbd "C-x C-h") 'mark-whole-buffer)
 (global-set-key (kbd "C-x m") 'ctl-x-m-map)
@@ -424,7 +448,6 @@ vertical split."
 (global-set-key (kbd "C-c -") 'evil-numbers/dec-at-pt)
 (global-set-key (kbd "C-c <up>") 'toggle-window-split)
 (global-set-key (kbd "C-c <down>") 'toggle-window-split)
-(global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "M-RET") 'newline-and-indent)
 (global-set-key (kbd "M-SPC") 'cycle-spacing)
 
@@ -432,30 +455,44 @@ vertical split."
 (define-prefix-command 'ctl-x-m-map)
 (define-key ctl-x-m-map (kbd "e") 'evil-toggle-vim-emacs-state)
 (define-key ctl-x-m-map (kbd "f") 'flyspell-prog-mode)
-(define-key ctl-x-m-map (kbd "p") 'smartparens-global-mode)
+(define-key ctl-x-m-map (kbd "p") 'smartparens-mode)
 (define-key ctl-x-m-map (kbd "r") 'rainbow-delimiters-mode)
 (define-key ctl-x-m-map (kbd "s") 'flyspell-mode)
 (define-key ctl-x-m-map (kbd "w") 'whitespace-mode)
-(define-key ctl-x-m-map (kbd "y") 'yas-minor-mode)
 
 ;; Evil - activate evil mode
 (evil-mode 1)
 
-;; Evil top-level keys (default <leader> is (evil-leader/set-leader "\\"))
-(define-key evil-motion-state-map (kbd "SPC") 'evil-execute-in-emacs-state)
+;; Evil normal keys (default <leader> is (evil-leader/set-leader "\\"))
 (global-evil-leader-mode)
 (evil-leader/set-key
-  "f" 'find-file
+  "d" 'evil-insert-digraph
+  "e" 'evil-execute-in-emacs-state
   "h" 'help-command
   "m" 'ctl-x-m-map
-  "l" 'recenter-top-bottom
   "t" 'untabify
-  "w" 'whitespace-cleanup
-  ";" 'comment-dwim
-  "<left>" 'winner-undo
-  "<right>" 'winner-redo
-  "<up>" 'toggle-window-split
-  "<down>" 'toggle-window-split)
+  "w" 'whitespace-cleanup)
+(dolist (key (list (kbd "RET") (kbd "SPC")))
+  (define-key evil-normal-state-map key
+    (lookup-key evil-motion-state-map key))
+  (define-key evil-motion-state-map key nil))
+
+;; Evil insert keys (essentially the same as Emacs mode)
+(setq evil-insert-state-map (make-sparse-keymap))
+(define-key evil-insert-state-map
+  (read-kbd-macro evil-toggle-key) 'evil-emacs-state)
+(define-key evil-insert-state-map [mouse-2] 'mouse-yank-primary)
+(define-key evil-insert-state-map [escape] 'evil-normal-state)
+
+;; Evil - ESC quits out of everything
+;; (Evil recognizes [escape] as a single press of ESC)
+(define-key evil-normal-state-map [escape] 'keyboard-quit)
+(define-key evil-visual-state-map [escape] 'keyboard-quit)
+(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
 ;; Evil toggle between normal and emacs state
 (defun evil-toggle-vim-emacs-state ()
@@ -475,16 +512,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
     (abort-recursive-edit)))
 
-;; Evil - ESC quits out of everything
-;; (Evil recognizes [escape] as a single press of ESC)
-(define-key evil-normal-state-map [escape] 'keyboard-quit)
-(define-key evil-visual-state-map [escape] 'keyboard-quit)
-(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
-
 ;; Evil settings
 (global-evil-surround-mode 1)
 (global-evil-visualstar-mode 1)
@@ -494,7 +521,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (magenta "#d33682")
       (red "#dc322f"))
   (setq evil-move-cursor-back nil
-        evil-mode-line-format (cons 'after 'mode-line-front-space)
+        evil-mode-line-format nil ;; This was set in mode line section
         evil-emacs-state-cursor    '(grey    box)
         evil-insert-state-cursor   '(magenta bar)
         evil-normal-state-cursor   '(green   box)
@@ -502,13 +529,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         evil-operator-state-cursor '(red     hollow)
         evil-replace-state-cursor  '(red     bar)
         evil-visual-state-cursor   '(violet  box)
-        evil-emacs-state-tag    "<EMACS>"
-        evil-insert-state-tag   "<INSERT>"
-        evil-motion-state-tag   "<MOTION>"
-        evil-normal-state-tag   "<NORMAL>"
-        evil-operator-state-tag "<OPERATOR>"
-        evil-replace-state-tag  "<REPLACE>"
-        evil-visual-state-tag   "<VISUAL>"))
+        evil-emacs-state-tag    "(EMACS)"
+        evil-insert-state-tag   "(INSERT)"
+        evil-motion-state-tag   "(MOTION)"
+        evil-normal-state-tag   "(NORMAL)"
+        evil-operator-state-tag "(OPERATOR)"
+        evil-replace-state-tag  "(REPLACE)"
+        evil-visual-state-tag   "(VISUAL)"))
 
 ;;; Mouse
 

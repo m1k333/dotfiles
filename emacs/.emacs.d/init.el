@@ -181,6 +181,13 @@
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
+;;; Calendar
+(use-package calendar
+  :ensure t
+  :defer t
+  :commands (calendar calendar-mode)
+  :config (calendar-set-date-style 'iso))
+
 ;;; Case sensitivity
 (setq completion-ignore-case t
       read-file-name-completion-ignore-case t
@@ -242,6 +249,17 @@ This command does the inverse of `fill-paragraph'."
 This command does the inverse of `fill-region'."
   (interactive "r")
   (let ((fill-column most-positive-fixnum)) (fill-region start end)))
+
+;;; Flyspell
+(use-package flyspell
+             :ensure t
+             :defer t
+             :commands (flyspell-mode flyspell-prog-mode flyspell-buffer flyspell-region)
+             :config
+             (define-key flyspell-mouse-map
+                         (kbd "C-<down-mouse-3>") #'flyspell-correct-word)
+             (define-key flyspell-mouse-map
+                         (kbd "C-<mouse-3>") 'undefined))
 
 ;;; Garbage collection (use more RAM before doing GC)
 (setq gc-cons-threshold 52428800)

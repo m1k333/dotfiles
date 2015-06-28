@@ -2,106 +2,86 @@
 ;;;; By Michael Richer
 ;;;; Since May 5th, 2014
 
-;;;; Initialize required libraries and packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Garbage collect less often; spare 50MiB
-(setq gc-cons-threshold 52428800)
+;;;; Initialization ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Common lisp functionality
-(require 'cl)
+;;(require 'cl)
 
-;;; Add the package repositories and intialize
+;;; Package
+
+;; Add the package repositories and intialize
 (require 'package)
+(setq package-enable-at-startup nil)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/")
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
-;;; Define `package-required-list'
-(defvar package-required-list
-  '(anzu
-    async
-    auctex
-    auto-complete
-    diminish
-    evil
-    evil-anzu
-    evil-leader
-    evil-numbers
-    evil-org
-    evil-surround
-    evil-visualstar
-    fuzzy
-    ido-ubiquitous
-    jedi
-    magit
-    rainbow-delimiters
-    smartparens
-    solarized-theme
-    slime
-    smex
-    vi-tilde-fringe
-    yasnippet)
-  "A list of packages that should be installed for this Emacs
-configuration.  If any are not installed, they should be able
-to be installed by running `package-populate'.")
+;; Load use-package, as well as diminish and bind-key (used by use-package)
+(require 'use-package)
+(require 'bind-key)
+(use-package diminish :ensure t)
 
-;;; Populate the system with the desired packages
-(defun package-populate ()
-  "If packages from `package-required-list' are missing, install them."
-  (interactive)
-  (let ((initialize-p nil))
-    (dolist (pkg package-required-list)
-      (unless (package-installed-p pkg)
-        (progn (unless initialize-p (package-refresh-contents))
-               (package-install pkg)
-               (setq initialize-p t))))
-    (if initialize-p (package-initialize))))
+;; Facilitate easy byte-compilation of the users' init file
+(defun byte-compile-init () "Byte-compile Emacs' init file."
+  (interactive) (byte-compile-file user-init-file))
 
-;;; Do the package installs if required
-(package-populate)
+;;; Key maps to be populated throughout init file
+(define-prefix-command 'ctl-x-m-map)
 
 ;;;; Appearance settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Visual modes
+;;; GUI settings
 (menu-bar-mode -1)
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(blink-cursor-mode -1)
 (show-paren-mode 1)
-(global-vi-tilde-fringe-mode)
-(diminish 'vi-tilde-fringe-mode)
-
-;;; GUI settings
-(setq echo-keystrokes 0.1
-      font-lock-maximum-decoration t
+(blink-cursor-mode -1)
+(setq show-paren-delay 0
+      echo-keystrokes 0.1
       global-font-lock-mode t
-      show-paren-delay 0)
-(when (window-system)
-  (setq solarized-distinct-fringe-background t)
-  (load-theme 'solarized-light t)
+      font-lock-maximum-decoration t)
+
+;;; Theme
+(use-package solarized-theme
+             :ensure t
+             :if window-system
+             :config
+             (setq solarized-distinct-fringe-background t)
+             (load-theme 'solarized-light t))
+
+;;; Fonts
+(when window-system
   (cond ((x-list-fonts "GohuFont")
-         (set-frame-font "-*-gohufont-medium-*-*-*-14-*-*-*-*-*-iso10646-*" nil t))
+         (set-frame-font
+          "-*-gohufont-medium-*-*-*-14-*-*-*-*-*-iso10646-*" nil t))
         ((x-list-fonts "Terminus")
-         (set-frame-font "-*-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-*" nil t))
+         (set-frame-font
+          "-*-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-*" nil t))
         ((x-list-fonts "DejaVu Sans Mono")
-         (set-frame-font "DejaVu Sans Mono-11" nil t))
+         (set-frame-font
+          "DejaVu Sans Mono-11" nil t))
         (t nil)))
 
 ;;; Mode line
+(tooltip-mode -1)
 (line-number-mode 1)
 (column-number-mode 1)
-(tooltip-mode -1)
-(setq show-help-function nil
-      display-time-24hr-format t)
+(setq show-help-function nil)
 (setq-default mode-line-format
-              '(" " (:eval (substring-no-properties evil-mode-line-tag 0 nil))
+              '(" "
+                (:eval (substring-no-properties evil-mode-line-tag 0 nil))
                 "  (%b)  "
                 (:eval (if vc-mode
                            (concat "("
                                    (substring-no-properties vc-mode 1 nil)
                                    ")  ")))
-                "(%z%*%@)  (" (:eval (system-name)) ")  (%p of %I)  (%l,%c)  "
+                "(%z%*%@)  ("
+                (:eval (system-name))
+                ")  (%p of %I)  (%l,%c)  "
                 "%[(" mode-name mode-line-process minor-mode-alist "%n)%]  "))
 
 ;;;; Emacs settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -110,24 +90,37 @@ to be installed by running `package-populate'.")
 (setq apropos-do-all t)
 
 ;;; Anzu
-(global-anzu-mode 1)
-(diminish 'anzu-mode)
+(use-package anzu
+             :ensure t
+             :defer t
+             :diminish anzu-mode
+             :bind (("M-%" . anzu-query-replace)
+                    ("C-M-%" . anzu-query-replace-regexp))
+             :config (global-anzu-mode 1))
 
 ;;; Auto-complete
+(use-package auto-complete
+             :ensure t
+             :defer t
+             :diminish auto-complete-mode
+             :bind ("C-<tab>" . auto-complete)
+             :init (use-package fuzzy :ensure t)
+             :config
+             (ac-config-default)
+             (setq ac-auto-start nil
+                   ac-comphist-file (expand-file-name "ac-comp-history-file"
+                                                      user-emacs-directory))
+             (use-package jedi
+                          ;; Python auto-complete via Jedi python backend.  M-x
+                          ;; jedi:install-server is required on first run.
+                          ;; jed:install-server is dependent on the virtualenv
+                          ;; python library, which is available as
+                          ;; python-virtualenv in the Arch repos.
+                          :ensure t
+                          :config
+                          (add-hook 'python-mode-hook 'jedi:setup)
+                          (setq jedi:complete-on-dot t)))
 
-;; Default set up (use this function for future compatibility
-;; despite it enabling global-auto-complete-mode by default)
-(ac-config-default)
-(setq ac-comphist-file
-      (expand-file-name "ac-comp-history-file" user-emacs-directory))
-(setq ac-auto-start nil)
-(diminish 'auto-complete-mode)
-
-;; Python auto-complete via Jedi python backend.  M-x jedi:install-server is
-;; required on first run.  jed:install-server is dependent on the virtualenv
-;; python library, which is available as python-virtualenv in the Arch repos.
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:complete-on-dot t)
 
 ;;; Backups and autosave
 (defvar backup-dir (expand-file-name "backup" user-emacs-directory))
@@ -136,25 +129,25 @@ to be installed by running `package-populate'.")
       auto-save-file-name-transforms `((".*" ,autosave-dir t))
       auto-save-list-file-prefix autosave-dir
       backup-by-copying t
-      delete-old-versions -1
-      version-control 1
       vc-make-backup-files t
+      version-control 1
+      delete-old-versions -1
       kept-new-versions 10
       kept-old-versions 5)
 
 ;;; Bookmarks
-(setq bookmark-default-file
-      (expand-file-name "bookmark-file"user-emacs-directory)
-      bookmark-save-flag 1)
+(setq bookmark-save-flag 1
+      bookmark-default-file (expand-file-name "bookmark-file"
+                                              user-emacs-directory))
 
 ;;; Buffers
 
-;; Various useful things
+;; Settings
 (global-auto-revert-mode 1)
 (auto-compression-mode t)
-(setq global-auto-revert-non-file-buffers t
+(setq load-prefer-newer t
       auto-revert-verbose nil
-      load-prefer-newer t)
+      global-auto-revert-non-file-buffers t)
 
 ;; Delete current buffer file
 (defun delete-current-buffer-file ()
@@ -188,12 +181,6 @@ to be installed by running `package-populate'.")
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
-;;; Calendar
-
-;; Set up calendar
-(require 'calendar)
-(calendar-set-date-style 'iso)
-
 ;;; Case sensitivity
 (setq completion-ignore-case t
       read-file-name-completion-ignore-case t
@@ -202,7 +189,7 @@ to be installed by running `package-populate'.")
       eshell-cmpl-ignore-case t)
 
 ;;; Commands/features/functions
-(setq disabled-command-hook nil)
+(setq disabled-command-function nil)
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;;; Eshell
@@ -236,7 +223,7 @@ working directory is not in a git repo (or the git command is not found)."
 
 ;;; Fill
 
-;; Set up auto-fill
+;; Settings
 (setq-default fill-column 80
               auto-fill-function 'do-auto-fill)
 (setq comment-auto-fill-only-comments t)
@@ -247,41 +234,35 @@ working directory is not in a git repo (or the git command is not found)."
   "Replace newline chars in current paragraph by single spaces.
 This command does the inverse of `fill-paragraph'."
   (interactive)
-  (let ((fill-column most-positive-fixnum))
-    (fill-paragraph nil)))
+  (let ((fill-column most-positive-fixnum)) (fill-paragraph nil)))
 
 ;; Remove hard wrapping/filling for region
 (defun unfill-region (start end)
   "Replace newline chars in region by single spaces.
 This command does the inverse of `fill-region'."
   (interactive "r")
-  (let ((fill-column most-positive-fixnum))
-    (fill-region start end)))
+  (let ((fill-column most-positive-fixnum)) (fill-region start end)))
 
-;;; Git
-(setq magit-last-seen-setup-instructions "1.4.0")
+;;; Garbage collection (use more RAM before doing GC)
+(setq gc-cons-threshold 52428800)
 
 ;;; History
-(setq savehist-file (expand-file-name "history-file" user-emacs-directory))
+(setq history-length t
+      history-delete-duplicates t
+      savehist-save-minibuffer-history 1
+      savehist-file (expand-file-name "history-file" user-emacs-directory)
+      savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
 (savehist-mode 1)
-(setq history-length t)
-(setq history-delete-duplicates t)
-(setq savehist-save-minibuffer-history 1)
-(setq savehist-additional-variables
-      '(kill-ring
-        search-ring
-        regexp-search-ring))
 
 ;;; Ido
-
-;; Enable Ido everywhere humanly possible
-(setq ido-enable-flex-matching t
-      ido-everywhere t
-      ido-save-directory-list-file (expand-file-name "ido-file" user-emacs-directory)
-      org-completion-use-ido t
-      magit-completing-read-function 'magit-ido-completing-read)
+(setq ido-everywhere t
+      ido-enable-flex-matching t)
+(setq ido-save-directory-list-file
+      (expand-file-name "ido-file" user-emacs-directory))
 (ido-mode 1)
-(ido-ubiquitous-mode 1)
+(use-package ido-ubiquitous
+             :ensure t
+             :config (ido-ubiquitous-mode 1))
 
 ;;; LISP interaction stuff
 
@@ -291,38 +272,64 @@ This command does the inverse of `fill-region'."
   (interactive)
   (backward-kill-sexp)
   (condition-case nil
-      (prin1 (eval (read (current-kill 0)))
-             (current-buffer))
-    (error (message "Invalid expression")
-           (insert (current-kill 0)))))
+      (prin1 (eval (read (current-kill 0))) (current-buffer))
+    (error (message "Invalid expression") (insert (current-kill 0)))))
 
-;; Quicklisp path
-(defvar quicklisp-path
-  (expand-file-name "~/quicklisp/")
-  "The path to my quicklisp installation.")
+;;; Org
+(setq org-completion-use-ido t)
 
-;; Quicklisp SLIME helper
-(defvar quicklisp-slime-helper
-  (concat quicklisp-path "slime-helper.el")
-  "The location of the quicklisp-slime-helper elisp file.")
-
-;; Initialize SLIME and helpers
-(when (file-exists-p quicklisp-slime-helper)
-  (load quicklisp-slime-helper))
-(setq inferior-lisp-program "/usr/bin/sbcl")
+;;; Rainbow delimiters
+(use-package rainbow-delimiters
+             :ensure t
+             :defer t
+             :init (bind-key "r" 'rainbow-delimiters-mode ctl-x-m-map))
 
 ;;; Saveplace
 (require 'saveplace)
 (setq-default save-place t)
-(setq save-place-file (expand-file-name "saveplace-file" user-emacs-directory))
+(setq save-place-file
+      (expand-file-name "saveplace-file" user-emacs-directory))
 
 ;;; Scrolling
 (setq scroll-margin 5
       scroll-conservatively 101)
 
+;;; SLIME
+(use-package slime
+             :ensure t
+             :defer t
+             :commands (slime slime-connect slime-mode)
+             :init
+             ;; Quicklisp path
+             (defvar quicklisp-path
+               (expand-file-name "~/quicklisp/")
+               "The path to my quicklisp installation.")
+             ;; Quicklisp SLIME helper
+             (defvar quicklisp-slime-helper
+               (concat quicklisp-path "slime-helper.el")
+               "The location of the quicklisp-slime-helper elisp file.")
+             :config
+             ;; Initialize SLIME and helpers
+             (when (file-exists-p quicklisp-slime-helper)
+               (load quicklisp-slime-helper))
+             (setq inferior-lisp-program "/usr/bin/sbcl"))
+
+;;; Smartparens
+(use-package smartparens
+             :ensure t
+             :defer t
+             :init (bind-key "p" 'smartparens-mode ctl-x-m-map))
+
 ;;; Smex
-(setq smex-save-file (expand-file-name "smex-items-file" user-emacs-directory))
-(smex-initialize)
+(use-package smex
+             :ensure t
+             :defer t
+             :bind (("M-x" . smex)
+                    ("M-X" . smex-major-mode-commands))
+             :config
+             (setq smex-save-file
+                   (expand-file-name "smex-items-file" user-emacs-directory))
+             (smex-initialize))
 
 ;;; Startup screen
 (setq inhibit-startup-screen t
@@ -353,10 +360,6 @@ This command does the inverse of `fill-region'."
        (concat "/sudo:root@localhost:" (read-file-name "File: ")))
     (find-alternate-file
      (concat "/sudo:root@localhost:" buffer-file-name))))
-
-;;; Undo tree
-(global-undo-tree-mode 1)
-(diminish 'undo-tree-mode)
 
 ;;; Unicode
 (prefer-coding-system 'utf-8)
@@ -397,10 +400,7 @@ vertical split."
           (set-window-buffer (selected-window) this-win-buffer)
           (set-window-buffer (next-window) next-win-buffer)
           (select-window first-win)
-          (if this-win-2nd (other-window 1)))
-        )
-    )
-  )
+          (if this-win-2nd (other-window 1))))))
 
 ;; Winner mode
 (winner-mode 1)
@@ -411,11 +411,13 @@ vertical split."
       save-interprogram-paste-before-kill t)
 
 ;;; Yasnippet
-(yas-global-mode 1)
-(diminish 'yas-minor-mode)
-(push 'yas-hippie-try-expand hippie-expand-try-functions-list)
-(define-key yas-minor-mode-map (kbd "TAB") nil)
-(define-key yas-minor-mode-map (kbd "<tab>") nil)
+(use-package yasnippet
+             :ensure t
+             :diminish yas-minor-mode
+             :config
+             (yas-global-mode 1)
+             (push 'yas-hippie-try-expand hippie-expand-try-functions-list)
+             (setq yas-minor-mode-map (make-sparse-keymap)))
 
 ;;;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -426,45 +428,68 @@ vertical split."
 (global-set-key (kbd "C-<f1>") 'ansi-term)
 (global-set-key (kbd "M-<f1>") 'ansi-term-shell)
 (global-set-key (kbd "<f10>") 'menu-bar-mode)
-(global-set-key (kbd "M-%") 'anzu-query-replace)
-(global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
 (global-set-key (kbd "C-/") 'hippie-expand)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "M-?") 'mark-paragraph)
-(global-set-key (kbd "C-<tab>") 'auto-complete)
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "M-h") 'backward-kill-word)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (global-set-key (kbd "C-M-s") 'isearch-forward)
 (global-set-key (kbd "C-M-r") 'isearch-backward)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
 (global-set-key (kbd "C-x h") 'help-command)
 (global-set-key (kbd "C-x C-h") 'mark-whole-buffer)
 (global-set-key (kbd "C-x m") 'ctl-x-m-map)
 (global-set-key (kbd "C-x M") 'compose-mail)
-(global-set-key (kbd "C-c +") 'evil-numbers/inc-at-pt)
-(global-set-key (kbd "C-c -") 'evil-numbers/dec-at-pt)
 (global-set-key (kbd "C-c <up>") 'toggle-window-split)
 (global-set-key (kbd "C-c <down>") 'toggle-window-split)
 (global-set-key (kbd "M-RET") 'newline-and-indent)
 (global-set-key (kbd "M-SPC") 'cycle-spacing)
 
 ;; C-x m map
-(define-prefix-command 'ctl-x-m-map)
 (define-key ctl-x-m-map (kbd "e") 'evil-toggle-vim-emacs-state)
 (define-key ctl-x-m-map (kbd "f") 'flyspell-prog-mode)
-(define-key ctl-x-m-map (kbd "p") 'smartparens-mode)
-(define-key ctl-x-m-map (kbd "r") 'rainbow-delimiters-mode)
 (define-key ctl-x-m-map (kbd "s") 'flyspell-mode)
 (define-key ctl-x-m-map (kbd "w") 'whitespace-mode)
 
-;; Evil - activate evil mode
-(evil-mode 1)
+;;; Mouse
+
+;; Behaviour
+(setq mouse-yank-at-point t)
+
+;;;; Evil ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Activate evil mode
+(use-package evil
+             :ensure t
+             :init
+             ;; Undo tree
+             (use-package undo-tree
+                          :ensure t
+                          :diminish undo-tree-mode
+                          :config
+                          (global-undo-tree-mode 1))
+             ;; Evil leader
+             (use-package evil-leader
+                          :ensure t
+                          :config (global-evil-leader-mode))
+             :config (evil-mode 1))
+
+;;; Use evil packages
+(use-package evil-anzu :ensure t)
+(use-package evil-org :ensure t)
+(use-package evil-surround
+             :ensure t
+             :config (global-evil-surround-mode 1))
+(use-package evil-visualstar
+             :ensure t
+             :config (global-evil-visualstar-mode 1))
+(use-package evil-numbers
+             :ensure t
+             :bind (("C-c +" . evil-numbers/inc-at-pt)
+                    ("C-c -" . evil-numbers/dec-at-pt)))
 
 ;; Evil normal keys (default <leader> is (evil-leader/set-leader "\\"))
-(global-evil-leader-mode)
 (evil-leader/set-key
   "d" 'evil-insert-digraph
   "e" 'evil-execute-in-emacs-state
@@ -472,6 +497,8 @@ vertical split."
   "m" 'ctl-x-m-map
   "t" 'untabify
   "w" 'whitespace-cleanup)
+
+;; Move keys that interfere with emacs state from motion state to normal state
 (dolist (key (list (kbd "RET") (kbd "SPC")))
   (define-key evil-normal-state-map key
     (lookup-key evil-motion-state-map key))
@@ -513,13 +540,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (abort-recursive-edit)))
 
 ;; Evil settings
-(global-evil-surround-mode 1)
-(global-evil-visualstar-mode 1)
-(let ((grey "#586e75")
-      (green "#859900")
-      (violet "#6c71c4")
+(let ((grey    "#586e75")
+      (green   "#859900")
+      (violet  "#6c71c4")
       (magenta "#d33682")
-      (red "#dc322f"))
+      (red     "#dc322f"))
   (setq evil-move-cursor-back nil
         evil-mode-line-format nil ;; This was set in mode line section
         evil-emacs-state-cursor    '(grey    box)
@@ -536,16 +561,5 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         evil-operator-state-tag "(OPERATOR)"
         evil-replace-state-tag  "(REPLACE)"
         evil-visual-state-tag   "(VISUAL)"))
-
-;;; Mouse
-
-;; Behaviour
-(setq mouse-yank-at-point t)
-
-;; Supplementary C-"right-click" bindings for mice without middle buttons
-(eval-after-load "flyspell"
-  '(progn
-     (define-key flyspell-mouse-map (kbd "C-<down-mouse-3>") #'flyspell-correct-word)
-     (define-key flyspell-mouse-map (kbd "C-<mouse-3>") 'undefined)))
 
 ;;;; EOF ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -6,9 +6,9 @@ PANEL_HEIGHT=16
 PANEL_FIFO='/tmp/bspwm/panel-fifo'
 PANEL_HIDDEN_FLAG='/tmp/bspwm/panel-hidden'
 BATTERY_LOC='NONE' # BATTERY='NONE' to disable bat. monitor
-BATTERY_NOW="${BATTERY_LOC}/current"                         
-BATTERY_FULL="${BATTERY_LOC}/full"                         
-BATTERY_STATUS="${BATTERY_LOC}/status"                         
+BATTERY_NOW="${BATTERY_LOC}/current"
+BATTERY_FULL="${BATTERY_LOC}/full"
+BATTERY_STATUS="${BATTERY_LOC}/status"
 
 ## BSPWM variables
 BORDER_WIDTH=1
@@ -51,25 +51,32 @@ panel_toggle()
 ## within bspwm to float the window spawned from the dmenu input
 panel_dmenu()
 {
-    [ -e $PANEL_HIDDEN_FLAG ] && bspc config top_padding $PANEL_HEIGHT
-
-    [ -n "$1" ] && bspc rule -a \* -o floating=on
+    [ -n "$1" ] && FLOAT=true || FLOAT=false
+    $FLOAT && bspc rule -a \* -o floating=on
 
     CACHE="${XDG_CACHE_HOME:-"${HOME}/.cache"}/dmenu_run"
     IFS=:
     stest -dqr -n $CACHE $PATH && stest -flx $PATH | sort -u > $CACHE
 
-    DMENU_CMD=                                              \
-    "$(                                                     \
+    [ -e $PANEL_HIDDEN_FLAG ] && bspc config top_padding $PANEL_HEIGHT
+
+    DMENU_CMD="$(                                           \
         dmenu -i -f -h ${PANEL_HEIGHT} -fn "${PANEL_FONT}"  \
         -nf "#$foreground" -nb "#$background"               \
         -sf "#$blue"       -sb "#$background"               \
-        < ${CACHE}                                          \
+        < ${CACHE}
     )"
 
-    (eval $DMENU_CMD || [ -n "$1" ] && bspc rule -r \*) &
-
     [ -e $PANEL_HIDDEN_FLAG ] && bspc config top_padding 0;
+
+    if [ -n "$DMENU_CMD" ]
+    then
+        $FLOAT && DMENU_CMD="${DMENU_CMD} ; bspc rule -r \*"
+        eval $DMENU_CMD &
+    elif $FLOAT
+    then
+        bspc rule -r \*
+    fi
 }
 
 ## Safely kill bspwm
@@ -77,7 +84,7 @@ bspwm_quit()
 {
     rm -Rf /tmp/bspwm/
 
-    for ARG in bspwm-panel xtitle bspc 
+    for ARG in bspwm-panel xtitle bspc
     do
         while pgrep -x $ARG > /dev/null 2>&1
         do

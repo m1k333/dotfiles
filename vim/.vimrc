@@ -6,10 +6,11 @@
 " Visuals
 set noerrorbells novisualbell t_vb=
 if has("gui_running")
+    set guioptions= guiheadroom=0
     colorscheme solarized
 else
-    set background=dark
-    colorscheme elflord
+    set background=light
+    colorscheme desert
 endif
 
 " Information

@@ -148,7 +148,8 @@ panel_bar()
 
 # Run the panel itself
 xdotool search --sync --name 'bar' set_window --name '_bspwmpanelbar_' &
-panel_bar | lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT" -F "$foreground" -B "$background" &
+panel_bar | lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT" -F "$foreground" -B \
+    "$background" -u 2 &
 
 ### Run programs into the FIFO
 
@@ -167,15 +168,17 @@ clock()
 clock > $PANEL_FIFO &
 
 # Battery Monitor
-if [ ! $BATTERY_LOC = NONE ] # If some battery location is specified
+if [ ! $BATTERY_LOC = NONE ]
 then
     bat_percent()
     {
         while true
         do
-            if [ -e $BAT ]
+            if [ -e $BATTERY_LOC ]
             then
-                BPERCENT=$(echo "($BATTERY_NOW * 100) / $BATTERY_FULL" | bc)
+                BNOW=$(cat ${BATTERY_NOW})
+                BFULL=$(cat ${BATTERY_FULL})
+                BPERCENT=$( echo "${BNOW} * 100 / ${BFULL}" | bc)
                 if [ $BATTERY_STATUS = Charging ]
                 then
                     BSTATUS='+'
@@ -186,21 +189,22 @@ then
                     BSTATUS=''
                 fi
 
-                if [ $BPERCENT -gt 66 ]
+                if [ $BPERCENT -ge 66 ]
                 then
                     BCOLOUR="%{B$green}"
-                elif [ $BPERCENT -gt 33 ]
+                elif [ $BPERCENT -ge 33 ]
                 then
                     BCOLOUR="%{B$yellow}"
                 else
                     BCOLOUR="%{B$red}"
                 fi
+                BPERCENT="${BPERCENT}%%"
             else
                 BCOLOUR="%{B$yellow}"
                 BSTATUS='A/C'
                 BPERCENT=''
             fi
-            echo "B%{F$black}${BCOLOUR} ${BSTATUS}${BPERCENT} %{B-}%{F-}    "
+            echo "B%{F$black}${BCOLOUR} ${BSTATUS}${BPERCENT} %{B-}%{F-}  "
             sleep 10
         done;
     }

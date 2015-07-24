@@ -1,8 +1,8 @@
 #!/bin/sh
 
 ## Panel variables
-PANEL_FONT='-*-gohufont-medium-*-*-*-14-*-*-*-*-*-iso10646-*'
-PANEL_HEIGHT=16
+PANEL_FONT='-*-terminus-bold-*-*-*-17-*-*-*-*-*-*-*'
+PANEL_HEIGHT=20
 PANEL_FIFO='/tmp/bspwm/panel-fifo'
 PANEL_HIDDEN_FLAG='/tmp/bspwm/panel-hidden'
 BATTERY_LOC='NONE' # BATTERY='NONE' to disable bat. monitor
@@ -11,8 +11,8 @@ BATTERY_FULL="${BATTERY_LOC}/full"
 BATTERY_STATUS="${BATTERY_LOC}/status"
 
 ## BSPWM variables
-BORDER_WIDTH=1
-WINDOW_GAP=1
+BORDER_WIDTH=2
+WINDOW_GAP=3
 BSPWM_INITIALIZED_FLAG='/tmp/bspwm/initialized'
 
 ## Colour scheme
@@ -60,10 +60,11 @@ panel_dmenu()
 
     [ -e $PANEL_HIDDEN_FLAG ] && bspc config top_padding $PANEL_HEIGHT
 
-    DMENU_CMD="$(                                           \
-        dmenu -i -f -h ${PANEL_HEIGHT} -fn "${PANEL_FONT}"  \
-        -nf "#$foreground" -nb "#$background"               \
-        -sf "#$blue"       -sb "#$background"               \
+        #dmenu -i -f -h ${PANEL_HEIGHT} -fn "${PANEL_FONT}"  \
+    DMENU_CMD="$(                               \
+        dmenu -i -f -fn "${PANEL_FONT}"         \
+        -nf "#$foreground" -nb "#$background"   \
+        -sf "#$blue"       -sb "#$background"   \
         < ${CACHE}
     )"
 

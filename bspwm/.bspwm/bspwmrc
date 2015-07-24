@@ -48,6 +48,9 @@ xsetroot -cursor_name left_ptr
 # Make QT pick up on GTK themes and icons
 export DESKTOP_SESSION=gnome
 
+# Other applications
+mpd &
+
 # Run the panel (only once (EVER))
 if [ ! -e $BSPWM_INITIALIZED_FLAG ]
 then

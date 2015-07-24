@@ -4,12 +4,7 @@
 
 ;;;; Initialization ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Common lisp functionality
-;;(require 'cl)
-
-;;; Package
-
-;; Add the package repositories and intialize
+;;; Add the package repositories and intialize
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives
@@ -20,12 +15,12 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; Load use-package, as well as diminish and bind-key (used by use-package)
+;;; Load use-package, as well as diminish and bind-key (used by use-package)
 (require 'use-package)
 (require 'bind-key)
 (use-package diminish :ensure t)
 
-;; Facilitate easy byte-compilation of the users' init file
+;;; Facilitate easy byte-compilation of the users' init file
 (defun byte-compile-init () "Byte-compile Emacs' init file."
   (interactive) (byte-compile-file user-init-file))
 
@@ -369,7 +364,7 @@ This command does the inverse of `fill-region'."
 (setq tramp-persistency-file-name
       (expand-file-name"tramp-file" user-emacs-directory))
 
-;; Edit a file as root using sudo (from `what the .emacs.d?!')
+;; Edit a file as root using sudo
 (defun sudo-edit (&optional arg)
   "Edit a file as root."
   (interactive "p")
@@ -563,7 +558,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (violet  "#6c71c4")
       (magenta "#d33682")
       (red     "#dc322f"))
-  (setq evil-move-cursor-back nil
+  (setq ;; evil-move-cursor-back nil
         evil-mode-line-format nil ;; This was set in mode line section
         evil-emacs-state-cursor    '(grey    box)
         evil-insert-state-cursor   '(magenta bar)

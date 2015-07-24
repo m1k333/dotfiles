@@ -26,8 +26,8 @@ case $WM in
         SXHKD_SHELL='/bin/sh' sxhkd -c ${HOME}/.bspwm/sxhkdrc &
         exec bspwm -c ${HOME}/.bspwm/bspwmrc
         ;;
-    fluxbox)
-        exec startfluxbox
+    xfce)
+        exec xfce4-session
         ;;
     *)
         exec $WM

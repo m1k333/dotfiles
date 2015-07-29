@@ -1,15 +1,12 @@
-!!! X Server !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! X Server !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-!!! XCursor
+! XCursor
 Xcursor.theme: OpenZone_White
 
-!!! URXVT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! COLOURS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ! Solarized color scheme for the X Window System
 ! http://ethanschoonover.com/solarized
-
-! Fix:
-URxvt*intensityStyles: false
 
 ! Common
 #define S_yellow        #b58900
@@ -22,7 +19,7 @@ URxvt*intensityStyles: false
 #define S_green         #859900
 
 ! Dark
-!#define S_base03        #002b36
+!#define S_base03        #657B83
 !#define S_base02        #073642
 !#define S_base01        #586e75
 !#define S_base00        #657b83
@@ -39,11 +36,14 @@ URxvt*intensityStyles: false
 #define S_base0         #657b83
 #define S_base1         #586e75
 #define S_base2         #073642
-#define S_base3         #002b36
+#define S_base3         #657B83
 
-! To only apply colors to your terminal, for example, prefix
-! the color assignment statement with its name. Example:
-! URxvt*background:            S_base03
+!!! URXVT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! Colour fix
+URxvt*intensityStyles: false
+
+! Colours
 URxvt*background:              S_base03
 URxvt*foreground:              S_base0
 URxvt*cursorColor:             S_base1
@@ -66,39 +66,46 @@ URxvt*color13:                 S_violet
 URxvt*color14:                 S_base1
 URxvt*color15:                 S_base3
 
-!! Bell
+! Bell
 URxvt*urgentonBell: true
 
-!! Borders
+! Borders
 URxvt*internalBorder: 4
 URxvt*externalBorder: 0
 
-!! Copy+Paste
+! Copy+Paste
 URxvt*keysym.C-C:   perl:clipboard:copy
 URxvt*keysym.C-V:   perl:clipboard:paste
 URxvt*keysym.C-A-v: perl:clipboard:paste_escaped
 
-!! Cursor
+! Cursor
 URxvt*cursorBlinks: true
 
-!! Font
+! Font
 URxvt*font:      -*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*
 URxvt*boldFont:
 
-!! History
+! History
 URxvt*saveLines: 30000
 
-!! Perl extensions
+! Perl extensions
 URxvt*perl-ext-common: default,clipboard,matcher,url-select
 URxvt*url-launcher:    /usr/bin/firefox
 URxvt*matcher.button:  1
 
-!! Picture mode
+! Picture mode
 URxvt*iso14755:    false
 URxvt*iso14755_52: false
 
-!! ScrollBar
+! ScrollBar
 URxvt*scrollBar_right: true
 URxvt*scrollstyle: plain
 
-!! EOF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Rofi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! Settings
+rofi.font:          Terminus 12
+rofi.color-enabled: true
+rofi.terminal:      urxvt
+
+!! EOF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

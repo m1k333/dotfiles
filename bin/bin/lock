@@ -1,0 +1,5 @@
+#!/bin/sh
+import -window root /tmp/i3lockscreenshot.png
+convert /tmp/i3lockscreenshot.png -blur 0x5 /tmp/i3lockscreenshotblur.png
+i3lock -i /tmp/i3lockscreenshotblur.png
+rm -f /tmp/i3lockscreenshot.png /tmp/i3lockscreenshotblur.png

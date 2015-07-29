@@ -1,18 +1,14 @@
 #!/bin/zsh
 
-## ~/.zlogin ###########################################################
+## ~/.zlogin
 
-## Start an X server ###################################################
+## Start an X server (Broken after ZSH update?!?!?!?)
+#startx -- vt$XDG_VTNR &> /tmp/xorg-session-log-$(date +'%F_%T')
 
-    #####################
-        STARTX=true
-    #####################
-    
-if ${STARTX}; then 
-    [ -z $DISPLAY -a $XDG_VTNR -eq 1 ] && \
-    startx -- vt$XDG_VTNR > /tmp/xorg-session-log-$(date +'%F_%T') 2>&1
-elif [ $TERM = linux ]; then
+## Prettify linux terminal
+if test $TERM = linux
+then
     echo ''
 fi
 
-## EOF #################################################################
+## EOF

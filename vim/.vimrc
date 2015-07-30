@@ -14,7 +14,7 @@ else
 endif
 
 " Information
-set laststatus=2 modeline shortmess=atI showcmd 
+set laststatus=2 modeline shortmess=atI showcmd
 set statusline=./%f%m%r%h%w\ type:%Y%<%=\ %p%%\ (%LL)\ (%04l,%04v)
 
 "" Files ###############################################################
@@ -28,14 +28,14 @@ set encoding=utf-8 fileformats=unix,dos,mac
 " Filetype syntax HL and indentation
 filetype plugin indent on
 syntax on
-set showmatch matchtime=2 
+set showmatch matchtime=2
 set formatoptions=c,q,r,t
 
 " New files default to text mode
 autocmd BufNewFile,BufRead * setfiletype text
 
 " Specific filetype options
-autocmd FileType fortran setlocal shiftwidth=6 tabstop=6 
+autocmd FileType fortran setlocal shiftwidth=6 tabstop=6
 
 "" Functions and commands ##############################################
 
@@ -47,28 +47,42 @@ func! WScleanup()
 endfunc
 command! WScleanup call WScleanup()
 
+" Show whitespace
+let w:showWS = 0
+func! ToggleWS()
+    if w:showWS
+        set list lcs=tab:»-,trail:·,nbsp:.
+        let w:showWS = 0
+    else
+        set nolist
+        let w:showWS = 1
+    endif
+endfunc
+command! ToggleWS call ToggleWS()
+
 "" Keybindings #########################################################
 set scrolloff=7
 set timeoutlen=500
 nmap <leader>n :set invnumber<CR>
 nmap <leader>w :WScleanup<CR>
+nmap <leader>s :ToggleWS<CR>
 
 "" Searching ###########################################################
-set incsearch 
+set incsearch
 set ignorecase smartcase
 
 "" Tabs ################################################################
 
 " Indentation
 set autoindent smartindent
-set expandtab shiftround smarttab 
+set expandtab shiftround smarttab
 set shiftwidth=4 tabstop=4
 
 " Tab-completion
 set wildmenu wildmode=list:longest,full
 
 "" Wrap ################################################################
-set backspace=indent,eol,start 
+set backspace=indent,eol,start
 set textwidth=80
 
 "" EOF #################################################################

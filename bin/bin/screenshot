@@ -1,0 +1,16 @@
+#!/bin/sh
+
+usage()  { echo "Usage: screenshot {screen,window}"; exit 2; }
+screen() { import -window root ${DATE}; exit $?; }
+window() { import -window $(xdotool getwindowfocus) ${DATE}; exit $?; }
+
+DATE="${HOME}/$(date +%F_%T_%N).jpg"
+
+test -z $1 && usage;
+
+test $1 = screen && screen;
+test $1 = window && window;
+
+usage;
+
+## EOF

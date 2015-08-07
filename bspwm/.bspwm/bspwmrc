@@ -1,7 +1,10 @@
 #!/bin/sh
 
-## Colour scheme
+## Getting ready
+xsetroot -cursor_name watch
+xsetroot -solid black
 
+## Colour scheme
 black='#000000'
 blue='#268bd2'
 cyan='#2aa198'
@@ -13,68 +16,56 @@ violet='#6c71c4'
 white='#D0D0D0'
 yellow='#b58900'
 
-## Set up environment
-
-test -d /tmp/bspwm/ || mkdir /tmp/bspwm/ 2> /dev/null
-
-## Appearance
-
+## Borders
 bspc config border_width                 2
 bspc config window_gap                   0
 bspc config borderless_monocle           true
 bspc config gapless_monocle              true
 
+# Regular border colours
 bspc config focused_border_color         $magenta
 bspc config active_border_color          $magenta
 bspc config normal_border_color          $blue
 bspc config presel_border_color          $yellow
 bspc config urgent_border_color          $red
 
+# Locked border colours
 bspc config focused_locked_border_color  $black
 bspc config active_locked_border_color   $black
 bspc config normal_locked_border_color   $black
 
+# Sticky border colours
 bspc config focused_sticky_border_color  $green
 bspc config active_sticky_border_color   $green
 bspc config normal_sticky_border_color   $green  
 
+# Private border colours
 bspc config focused_private_border_color $white
 bspc config active_private_border_color  $white
 bspc config normal_private_border_color  $white
 
 ## Behaviour
-
 bspc config focus_follows_pointer true
 bspc config auto_cancel           true
 bspc config split_ratio           0.50
-bspc config auto_alternate        true
+bspc config auto_alternate        false
 
 ## Rules
-
 bspc rule -a Steam floating=on
 
 ## Set up BSPWM desktops (AFTER configuring BSPWM itself)
-
 bspc monitor -d 1 2 3 4 5 6 7 8 9 0
 
 ## X settings
-
 test -e ${HOME}/.xmodmap && xmodmap ${HOME}/.xmodmap
 xset -b s 1800 dpms 1800 1800 1800
 xrdb -load ${HOME}/.Xresources
 export DESKTOP_SESSION=gnome # Make QT use GTK settings
 
-## Root window
+## External applications
+mpd &
 
-feh --bg-max --no-fehbg ${HOME}/.bspwm/wallpaper*
+# Ready
 xsetroot -cursor_name left_ptr
-
-## Run some things only once
-
-if test ! -e /tmp/bspwm/initialized
-then
-    mpd &
-    touch /tmp/bspwm/initialized
-fi
 
 ## EOF

@@ -82,7 +82,7 @@ URxvt*keysym.C-A-v: perl:clipboard:paste_escaped
 URxvt*cursorBlinks: true
 
 ! Font
-URxvt*font:      -*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*
+URxvt*font:     xft:DejaVu Sans Mono:size=11
 URxvt*boldFont:
 
 ! History
@@ -104,7 +104,7 @@ URxvt*scrollstyle: plain
 !!! Rofi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ! Settings
-rofi.font:          Terminus 12
+rofi.font:          DejaVu Sans Mono 11
 rofi.color-enabled: true
 rofi.terminal:      urxvt
 

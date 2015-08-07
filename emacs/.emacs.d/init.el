@@ -22,7 +22,7 @@
 
 ;;; Facilitate easy byte-compilation of the users' init file
 (defun byte-compile-init () "Byte-compile Emacs' init file."
-  (interactive) (byte-compile-file user-init-file))
+       (interactive) (byte-compile-file user-init-file))
 
 ;;; Key maps to be populated throughout init file
 (define-prefix-command 'ctl-x-m-map)
@@ -39,26 +39,23 @@
       echo-keystrokes 0.1
       global-font-lock-mode t
       font-lock-maximum-decoration t)
+(when window-system
+  (add-hook 'after-init-hook
+            '(lambda () (set-frame-size (selected-frame) 82 50))))
 
 ;;; Theme
 (use-package solarized-theme
-             :ensure t
-             :if window-system
-             :config
-             (setq solarized-distinct-fringe-background t)
-             (load-theme 'solarized-light t))
+  :ensure t
+  :if window-system
+  :config
+  (setq solarized-distinct-fringe-background t)
+  (load-theme 'solarized-light t))
 
 ;;; Fonts
 (when window-system
-  (cond ((x-list-fonts "GohuFont")
+  (cond ((x-list-fonts "DejaVu Sans Mono")
          (set-frame-font
-          "-*-gohufont-medium-*-*-*-14-*-*-*-*-*-iso10646-*" nil t))
-        ((x-list-fonts "Terminus")
-         (set-frame-font
-          "-*-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-*" nil t))
-        ((x-list-fonts "DejaVu Sans Mono")
-         (set-frame-font
-          "DejaVu Sans Mono-11" nil t))
+          "DejaVu Sans Mono-10" nil t))
         (t nil)))
 
 ;;; Mode line
@@ -86,35 +83,35 @@
 
 ;;; Anzu
 (use-package anzu
-             :ensure t
-             :defer t
-             :diminish anzu-mode
-             :bind (("M-%" . anzu-query-replace)
-                    ("C-M-%" . anzu-query-replace-regexp))
-             :config (global-anzu-mode 1))
+  :ensure t
+  :defer t
+  :diminish anzu-mode
+  :bind (("M-%" . anzu-query-replace)
+         ("C-M-%" . anzu-query-replace-regexp))
+  :config (global-anzu-mode 1))
 
 ;;; Auto-complete
 (use-package auto-complete
-             :ensure t
-             :defer t
-             :diminish auto-complete-mode
-             :bind ("C-<tab>" . auto-complete)
-             :init (use-package fuzzy :ensure t)
-             :config
-             (ac-config-default)
-             (setq ac-auto-start nil
-                   ac-comphist-file (expand-file-name "ac-comp-history-file"
-                                                      user-emacs-directory))
-             (use-package jedi
-                          ;; Python auto-complete via Jedi python backend.  M-x
-                          ;; jedi:install-server is required on first run.
-                          ;; jed:install-server is dependent on the virtualenv
-                          ;; python library, which is available as
-                          ;; python-virtualenv in the Arch repos.
-                          :ensure t
-                          :config
-                          (add-hook 'python-mode-hook 'jedi:setup)
-                          (setq jedi:complete-on-dot t)))
+  :ensure t
+  :defer t
+  :diminish auto-complete-mode
+  :bind ("C-<tab>" . auto-complete)
+  :init (use-package fuzzy :ensure t)
+  :config
+  (ac-config-default)
+  (setq ac-auto-start nil
+        ac-comphist-file (expand-file-name "ac-comp-history-file"
+                                           user-emacs-directory))
+  (use-package jedi
+    ;; Python auto-complete via Jedi python backend.  M-x
+    ;; jedi:install-server is required on first run.
+    ;; jed:install-server is dependent on the virtualenv
+    ;; python library, which is available as
+    ;; python-virtualenv in the Arch repos.
+    :ensure t
+    :config
+    (add-hook 'python-mode-hook 'jedi:setup)
+    (setq jedi:complete-on-dot t)))
 
 
 ;;; Backups and autosave
@@ -247,14 +244,14 @@ This command does the inverse of `fill-region'."
 
 ;;; Flyspell
 (use-package flyspell
-             :ensure t
-             :defer t
-             :commands (flyspell-mode flyspell-prog-mode flyspell-buffer flyspell-region)
-             :config
-             (define-key flyspell-mouse-map
-                         (kbd "C-<down-mouse-3>") #'flyspell-correct-word)
-             (define-key flyspell-mouse-map
-                         (kbd "C-<mouse-3>") 'undefined))
+  :ensure t
+  :defer t
+  :commands (flyspell-mode flyspell-prog-mode flyspell-buffer flyspell-region)
+  :config
+  (define-key flyspell-mouse-map
+    (kbd "C-<down-mouse-3>") #'flyspell-correct-word)
+  (define-key flyspell-mouse-map
+    (kbd "C-<mouse-3>") 'undefined))
 
 ;;; Garbage collection (use more RAM before doing GC)
 (setq gc-cons-threshold 52428800)
@@ -274,8 +271,8 @@ This command does the inverse of `fill-region'."
       (expand-file-name "ido-file" user-emacs-directory))
 (ido-mode 1)
 (use-package ido-ubiquitous
-             :ensure t
-             :config (ido-ubiquitous-mode 1))
+  :ensure t
+  :config (ido-ubiquitous-mode 1))
 
 ;;; LISP interaction stuff
 
@@ -293,9 +290,9 @@ This command does the inverse of `fill-region'."
 
 ;;; Rainbow delimiters
 (use-package rainbow-delimiters
-             :ensure t
-             :defer t
-             :init (bind-key "r" 'rainbow-delimiters-mode ctl-x-m-map))
+  :ensure t
+  :defer t
+  :init (bind-key "r" 'rainbow-delimiters-mode ctl-x-m-map))
 
 ;;; Saveplace
 (require 'saveplace)
@@ -309,40 +306,40 @@ This command does the inverse of `fill-region'."
 
 ;;; SLIME
 (use-package slime
-             :ensure t
-             :defer t
-             :commands (slime slime-connect slime-mode)
-             :init
-             ;; Quicklisp path
-             (defvar quicklisp-path
-               (expand-file-name "~/quicklisp/")
-               "The path to my quicklisp installation.")
-             ;; Quicklisp SLIME helper
-             (defvar quicklisp-slime-helper
-               (concat quicklisp-path "slime-helper.el")
-               "The location of the quicklisp-slime-helper elisp file.")
-             :config
-             ;; Initialize SLIME and helpers
-             (when (file-exists-p quicklisp-slime-helper)
-               (load quicklisp-slime-helper))
-             (setq inferior-lisp-program "/usr/bin/sbcl"))
+  :ensure t
+  :defer t
+  :commands (slime slime-connect slime-mode)
+  :init
+  ;; Quicklisp path
+  (defvar quicklisp-path
+    (expand-file-name "~/quicklisp/")
+    "The path to my quicklisp installation.")
+  ;; Quicklisp SLIME helper
+  (defvar quicklisp-slime-helper
+    (concat quicklisp-path "slime-helper.el")
+    "The location of the quicklisp-slime-helper elisp file.")
+  :config
+  ;; Initialize SLIME and helpers
+  (when (file-exists-p quicklisp-slime-helper)
+    (load quicklisp-slime-helper))
+  (setq inferior-lisp-program "/usr/bin/sbcl"))
 
 ;;; Smartparens
 (use-package smartparens
-             :ensure t
-             :defer t
-             :init (bind-key "p" 'smartparens-mode ctl-x-m-map))
+  :ensure t
+  :defer t
+  :init (bind-key "p" 'smartparens-mode ctl-x-m-map))
 
 ;;; Smex
 (use-package smex
-             :ensure t
-             :defer t
-             :bind (("M-x" . smex)
-                    ("M-X" . smex-major-mode-commands))
-             :config
-             (setq smex-save-file
-                   (expand-file-name "smex-items-file" user-emacs-directory))
-             (smex-initialize))
+  :ensure t
+  :defer t
+  :bind (("M-x" . smex)
+         ("M-X" . smex-major-mode-commands))
+  :config
+  (setq smex-save-file
+        (expand-file-name "smex-items-file" user-emacs-directory))
+  (smex-initialize))
 
 ;;; Startup screen
 (setq inhibit-startup-screen t
@@ -425,12 +422,12 @@ vertical split."
 
 ;;; Yasnippet
 (use-package yasnippet
-             :ensure t
-             :diminish yas-minor-mode
-             :config
-             (yas-global-mode 1)
-             (push 'yas-hippie-try-expand hippie-expand-try-functions-list)
-             (setq yas-minor-mode-map (make-sparse-keymap)))
+  :ensure t
+  :diminish yas-minor-mode
+  :config
+  (yas-global-mode 1)
+  (push 'yas-hippie-try-expand hippie-expand-try-functions-list)
+  (setq yas-minor-mode-map (make-sparse-keymap)))
 
 ;;;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -474,33 +471,33 @@ vertical split."
 
 ;;; Activate evil mode
 (use-package evil
-             :ensure t
-             :init
-             ;; Undo tree
-             (use-package undo-tree
-                          :ensure t
-                          :diminish undo-tree-mode
-                          :config
-                          (global-undo-tree-mode 1))
-             ;; Evil leader
-             (use-package evil-leader
-                          :ensure t
-                          :config (global-evil-leader-mode))
-             :config (evil-mode 1))
+  :ensure t
+  :init
+  ;; Undo tree
+  (use-package undo-tree
+    :ensure t
+    :diminish undo-tree-mode
+    :config
+    (global-undo-tree-mode 1))
+  ;; Evil leader
+  (use-package evil-leader
+    :ensure t
+    :config (global-evil-leader-mode))
+  :config (evil-mode 1))
 
 ;;; Use evil packages
 (use-package evil-anzu :ensure t)
 (use-package evil-org :ensure t)
 (use-package evil-surround
-             :ensure t
-             :config (global-evil-surround-mode 1))
+  :ensure t
+  :config (global-evil-surround-mode 1))
 (use-package evil-visualstar
-             :ensure t
-             :config (global-evil-visualstar-mode 1))
+  :ensure t
+  :config (global-evil-visualstar-mode 1))
 (use-package evil-numbers
-             :ensure t
-             :bind (("C-c +" . evil-numbers/inc-at-pt)
-                    ("C-c -" . evil-numbers/dec-at-pt)))
+  :ensure t
+  :bind (("C-c +" . evil-numbers/inc-at-pt)
+         ("C-c -" . evil-numbers/dec-at-pt)))
 
 ;; Evil normal keys (default <leader> is (evil-leader/set-leader "\\"))
 (evil-leader/set-key
@@ -559,20 +556,20 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (magenta "#d33682")
       (red     "#dc322f"))
   (setq ;; evil-move-cursor-back nil
-        evil-mode-line-format nil ;; This was set in mode line section
-        evil-emacs-state-cursor    '(grey    box)
-        evil-insert-state-cursor   '(magenta bar)
-        evil-normal-state-cursor   '(green   box)
-        evil-motion-state-cursor   '(green   box)
-        evil-operator-state-cursor '(red     hollow)
-        evil-replace-state-cursor  '(red     bar)
-        evil-visual-state-cursor   '(violet  box)
-        evil-emacs-state-tag    "(EMACS)"
-        evil-insert-state-tag   "(INSERT)"
-        evil-motion-state-tag   "(MOTION)"
-        evil-normal-state-tag   "(NORMAL)"
-        evil-operator-state-tag "(OPERATOR)"
-        evil-replace-state-tag  "(REPLACE)"
-        evil-visual-state-tag   "(VISUAL)"))
+   evil-mode-line-format nil ;; This was set in mode line section
+   evil-emacs-state-cursor    '(grey    box)
+   evil-insert-state-cursor   '(magenta bar)
+   evil-normal-state-cursor   '(green   box)
+   evil-motion-state-cursor   '(green   box)
+   evil-operator-state-cursor '(red     hollow)
+   evil-replace-state-cursor  '(red     bar)
+   evil-visual-state-cursor   '(violet  box)
+   evil-emacs-state-tag    "(EMACS)"
+   evil-insert-state-tag   "(INSERT)"
+   evil-motion-state-tag   "(MOTION)"
+   evil-normal-state-tag   "(NORMAL)"
+   evil-operator-state-tag "(OPERATOR)"
+   evil-replace-state-tag  "(REPLACE)"
+   evil-visual-state-tag   "(VISUAL)"))
 
 ;;;; EOF ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

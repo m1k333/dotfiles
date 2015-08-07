@@ -5,7 +5,7 @@
 
 # Quit bspwm
 super + ctrl + alt + Escape
-    rm -Rf /tmp/bspwm/; bspc quit
+    bspc quit
 
 # Reload {bspwm,sxhkd} settings
 super + {shift + ,_}Escape
@@ -42,8 +42,6 @@ super + {_,shift + }Tab
     bspc {window,desktop} -f last
 
 # Circulate the leaves of the focused desktop's binary tree
-super + {comma,period}
-    bspc desktop -C {backward,forward}
 super + shift + {comma,period}
     bspc desktop -C {backward,forward}
 
@@ -84,9 +82,7 @@ super + {shift + ,_}y
     bspc window -w last.manual{_,_}
 
 # Cycle through all windows
-super + ctrl + {comma,period}
-    bspc window {next,prev} -f
-super + shift + ctrl + {comma,period}
+super + {comma,period}
     bspc window {next,prev} -f
 
 ## Resizing window commands ####################################################
@@ -181,7 +177,6 @@ super + F{5,6,7,8}
 
 # Screenshot
 {_,shift + }Print
-    import -window {$(xdotool getwindowfocus),root} \
-    $\{HOME\}/$(date +%F_%T).jpg
+    screenshot {screen,window}
 
 ## EOF #########################################################################

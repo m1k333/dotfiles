@@ -157,6 +157,11 @@ alias emc='emacs -nw'
 alias pacman='pacman --color auto'
 alias tmat='tmux attach || tmux new-session'
 
+# Xorg
+alias xbspwm="startx ${HOME}/.xinitrc bspwm"
+alias xmate="startx ${HOME}/.xinitrc mate"
+alias xratpoison="startx ${HOME}/.xinitrc ratpoison"
+
 # Make .bak files
 function bak
 {

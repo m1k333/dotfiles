@@ -19,12 +19,16 @@ setxkbmap -option terminate:ctrl_alt_bksp
 
 ## Run a window manager ################################################
 
-WM=bspwm
-
-case $WM in
+case $1 in
     bspwm)
         SXHKD_SHELL='/bin/sh' sxhkd -c ${HOME}/.bspwm/sxhkdrc &
         exec bspwm -c ${HOME}/.bspwm/bspwmrc
+        ;;
+    mate)
+        exec mate-session
+        ;;
+    ratpoison)
+        exec ratpoison
         ;;
     *)
         exec $WM

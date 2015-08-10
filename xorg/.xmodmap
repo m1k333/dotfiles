@@ -4,5 +4,5 @@ keysym Caps_Lock = Control_L
 add control = Control_L
 
 ! Menu > Mod4 (Super)
-keysym Menu = Super_R Super_R
+keysym Menu = Super_R
 add mod4 = Super_R

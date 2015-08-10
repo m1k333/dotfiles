@@ -140,10 +140,10 @@ then
 fi
 
 # coreutils and friends
-alias l="ls ${LS_GNUOPTS}-1p"
 alias ls="ls ${LS_GNUOPTS}-p"
 alias la="ls ${LS_GNUOPTS}-ap"
-alias ll="ls ${LS_GNUOPTS}-ahlp"
+alias ll="ls ${LS_GNUOPTS}-hlp"
+alias lal="ls ${LS_GNUOPTS}-ahlp"
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'

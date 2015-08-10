@@ -5,6 +5,7 @@ test -e ${HOME}/.xmodmap && xmodmap ${HOME}/.xmodmap
 xrdb -load ${HOME}/.Xresources
 
 nm-applet &
-mpd &
+mpc status || mpd &
+transmission-gtk -m &
 
 ## EOF

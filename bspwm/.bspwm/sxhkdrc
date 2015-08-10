@@ -58,8 +58,8 @@ super + {_,ctrl + alt + }c
     bspc window -{c,k}
 
 # {private,sticky,lock} a window
-super + {shift + ,_}{p,s,u}
-    bspc window focused -t {_,_}{private,sticky,locked}
+#super + {shift + ,_}{p,s,u}
+#    bspc window focused -t {_,_}{private,sticky,locked}
 
 # Focus or move window
 super + {_,shift + }{h,j,k,l}

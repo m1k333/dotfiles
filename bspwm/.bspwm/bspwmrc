@@ -63,7 +63,7 @@ xrdb -load ${HOME}/.Xresources
 export DESKTOP_SESSION=gnome # Make QT use GTK settings
 
 ## External applications
-mpd &
+mpc status || mpd &
 
 # Ready
 xsetroot -cursor_name left_ptr

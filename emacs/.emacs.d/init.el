@@ -41,7 +41,7 @@
       font-lock-maximum-decoration t)
 (when window-system
   (add-hook 'after-init-hook
-            '(lambda () (set-frame-size (selected-frame) 82 50))))
+            '(lambda () (set-frame-size (selected-frame) 82 26))))
 
 ;;; Theme
 (use-package solarized-theme
@@ -128,9 +128,9 @@
       kept-old-versions 5)
 
 ;;; Bookmarks
-(setq bookmark-save-flag 1
-      bookmark-default-file (expand-file-name "bookmark-file"
-                                              user-emacs-directory))
+(setq bookmark-save-flag 1)
+(setq bookmark-default-file
+      (expand-file-name "bookmark-file" user-emacs-directory))
 
 ;;; Buffers
 
@@ -217,7 +217,8 @@ working directory is not in a git repo (or the git command is not found)."
                "" (concat "[" git-branch "]~")))
          "(" (user-login-name) "@" (system-name) ")~"
          "(" (eshell/pwd) ")~"
-         (propertize (if (= (user-uid) 0) "#" "$") 'face `(:foreground "orchid"))
+         (propertize (if (= (user-uid) 0) "#" "$")
+                     'face `(:foreground "orchid"))
          " ")))
 
 ;;; Fill
@@ -312,7 +313,7 @@ This command does the inverse of `fill-region'."
   :init
   ;; Quicklisp path
   (defvar quicklisp-path
-    (expand-file-name "~/quicklisp/")
+    (expand-file-name "~/Source/quicklisp/")
     "The path to my quicklisp installation.")
   ;; Quicklisp SLIME helper
   (defvar quicklisp-slime-helper
@@ -354,6 +355,21 @@ This command does the inverse of `fill-region'."
 
 ;; Don't show passwords
 (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
+
+;;; TeX
+
+;; External commands
+(setq tex-run-command "pdflatex"
+      tex-pdf-view-command "atril"
+      tex-pdf-print-command "lpr -d")
+
+;; Hack to use PDF in place of DVI in the built-in functions
+(defun tex-dvi-command-to-pdf (arg)
+  (concat "(f=*; pdflatex \"${f%.dvi}.tex\" && "
+          arg
+          " \"${f%.dvi}.pdf\")"))
+(setq tex-dvi-view-command (tex-dvi-command-to-pdf tex-pdf-view-command)
+      tex-dvi-print-command (tex-dvi-command-to-pdf tex-pdf-print-command))
 
 ;;; TRAMP
 

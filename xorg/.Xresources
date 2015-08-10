@@ -3,10 +3,7 @@
 ! XCursor
 Xcursor.theme: OpenZone_White
 
-!!! COLOURS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-! Solarized color scheme for the X Window System
-! http://ethanschoonover.com/solarized
+!!! SOLARIZED COLOURS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ! Common
 #define S_yellow        #b58900
@@ -77,21 +74,24 @@ URxvt*externalBorder: 0
 URxvt*keysym.C-C:   perl:clipboard:copy
 URxvt*keysym.C-V:   perl:clipboard:paste
 URxvt*keysym.C-A-v: perl:clipboard:paste_escaped
+URxvt*keysym.A-u:   perl:url-select:select_next
 
 ! Cursor
 URxvt*cursorBlinks: true
 
 ! Font
 URxvt*font:     xft:DejaVu Sans Mono:size=11
-URxvt*boldFont:
+URxvt*boldFont: xft:DejaVu Sans Mono:bold:size=11
 
 ! History
 URxvt*saveLines: 30000
 
 ! Perl extensions
-URxvt*perl-ext-common: default,clipboard,matcher,url-select
-URxvt*url-launcher:    /usr/bin/firefox
-URxvt*matcher.button:  1
+URxvt*perl-ext-common:      default,clipboard,matcher,url-select
+URxvt*url-launcher:         /usr/bin/firefox
+URxvt*url-select.launcher:  /usr/bin/firefox
+URxvt*url-select.underline: true
+URxvt*matcher.button:       1
 
 ! Picture mode
 URxvt*iso14755:    false
@@ -99,7 +99,7 @@ URxvt*iso14755_52: false
 
 ! ScrollBar
 URxvt*scrollBar_right: true
-URxvt*scrollstyle: plain
+URxvt*scrollstyle:     plain
 
 !!! Rofi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

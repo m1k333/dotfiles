@@ -1,215 +1,185 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <openbox_menu xmlns="http://openbox.org/3.4/menu">
-
-    <menu id="apps-editors-menu" label="Editors">
-        <item label="Emacs">
-            <action name="Execute">
-                <command>emacs</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
+	<menu id="apps-accessories-menu" label="Accessories">
+		<item label="PCManFM">
+			<action name="Execute">
+				<execute>pcmanfm</execute>
+			</action>
+		</item>
+		<item label="URxvt">
+			<action name="Execute">
+				<command>urxvt</command>
+			</action>
+		</item>
+		<item label="WXMaxima">
+			<action name="Execute">
+				<execute>wxmaxima</execute>
+			</action>
+		</item>
+		<item label="XArchiver">
+			<action name="Execute">
+				<execute>xarchiver</execute>
+			</action>
+		</item>
+		<item label="Zathura">
+			<action name="Execute">
+				<execute>zathura</execute>
+			</action>
+		</item>
+	</menu>
+	<menu id="apps-editors-menu" label="Editors">
+		<item label="Emacs">
+			<action name="Execute">
+				<command>emacs</command>
+			</action>
+		</item>
+		<item label="GIMP">
+			<action name="Execute">
+				<command>gimp</command>
+			</action>
+		</item>
+		<item label="Leafpad">
+			<action name="Execute">
+				<command>leafpad</command>
+			</action>
+		</item>
+		<item label="Vim">
+			<action name="Execute">
+				<command>gvim</command>
+			</action>
+		</item>
+	</menu>
+	<menu id="apps-net-menu" label="Internet">
+		<item label="Firefox">
+			<action name="Execute">
+				<command>firefox</command>
+			</action>
+		</item>
+		<item label="Links">
+			<action name="Execute">
+				<command>xlinks -g</command>
+			</action>
+		</item>
+		<item label="Skype">
+			<action name="Execute">
+				<command>skype</command>
+			</action>
+		</item>
+		<item label="Thunderbird">
+			<action name="Execute">
+				<command>thunderbird</command>
+			</action>
+		</item>
+		<item label="Transmission">
+			<action name="Execute">
+				<command>transmission-gtk</command>
+			</action>
+		</item>
+	</menu>
+	<menu id="apps-games-menu" label="Games">
+		<item label="ADOM">
+			<action name="Execute">
+				<command>urxvt -g 77x25 -e adom</command>
+			</action>
+		</item>
+		<item label="Brogue">
+			<action name="Execute">
+				<command>brogue</command>
+			</action>
+		</item>
+		<item label="Crawl Tiles">
+			<action name="Execute">
+				<command>crawl-tiles</command>
+			</action>
+		</item>
+		<item label="DCSS">
+			<action name="Execute">
+				<command>urxvt -e crawl</command>
+			</action>
+		</item>
+		<item label="DeSmuME">
+			<action name="Execute">
+				<command>desmume</command>
+			</action>
+		</item>
+		<item label="FCEUX">
+			<action name="Execute">
+				<command>fceux</command>
+			</action>
+		</item>
+		<item label="Minecraft">
+			<action name="Execute">
+				<command>sh ~/Games/Minecraft/minecraft</command>
+			</action>
+		</item>
+		<item label="PySol">
+			<action name="Execute">
+				<command>pysol</command>
+			</action>
+		</item>
+		<item label="SNES9X">
+			<action name="Execute">
+				<command>snes9x</command>
+			</action>
+		</item>
+		<item label="Steam">
+			<action name="Execute">
+				<command>steam</command>
+			</action>
+		</item>
+		<item label="VBA-M">
+			<action name="Execute">
+				<command>gvbam</command>
+			</action>
+		</item>
+	</menu>
+	<menu id="apps-multimedia-menu" label="Multimedia">
+		<item label="mpv">
+			<action name="Execute">
+				<command>mpv</command>
+			</action>
+		</item>
+		<item label="ncmpcpp">
+			<action name="Execute">
+				<command>urxvt -e ncmpcpp</command>
+			</action>
+		</item>
+	</menu>
+	<menu id="system-menu" label="System">
+		<item label="Appearance Settings">
+			<action name="Execute">
+				<command>lxappearance</command>
+			</action>
+		</item>
+		<item label="CUPS Settings">
+			<action name="Execute">
+				<command>xdg-open http://localhost:631/</command>
+			</action>
+		</item>
+		<item label="Openbox Settings">
+			<action name="Execute">
+				<command>obconf</command>
+			</action>
+		</item>
+		<item label="PulseAudio Settings">
+			<action name="Execute">
+				<command>pavucontrol</command>
+			</action>
         </item>
-        <item label="GVim">
-            <action name="Execute">
-                <command>gvim</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="Leafpad">
-            <action name="Execute">
-                <command>leafpad</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="Gimp">
-            <action name="Execute">
-                <command>gimp</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-    </menu>
-
-    <menu id="apps-net-menu" label="Internet">
-        <item label="Firefox">
-            <action name="Execute">
-                <command>firefox</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="Skype">
-            <action name="Execute">
-                <command>skype</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="Thunderbird">
-            <action name="Execute">
-                <command>thunderbird</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="Transmission">
-            <action name="Execute">
-                <command>transmission-gtk</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-    </menu>
-
-    <menu id="apps-games-menu" label="Games">
-        <item label="Steam">
-            <action name="Execute">
-                <command>steam</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="ADOM">
-            <action name="Execute">
-                <command>urxvt -e adom</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="Brogue">
-            <action name="Execute">
-                <command>brogue</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="DCSS">
-            <action name="Execute">
-                <command>urxvt -e crawl</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="Minecraft">
-            <action name="Execute">
-                <command>sh ~/Games/Minecraft/minecraft</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="VBA-M">
-            <action name="Execute">
-                <command>gvbam</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="DeSmuME">
-            <action name="Execute">
-                <command>desmume</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="FCEUX">
-            <action name="Execute">
-                <command>fceux</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="SNES9X">
-            <action name="Execute">
-                <command>snes9x</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-    </menu>
-
-    <menu id="apps-multimedia-menu" label="Multimedia">
-        <item label="MPV">
-            <action name="Execute">
-                <command>mpv</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="NCMPCPP">
-            <action name="Execute">
-                <command>urxvt -e ncmpcpp</command>
-                <startupnotify>
-                    <enabled>yes</enabled>
-                </startupnotify>
-            </action>
-        </item>
-    </menu>
-
-    <menu id="system-menu" label="System">
-        <item label="OBConf">
-            <action name="Execute">
-                <command>obconf</command>
-                <startupnotify><enabled>yes</enabled></startupnotify>
-            </action>
-        </item>
-        <item label="LXAppearance">
-            <action name="Execute">
-                <command>obconf</command>
-                <startupnotify><enabled>yes</enabled></startupnotify>
-            </action>
-        </item>
-        <item label="CUPS">
-            <action name="Execute">
-                <command>xdg-open http://localhost:631/</command>
-                <startupnotify>
-                    <enabled>no</enabled>
-                    <icon>cups</icon>
-                </startupnotify>
-            </action>
-        </item>
-        <item label="Restart Openbox">
-            <action name="Reconfigure" />
-        </item>
-        <item label="Exit Openbox">
-            <action name="Exit">
-                <prompt>yes</prompt>
-            </action>
-        </item>
-    </menu>
-
-    <menu id="root-menu" label="Openbox 3">
-        <separator label="Menu" />
-        <item label="URxvt">
-            <action name="Execute">
-                <command>urxvt</command>
-            </action>
-        </item>
-        <menu id="apps-editors-menu"/>
-        <menu id="apps-net-menu"/>
-        <menu id="apps-multimedia-menu"/>
-        <menu id="apps-games-menu"/>
-        <menu id="system-menu"/>
-    </menu>
-
+        <separator/>
+		<item label="Reload Openbox">
+			<action name="Reconfigure"/>
+		</item>
+		<item label="Exit Openbox">
+			<action name="Exit"/>
+		</item>
+	</menu>
+	<menu id="root-menu" label="Openbox 3">
+		<menu id="apps-accessories-menu"/>
+		<menu id="apps-editors-menu"/>
+		<menu id="apps-net-menu"/>
+		<menu id="apps-multimedia-menu"/>
+		<menu id="apps-games-menu"/>
+		<menu id="system-menu"/>
+	</menu>
 </openbox_menu>

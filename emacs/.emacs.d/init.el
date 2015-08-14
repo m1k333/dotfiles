@@ -360,7 +360,7 @@ This command does the inverse of `fill-region'."
 
 ;; External commands
 (setq tex-run-command "pdflatex"
-      tex-pdf-view-command "atril"
+      tex-pdf-view-command "zathura"
       tex-pdf-print-command "lpr -d")
 
 ;; Hack to use PDF in place of DVI in the built-in functions

@@ -6,9 +6,6 @@ xset -b s 1800 dpms 1800 1800 1800
 xrdb -load ${HOME}/.Xresources
 feh --bg-max --no-fehbg ${HOME}/.config/openbox/wallpaper.jpg
 
-## Force QT to adopt GTK theme
-export DESKTOP_SESSION=gnome
-
 ## External applications
 mpc status || mpd &
 

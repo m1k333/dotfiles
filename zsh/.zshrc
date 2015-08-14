@@ -158,9 +158,8 @@ alias pacman='pacman --color auto'
 alias tmat='tmux attach || tmux new-session'
 
 # Xorg
-alias xbspwm="startx ${HOME}/.xinitrc bspwm"
-alias xmate="startx ${HOME}/.xinitrc mate"
-alias xratpoison="startx ${HOME}/.xinitrc ratpoison"
+alias xbspwm="startx ${HOME}/.xinitrc bspwm > /tmp/xorg-session-log-$(date +'%F_%T') 2>&1"
+alias xopenbox="startx ${HOME}/.xinitrc openbox > /tmp/xorg-session-log-$(date +'%F_%T') 2>&1"
 
 # Make .bak files
 function bak

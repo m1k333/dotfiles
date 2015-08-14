@@ -161,7 +161,7 @@ super + button{1,2,3}
 # Launch applications
 super + ctrl + {shift + ,_}{e,f,m,n,t,v}
     {bspc rule -a \* -o floating=on;,_}\
-    {emacs,firefox,thunar,urxvt -e ncmpcpp,thunderbird,urxvt -e alsamixer}
+    {emacs,firefox,caja,urxvt -e ncmpcpp,thunderbird,urxvt -e alsamixer}
 
 # Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}

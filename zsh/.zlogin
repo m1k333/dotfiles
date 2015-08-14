@@ -2,8 +2,8 @@
 
 ## ~/.zlogin
 
-## Start an X server (Broken after ZSH update?!?!?!?)
-#startx -- vt$XDG_VTNR &> /tmp/xorg-session-log-$(date +'%F_%T')
+## Start an X server
+#startx ${HOME}/.xinitrc bspwm > /tmp/xorg-session-log-$(date +'%F_%T') 2>&1
 
 ## Prettify linux terminal
 if test $TERM = linux

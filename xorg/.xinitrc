@@ -24,8 +24,8 @@ case $1 in
         SXHKD_SHELL='/bin/sh' sxhkd -c ${HOME}/.bspwm/sxhkdrc &
         exec bspwm -c ${HOME}/.bspwm/bspwmrc
         ;;
-    mate)
-        exec mate-session
+    openbox)
+        exec openbox-session
         ;;
     ratpoison)
         exec ratpoison

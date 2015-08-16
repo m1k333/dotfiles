@@ -5,7 +5,7 @@
 
 # Quit bspwm
 super + ctrl + alt + Escape
-    bspc quit
+    sh $\{HOME\}/.bspwm/quit.sh
 
 # Reload {bspwm,sxhkd} settings
 super + {shift + ,_}Escape
@@ -16,6 +16,10 @@ super + {_,shift + }{_,ctrl + }r
     rofi -show {_,_}{run,ssh}
 super + {_,shift + }{_,ctrl + }w
     rofi -show window{_,_}{_,_}
+
+# Toggle panel
+super + grave
+    sh $\{HOME\}/.bspwm/setup-panel.sh toggle
 
 # Banish mouse
 super + m

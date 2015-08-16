@@ -64,6 +64,7 @@ export DESKTOP_SESSION=gnome # Make QT use GTK settings
 
 ## External applications
 mpc status || mpd &
+${HOME}/.bspwm/launch-panel.sh &
 
 # Ready
 xsetroot -cursor_name left_ptr

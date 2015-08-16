@@ -12,23 +12,22 @@ super + {shift + ,_}Escape
     {sh $\{HOME\}/.bspwm/bspwmrc,pkill -x --signal SIGUSR1 sxhkd}
 
 # Launcher
-super + {_,shift + }{_,ctrl + }r
-    rofi -show {_,_}{run,ssh}
-super + {_,shift + }{_,ctrl + }w
-    rofi -show window{_,_}{_,_}
+super + {_,shift + }r
+    sh $\{HOME\}/.bspwm/menu.sh {_,floating}
+super + w
+    rofi -show window
 
 # Toggle panel
 super + grave
     sh $\{HOME\}/.bspwm/setup-panel.sh toggle
 
 # Banish mouse
-super + m
+super + b
     xdotool mousemove 25000 25000
 
 # Terminal (+ shift for floating terminal)
 super + {shift + ,_}Return
-    {bspc rule -a urxvt -o floating=on && ,_}urxvt
-super + ctrl + {shift + ,_}Return
+    bspc rule -r \* ; \
     {bspc rule -a urxvt -o floating=on && ,_}urxvt
 
 ## Desktop commands ############################################################
@@ -70,20 +69,20 @@ super + {_,shift + }{h,j,k,l}
     bspc window -{f,s} {left,down,up,right}
 
 # Balance windows
-super + {shift + ,_}b
+super + d
     bspc desktop -B
 
 # Swap window position with largest window
-super + shift + m
+super + m
     bspc window -s biggest
 
 # Swap window position with last used window
-super + {shift + ,_}s
-    bspc window -s last{_,_}
+super + s
+    bspc window -s last
 
 # Move window to last preselection
-super + {shift + ,_}y
-    bspc window -w last.manual{_,_}
+super + y
+    bspc window -w last.manual
 
 # Cycle through all windows
 super + {comma,period}
@@ -127,9 +126,9 @@ super + ctrl + {1-9}
 
 # Convention: super + [shift + ][a-z]
 
-# Toggle {floating,pseudotiled} mode for windows
-super + {shift + ,_}{space,t}
-    bspc window focused -t {_,_}{floating,pseudo_tiled}
+# Toggle floating mode for {window,desktop}
+super + {_,shift + }space
+    bspc {window focused -t floating,desktop -t floating}
 
 # Toggle {monocle mode,fullscreen} for focused window
 super + {_,shift + }f
@@ -163,9 +162,9 @@ super + button{1,2,3}
 # Convention: {super + ctrl + [a-z],(XF86MEDIAKEYS),super + F[1-12]}
 
 # Launch applications
-super + ctrl + {shift + ,_}{e,f,m,n,t,v}
-    {bspc rule -a \* -o floating=on;,_}\
-    {emacs,firefox,caja,urxvt -e ncmpcpp,thunderbird,urxvt -e alsamixer}
+#super + ctrl + {shift + ,_}{e,f,l,m,n,t,v}
+    #{bspc rule -a \* -o floating=on;,_}\
+    #{emacs,firefox,lock,pcmanfm,urxvt -e ncmpcpp,thunderbird,urxvt -e alsamixer}
 
 # Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}

@@ -62,9 +62,16 @@ xset -b s 1800 dpms 1800 1800 1800
 xrdb -load ${HOME}/.Xresources
 export DESKTOP_SESSION=gnome # Make QT use GTK settings
 
+## Panel
+panel_start()
+{
+    pkill -x -SIGUSR1 launch-panel.sh && sleep 1
+    ${HOME}/.bspwm/launch-panel.sh 
+}
+panel_start &
+
 ## External applications
 mpc status || mpd &
-${HOME}/.bspwm/launch-panel.sh &
 
 # Ready
 xsetroot -cursor_name left_ptr

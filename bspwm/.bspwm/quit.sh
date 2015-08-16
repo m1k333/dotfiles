@@ -1,17 +1,9 @@
 #!/bin/sh
 
-. ${HOME}/.bspwm/setup-panel.sh
+# Send USR1 signal to start panel termination
+pkill -x -SIGUSR1 launch-panel.sh
 
-rm -Rf $PANEL_FIFO
-
-for ARG in launch-panel.sh lemonbar xtitle bspc
-do
-    while pgrep -x $ARG > /dev/null 2>&1
-    do
-        pkill -x -9 $ARG > /dev/null 2>&1
-    done
-done
-
+# Exit bspwm
 bspc quit
 
 ## EOF

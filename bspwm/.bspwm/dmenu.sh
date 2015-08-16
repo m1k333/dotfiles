@@ -7,7 +7,9 @@
 get_bins()
 {
     local IFS=:
-    ls ${PATH} | sort -u
+    echo "Updating cache..."
+    ls ${PATH} | sort -u | sed '/^$/d' > ${CACHE}
+    echo "...cache updated."
 }
 
 ## Test if the launcher's cache needs to be updates
@@ -28,7 +30,7 @@ ${FLOAT} && bspc rule -a \* -o floating=on
 
 ## Define and check/update the cache
 CACHE="${XDG_CACHE_HOME:-"${HOME}/.cache"}/rofi_launcher_cache"
-redo_cache_p && get_bins > ${CACHE}
+redo_cache_p && get_bins
 
 ## Run the launcher
 DMENU_CMD="$( rofi -show -dmenu -p "run:" < ${CACHE} )"

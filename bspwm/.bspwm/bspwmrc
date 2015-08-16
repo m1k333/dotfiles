@@ -18,7 +18,7 @@ yellow='#b58900'
 
 ## Borders
 bspc config border_width                 2
-bspc config window_gap                   0
+bspc config window_gap                   1
 bspc config borderless_monocle           true
 bspc config gapless_monocle              true
 

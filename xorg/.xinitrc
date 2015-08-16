@@ -25,7 +25,8 @@ case $1 in
         exec bspwm -c ${HOME}/.bspwm/bspwmrc
         ;;
     openbox)
-        exec openbox-session
+        #exec enlightenment_start
+        exec i3 -c ${HOME}/.i3/i3config.conf
         ;;
     ratpoison)
         exec ratpoison

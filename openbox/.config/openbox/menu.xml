@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <openbox_menu xmlns="http://openbox.org/3.4/menu">
+
 	<menu id="apps-accessories-menu" label="Accessories">
 		<item label="PCManFM">
 			<action name="Execute">
@@ -26,7 +28,8 @@
 				<execute>zathura</execute>
 			</action>
 		</item>
-	</menu>
+    </menu>
+
 	<menu id="apps-editors-menu" label="Editors">
 		<item label="Emacs">
 			<action name="Execute">
@@ -48,7 +51,8 @@
 				<command>gvim</command>
 			</action>
 		</item>
-	</menu>
+    </menu>
+
 	<menu id="apps-net-menu" label="Internet">
 		<item label="Firefox">
 			<action name="Execute">
@@ -75,7 +79,8 @@
 				<command>transmission-gtk</command>
 			</action>
 		</item>
-	</menu>
+    </menu>
+
 	<menu id="apps-games-menu" label="Games">
 		<item label="ADOM">
 			<action name="Execute">
@@ -109,12 +114,7 @@
 		</item>
 		<item label="Minecraft">
 			<action name="Execute">
-				<command>sh ~/Games/Minecraft/minecraft</command>
-			</action>
-		</item>
-		<item label="PySol">
-			<action name="Execute">
-				<command>pysol</command>
+                <command>~/Games/Minecraft/minecraft</command>
 			</action>
 		</item>
 		<item label="SNES9X">
@@ -132,7 +132,8 @@
 				<command>gvbam</command>
 			</action>
 		</item>
-	</menu>
+    </menu>
+
 	<menu id="apps-multimedia-menu" label="Multimedia">
 		<item label="mpv">
 			<action name="Execute">
@@ -144,8 +145,58 @@
 				<command>urxvt -e ncmpcpp</command>
 			</action>
 		</item>
-	</menu>
-	<menu id="system-menu" label="System">
+    </menu>
+
+	<menu id="places-menu" label="Places">
+		<item label="Home">
+			<action name="Execute">
+                <execute>pcmanfm ~</execute>
+			</action>
+		</item>
+		<item label="Root">
+			<action name="Execute">
+                <execute>pcmanfm /</execute>
+			</action>
+        </item>
+        <separator/>
+		<item label="Documents">
+			<action name="Execute">
+                <execute>pcmanfm ~/Documents</execute>
+			</action>
+		</item>
+		<item label="Downloads">
+			<action name="Execute">
+                <execute>pcmanfm ~/Downloads</execute>
+			</action>
+		</item>
+		<item label="Emulation">
+			<action name="Execute">
+                <execute>pcmanfm ~/Emulation</execute>
+			</action>
+		</item>
+		<item label="Games">
+			<action name="Execute">
+                <execute>pcmanfm ~/Games</execute>
+			</action>
+		</item>
+		<item label="Music">
+			<action name="Execute">
+                <execute>pcmanfm ~/Music</execute>
+			</action>
+		</item>
+		<item label="Pictures">
+			<action name="Execute">
+                <execute>pcmanfm ~/Pictures</execute>
+			</action>
+		</item>
+		<item label="Source">
+			<action name="Execute">
+                <execute>pcmanfm ~/Source</execute>
+			</action>
+		</item>
+    </menu>
+
+	<menu id="system-menu" label="Settings">
 		<item label="Appearance Settings">
 			<action name="Execute">
 				<command>lxappearance</command>
@@ -173,13 +224,19 @@
 		<item label="Exit Openbox">
 			<action name="Exit"/>
 		</item>
-	</menu>
-	<menu id="root-menu" label="Openbox 3">
-		<menu id="apps-accessories-menu"/>
+    </menu>
+
+    <menu id="root-menu" label="Openbox 3">
+        <separator label="Applications"/>
+        <menu id="apps-accessories-menu"/>
 		<menu id="apps-editors-menu"/>
 		<menu id="apps-net-menu"/>
 		<menu id="apps-multimedia-menu"/>
 		<menu id="apps-games-menu"/>
+        <separator label="System"/>
+        <menu id="client-list-combined-menu"/>
+        <menu id="places-menu"/>
 		<menu id="system-menu"/>
-	</menu>
+    </menu>
+
 </openbox_menu>

@@ -11,9 +11,13 @@ super + ctrl + alt + Escape
 super + {shift + ,_}Escape
     {sh $\{HOME\}/.bspwm/bspwmrc,pkill -x --signal SIGUSR1 sxhkd}
 
+# Terminal (+ shift for floating terminal)
+super + {shift + ,_}Return
+    {bspc rule -a urxvt -o floating=on && ,_}urxvt
+
 # Launcher
 super + {_,shift + }r
-    sh $\{HOME\}/.bspwm/menu.sh {_,floating}
+    sh $\{HOME\}/.bspwm/dmenu.sh {_,floating}
 super + w
     rofi -show window
 
@@ -24,11 +28,6 @@ super + grave
 # Banish mouse
 super + b
     xdotool mousemove 25000 25000
-
-# Terminal (+ shift for floating terminal)
-super + {shift + ,_}Return
-    bspc rule -r \* ; \
-    {bspc rule -a urxvt -o floating=on && ,_}urxvt
 
 ## Desktop commands ############################################################
 

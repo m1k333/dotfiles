@@ -162,60 +162,56 @@ panel_bar | lemonbar -g x${PANEL_HEIGHT} -f "${PANEL_FONT}" -F "${foreground}" -
 ### SECTION: Gather information
 ###
 
+## These are all running in infinite loops because they either need to be
+## repeated manually every X seconds or they are prone to crashing.
+
 ## Window manager info
-bspc control --subscribe > ${PANEL_FIFO} &
-xtitle -s -f 'T%.120s' > ${PANEL_FIFO} &
+while true; do bspc control --subscribe > ${PANEL_FIFO}; done &
 
 ## Clock
-clock()
-{
-    while sleep 1
-    do
-        date +'C%F %T'
-    done;
-}
-clock > ${PANEL_FIFO} &
+while sleep 1; do date +'C%F %T' > ${PANEL_FIFO}; done &
 
 ## Battery Monitor
 if test ! ${BATTERY_LOC} = NONE # If some battery location is specified
 then
-    bat_percent()
-    {
-        while true
-        do
-            if test -e ${BAT}
+    while true
+    do
+        if test -e ${BAT}
+        then
+            BPERCENT=$(echo "(${BATTERY_NOW} * 100) / ${BATTERY_FULL}" | bc)
+            if test ${BATTERY_STATUS} = Charging
             then
-                BPERCENT=$(echo "(${BATTERY_NOW} * 100) / ${BATTERY_FULL}" | bc)
-                if test ${BATTERY_STATUS} = Charging
-                then
-                    BSTATUS='+'
-                elif test ${BATTERY_STATUS} = Discharging
-                then
-                    BSTATUS='-'
-                else
-                    BSTATUS=''
-                fi
-
-                if test ${BPERCENT} -gt 66
-                then
-                    BCOLOUR="%{B${green}}"
-                elif test ${BPERCENT} -gt 33
-                then
-                    BCOLOUR="%{B${yellow}}"
-                else
-                    BCOLOUR="%{B${red}}"
-                fi
+                BSTATUS='+'
+            elif test ${BATTERY_STATUS} = Discharging
+            then
+                BSTATUS='-'
             else
-                BCOLOUR="%{B${yellow}}"
-                BSTATUS='A/C'
-                BPERCENT=''
+                BSTATUS=''
             fi
-            echo "B%{F${black}}${BCOLOUR} ${BSTATUS}${BPERCENT} %{B-}%{F-}    "
-            sleep 10
-        done;
-    }
-    bat_percent > ${PANEL_FIFO} &
+
+            if test ${BPERCENT} -gt 66
+            then
+                BCOLOUR="%{B${green}}"
+            elif test ${BPERCENT} -gt 33
+            then
+                BCOLOUR="%{B${yellow}}"
+            else
+                BCOLOUR="%{B${red}}"
+            fi
+        else
+            BCOLOUR="%{B${yellow}}"
+            BSTATUS='A/C'
+            BPERCENT=''
+        fi
+        echo "B%{F${black}}${BCOLOUR} ${BSTATUS}${BPERCENT} %{B-}%{F-}    " > ${PANEL_FIFO}
+        sleep 10
+    done &
 fi
+
+## Window titles
+# This was put last because bspwm misbehaves at first, so we give it some
+# extra time to load.
+sleep 5 && while true; do xtitle -s -t 128 -f 'T%s' > ${PANEL_FIFO}; done &
 
 ###
 ### SECTION: Wait

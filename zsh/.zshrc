@@ -6,7 +6,7 @@
 # because zsh will load the prompt after precmd, and we're re-loading it later
 # anyway -- better to not do it twice.
 PROMPT_COMMAND=''
-function precmd { eval "$PROMPT_COMMAND"}
+function precmd { eval "$PROMPT_COMMAND" }
 
 # Parse current git branch or return empty string
 prompt_git_branch=''
@@ -156,10 +156,6 @@ alias sued="sudoedit"
 alias emc='emacs -nw'
 alias pacman='pacman --color auto'
 alias tmat='tmux attach || tmux new-session'
-
-# Xorg
-alias xbspwm="startx ${HOME}/.xinitrc bspwm > /tmp/xorg-session-log-$(date +'%F_%T') 2>&1"
-alias xopenbox="startx ${HOME}/.xinitrc openbox > /tmp/xorg-session-log-$(date +'%F_%T') 2>&1"
 
 # Make .bak files
 function bak

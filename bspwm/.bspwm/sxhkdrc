@@ -1,101 +1,105 @@
-## bspwm sxhkd setup ###########################################################
-## MSR 2014
+## SXHKD Config
+## MSR 2014-2015
 
-## bspwm commands ##############################################################
+##
+## BSPWM commands
+##
 
-# Quit bspwm
+## Quit bspwm
 super + ctrl + alt + Escape
     $\{HOME\}/.bspwm/quit.sh
 
-# Reload {bspwm,sxhkd} settings
+## Reload {bspwm,sxhkd} settings
 super + {shift + ,_}Escape
-    {$\{HOME\}/.bspwm/bspwmrc,pkill -x --signal SIGUSR1 sxhkd}
+    {$\{HOME\}/.bspwm/bspwmrc,pkill -x -SIGUSR1 sxhkd}
 
-# Terminal (+ shift for floating terminal)
+## Terminal (+ shift for floating terminal)
 super + {shift + ,_}Return
     {bspc rule -a urxvt -o floating=on && ,_}urxvt
 
-# Launcher
+## Launcher
 super + {_,shift + }r
-    $\{HOME\}/.bspwm/dmenu.sh {_,floating}
+    $\{HOME\}/.bspwm/menu.sh {_,floating}
 super + w
     rofi -show window
 
-# Lock screen
+## Lock screen
 super + z
     lock
 
-# Toggle panel
+## Toggle panel
 super + grave
     . $\{HOME\}/.bspwm/setup-panel.sh && toggle_panel
 
-# Banish mouse
+## Banish mouse
 super + b
     xdotool mousemove 25000 25000
 
-## Desktop commands ############################################################
+##
+## Desktop commands
+##
 
-# Focus or move a window to desktop X
+## Focus or move a window to desktop X
 super + {_,shift + }{1-9,0}
     bspc {desktop -f,window -d} ^{1-9,10}
 
-# {focus,move a window to} the next/previous desktop
+## {focus,move a window to} the next/previous desktop
 super + {_,shift + }bracket{left,right}
     bspc {desktop -f,window focused -d} {prev,next}
 
-# Switch to last used {window,desktop}
+## Switch to last used {window,desktop}
 super + {_,shift + }Tab
     bspc {window,desktop} -f last
 
-# Circulate the leaves of the focused desktop's binary tree
+## Circulate the leaves of the focused desktop's binary tree
 super + shift + {comma,period}
     bspc desktop -C {backward,forward}
 
-# {rotate,flip} the tree of the focused desktop
+## {rotate,flip} the tree of the focused desktop
 super + {_,shift + }r
     bspc desktop focused --rotate {90,180}
 
-## Window manipulation commands ################################################
+##
+## Window manipulation commands
+##
 
-# Convention: super + {_,shift + }[h,j,k,l]
+## Convention: super + {_,shift + }[h,j,k,l]
 
-# {close,kill} window
+## {close,kill} window
 super + {_,ctrl + alt + }c
     bspc window -{c,k}
 
-# {private,sticky,lock} a window
-#super + {shift + ,_}{p,s,u}
-#    bspc window focused -t {_,_}{private,sticky,locked}
-
-# Focus or move window
+## Focus or move window
 super + {_,shift + }{h,j,k,l}
     bspc window -{f,s} {left,down,up,right}
 
-# Balance windows
+## Balance windows
 super + d
     bspc desktop -B
 
-# Swap window position with largest window
+## Swap window position with largest window
 super + m
     bspc window -s biggest
 
-# Swap window position with last used window
+## Swap window position with last used window
 super + s
     bspc window -s last
 
-# Move window to last preselection
+## Move window to last preselection
 super + y
     bspc window -w last.manual
 
-# Cycle through all windows
+## Cycle through all windows
 super + {comma,period}
     bspc window {next,prev} -f
 
-## Resizing window commands ####################################################
+##
+## Resizing window commands
+##
 
-# Convention: super + alt + {_,shift + }[h,j,k,l]
+## Convention: super + alt + {_,shift + }[h,j,k,l]
 
-# Extend (or shrink) a window (for windows touching walls)
+## Extend (or shrink) a window (for windows touching walls)
 super + alt + {h,j,k,l}
     {                                                       \
       bspc window -e left  -40 || bspc window -e right -40, \
@@ -104,7 +108,7 @@ super + alt + {h,j,k,l}
       bspc window -e right +40 || bspc window -e left  +40  \
     }
 
-# Shrink (or expand) a window (for windows not touching walls)
+## Shrink (or expand) a window (for windows not touching walls)
 super + alt + shift + {h,j,k,l}
     {                                                       \
       bspc window -e right -96 || bspc window -e left  -96, \
@@ -113,76 +117,79 @@ super + alt + shift + {h,j,k,l}
       bspc window -e left  +96 || bspc window -e right +96  \
     }
 
-## Preselection commands #######################################################
+##
+## Preselection commands
+##
 
-# Convention: super + ctrl + {[h,j,k,l],[1-9]}
+## Convention: super + ctrl + {[h,j,k,l],[1-9]}
 
-# Preselect part of a window
+## Preselect part of a window
 super + ctrl + {h,j,k,l}
     bspc window -p {left,down,up,right}
 
-# Set preselection size ratio
+## Set preselection size ratio
 super + ctrl + {1-9}
     bspc window -r 0.{1-9}
 
-## Layout commands #############################################################
+##
+## Layout commands
+##
 
-# Convention: super + [shift + ][a-z]
+## Convention: super + [shift + ][a-z]
 
-# Toggle floating mode for {window,desktop}
+## Toggle floating mode for {window,desktop}
 super + {_,shift + }space
     bspc {window focused -t floating,desktop -t floating}
 
-# Toggle {monocle mode,fullscreen} for focused window
+## Toggle {monocle mode,fullscreen} for focused window
 super + {_,shift + }f
     bspc {desktop -l next,window -t fullscreen}
 
-# {in,de}crease useless gaps
+## {in,de}crease useless gaps
 super + {plus,minus}
     bspc config -d focused window_gap \
     $(( $(bspc config -d focused window_gap) {+,-} 1 ))
 
-# Reset useless gaps
+## Reset useless gaps
 super + equal
     bspc config -d focused window_gap 2
 
-## Mouse controls ##############################################################
+##
+## Mouse controls
+##
 
-# Track and send pointer coordinates
+## Track and send pointer coordinates
 super + {!,@}button{1,2,3}
     bspc pointer {-t %i %i,-u}{_,_,_}
 
-# Focus window
+## Focus window
 ~button1
     bspc pointer -g focus
 
-# Rearrange/resize windows
+## Rearrange/resize windows
 super + button{1,2,3}
     bspc pointer -g {move,resize_side,resize_corner}
 
-## External commands ###########################################################
+##
+## External commands
+##
 
-# Convention: {super + ctrl + [a-z],(XF86MEDIAKEYS),super + F[1-12]}
+## Convention: {super + ctrl + [a-z],(XF86MEDIAKEYS),super + F[1-12]}
 
-# Launch applications
-#super + ctrl + {shift + ,_}{e,f,l,m,n,t,v}
-    #{bspc rule -a \* -o floating=on;,_}\
-    #{emacs,firefox,lock,pcmanfm,urxvt -e ncmpcpp,thunderbird,urxvt -e alsamixer}
-
-# Adjust ALSA volume
+## Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}
     amixer set Master {5%+,5%-,toggle}
 super + F{11,10,9}
     amixer set Master {5%+,5%-,toggle}
 
-# Control MPC
+## Control MPC
 XF86Audio{Play,Stop,Prev,Next}
     mpc {toggle,stop,prev,next}
 super + F{5,6,7,8}
     mpc {toggle,stop,prev,next}
 
-# Screenshot
+## Screenshot
 {_,shift + }Print
     screenshot {screen,window}
 
-## EOF #########################################################################
+## EOF

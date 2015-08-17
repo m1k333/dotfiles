@@ -1,8 +1,14 @@
 #!/bin/sh
 
-## Getting ready
-xsetroot -cursor_name watch
-xsetroot -solid black
+##
+## BSPWM appearance
+##
+
+## Borders
+bspc config border_width 2
+bspc config window_gap 2
+bspc config borderless_monocle true
+bspc config gapless_monocle true
 
 ## Colour scheme
 black='#000000'
@@ -16,64 +22,72 @@ violet='#6c71c4'
 white='#D0D0D0'
 yellow='#b58900'
 
-## Borders
-bspc config border_width                 2
-bspc config window_gap                   2
-bspc config borderless_monocle           true
-bspc config gapless_monocle              true
+## Regular border colours
+bspc config focused_border_color $magenta
+bspc config active_border_color $magenta
+bspc config normal_border_color $blue
+bspc config presel_border_color $yellow
+bspc config urgent_border_color $red
 
-# Regular border colours
-bspc config focused_border_color         $magenta
-bspc config active_border_color          $magenta
-bspc config normal_border_color          $blue
-bspc config presel_border_color          $yellow
-bspc config urgent_border_color          $red
+## Locked border colours
+bspc config focused_locked_border_color $black
+bspc config active_locked_border_color $black
+bspc config normal_locked_border_color $black
 
-# Locked border colours
-bspc config focused_locked_border_color  $black
-bspc config active_locked_border_color   $black
-bspc config normal_locked_border_color   $black
+## Sticky border colours
+bspc config focused_sticky_border_color $green
+bspc config active_sticky_border_color $green
+bspc config normal_sticky_border_color $green  
 
-# Sticky border colours
-bspc config focused_sticky_border_color  $green
-bspc config active_sticky_border_color   $green
-bspc config normal_sticky_border_color   $green  
-
-# Private border colours
+## Private border colours
 bspc config focused_private_border_color $white
-bspc config active_private_border_color  $white
-bspc config normal_private_border_color  $white
+bspc config active_private_border_color $white
+bspc config normal_private_border_color $white
 
-## Behaviour
+##
+## BSPWM behaviour
+##
+
+## General configuration
 bspc config focus_follows_pointer true
-bspc config auto_cancel           true
-bspc config split_ratio           0.50
-bspc config auto_alternate        false
+bspc config auto_cancel true
+bspc config split_ratio 0.50
+bspc config auto_alternate false
 
 ## Rules
 bspc rule -a Steam floating=on
 
-## Set up BSPWM desktops (AFTER configuring BSPWM itself)
+## Desktops
 bspc monitor -d 1 2 3 4 5 6 7 8 9 0
 
+## Keybinding daemon
+SXHKD_SHELL='/bin/sh' sxhkd -c ${HOME}/.bspwm/sxhkdrc &
+
+## Panel
+start_panel() {
+    pkill -x -SIGUSR1 launch-panel.sh
+    sleep 1
+    ${HOME}/.bspwm/launch-panel.sh
+}
+start_panel &
+
+##
 ## X settings
+##
+
+## X server configuration
 test -e ${HOME}/.xmodmap && xmodmap ${HOME}/.xmodmap
 xset -b s 1800 dpms 1800 1800 1800
 xrdb -load ${HOME}/.Xresources
+xsetroot -solid black -cursor_name left_ptr
 export DESKTOP_SESSION=gnome # Make QT use GTK settings
+pkill -x -SIGUSR1 sxhkd # Reset sxhkd to activate it
 
-## Panel
-panel_start()
-{
-    pkill -x -SIGUSR1 launch-panel.sh && sleep 1
-    ${HOME}/.bspwm/launch-panel.sh 
-}
-panel_start &
-
+##
 ## External applications
-mpc status || mpd &
+##
 
-# Ready
-xsetroot -cursor_name left_ptr
+## Run an mpd instance unless one is already connected
+mpc status || mpd &
 
 ## EOF

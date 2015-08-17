@@ -101,6 +101,10 @@ URxvt*iso14755_52: false
 URxvt*scrollBar_right: true
 URxvt*scrollstyle:     plain
 
+! Terminal information
+URxvt*termName: rxvt-unicode-256color
+URxvt*title: rxvt-unicode-256color
+
 !!! Rofi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ! Settings

@@ -60,34 +60,7 @@ bspc rule -a Steam floating=on
 ## Desktops
 bspc monitor -d 1 2 3 4 5 6 7 8 9 0
 
-## Keybinding daemon
-SXHKD_SHELL='/bin/sh' sxhkd -c ${HOME}/.bspwm/sxhkdrc &
-
 ## Panel
-start_panel() {
-    pkill -x -SIGUSR1 launch-panel.sh
-    sleep 1
-    ${HOME}/.bspwm/launch-panel.sh
-}
-start_panel &
-
-##
-## X settings
-##
-
-## X server configuration
-test -e ${HOME}/.xmodmap && xmodmap ${HOME}/.xmodmap
-xset -b s 1800 dpms 1800 1800 1800
-xrdb -load ${HOME}/.Xresources
-xsetroot -solid black -cursor_name left_ptr
-export DESKTOP_SESSION=gnome # Make QT use GTK settings
-pkill -x -SIGUSR1 sxhkd # Reset sxhkd to activate it
-
-##
-## External applications
-##
-
-## Run an mpd instance unless one is already connected
-mpc status || mpd &
+${HOME}/.bspwm/launch-panel.sh
 
 ## EOF

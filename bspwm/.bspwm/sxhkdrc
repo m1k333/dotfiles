@@ -9,9 +9,9 @@
 super + ctrl + alt + Escape
     $\{HOME\}/.bspwm/quit.sh
 
-## Reload {bspwm,sxhkd} settings
-super + {shift + ,_}Escape
-    {$\{HOME\}/.bspwm/bspwmrc,pkill -x -SIGUSR1 sxhkd}
+## Reload sxhkd
+super + Escape
+    pkill -x -SIGUSR1 sxhkd
 
 ## Terminal (+ shift for floating terminal)
 super + {shift + ,_}Return

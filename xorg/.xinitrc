@@ -15,7 +15,20 @@ fi
 ## Always be able to safely terminate X
 setxkbmap -option terminate:ctrl_alt_bksp
 
-## Run a window manager
+## X settings
+test -e ${HOME}/.xmodmap && xmodmap ${HOME}/.xmodmap
+xset -b s 1800 dpms 1800 1800 1800
+xrdb -load ${HOME}/.Xresources
+xsetroot -solid black -cursor_name left_ptr
+export DESKTOP_SESSION=gnome # Make QT use GTK settings
+
+## External applications
+mpd &
+
+## Window manager
+export SXHKD_SHELL=/bin/sh
+sxhkd -c ${HOME}/.bspwm/sxhkdrc &
 exec bspwm -c ${HOME}/.bspwm/bspwmrc
 
 ## EOF
+

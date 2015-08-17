@@ -41,7 +41,7 @@ panel_clean()
 }
 
 ## Trap signals; terminate script gracefully upon some signals
-trap 'panel_clean && exit 0' USR1 INT QUIT TERM EXIT
+trap 'panel_clean && exit 0' INT QUIT TERM EXIT
 
 ## Initial cleanup
 panel_clean
@@ -167,6 +167,7 @@ panel_bar | lemonbar -g x${PANEL_HEIGHT} -f "${PANEL_FONT}" -F "${foreground}" -
 
 ## Window manager info
 while true; do bspc control --subscribe > ${PANEL_FIFO}; done &
+while true; do xtitle -s -t 128 -f 'T %s ' > ${PANEL_FIFO}; done &
 
 ## Clock
 while sleep 1; do date +'C%F %T' > ${PANEL_FIFO}; done &
@@ -207,11 +208,6 @@ then
         sleep 10
     done &
 fi
-
-## Window titles
-# This was put last because bspwm misbehaves at first, so we give it some
-# extra time to load.
-sleep 5 && while true; do xtitle -s -t 128 -f 'T%s' > ${PANEL_FIFO}; done &
 
 ###
 ### SECTION: Wait

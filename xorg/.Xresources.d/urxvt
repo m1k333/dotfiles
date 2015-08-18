@@ -1,0 +1,57 @@
+!! vim: set ft=xdefaults:
+
+! Appearance
+URxvt*externalBorder:   0
+URxvt*internalBorder:   4
+URxvt*font:             xft:myfont:size=myfontsize
+URxvt*boldFont:         xft:myfont:bold:size=myfontsize
+URxvt*scrollBar_right:  true
+URxvt*scrollstyle:      plain
+
+! Colours
+URxvt*background:   mybgcolor
+URxvt*foreground:   myfgcolor
+URxvt*cursorColor:  mycursorcolor
+URxvt*color0:       S_base02
+URxvt*color1:       S_red
+URxvt*color2:       S_green
+URxvt*color3:       S_yellow
+URxvt*color4:       S_blue
+URxvt*color5:       S_magenta
+URxvt*color6:       S_cyan
+URxvt*color7:       S_base2
+URxvt*color9:       S_orange
+URxvt*color8:       S_base03
+URxvt*color10:      S_base01
+URxvt*color11:      S_base00
+URxvt*color12:      S_base0
+URxvt*color13:      S_violet
+URxvt*color14:      S_base1
+URxvt*color15:      S_base3
+
+! Colour fix
+URxvt*intensityStyles:  false
+
+! Behaviour
+URxvt*cursorBlinks: true
+URxvt*iso14755:     false
+URxvt*iso14755_52:  false
+URxvt*saveLines:    30000
+URxvt*termName:     rxvt-unicode-256color
+URxvt*title:        rxvt-unicode-256color
+URxvt*urgentonBell: true
+
+! Extensions
+URxvt*perl-ext-common:      default,clipboard,matcher,url-select
+URxvt*url-launcher:         /usr/bin/firefox
+URxvt*url-select.launcher:  /usr/bin/firefox
+URxvt*url-select.underline: true
+URxvt*matcher.button:       1
+
+! Keybindings
+URxvt*keysym.C-C:   perl:clipboard:copy
+URxvt*keysym.C-V:   perl:clipboard:paste
+URxvt*keysym.C-A-v: perl:clipboard:paste_escaped
+URxvt*keysym.A-u:   perl:url-select:select_next
+
+!!

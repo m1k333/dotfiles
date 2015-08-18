@@ -1,37 +1,51 @@
 #!/bin/zsh
 
-## Initializations #############################################################
+##
+## Basic configuration
+##
 
-# Pre-prompt command will run $PROMPT_COMMAND; temporarily make $PROMPT blank,
-# because zsh will load the prompt after precmd, and we're re-loading it later
-# anyway -- better to not do it twice.
-PROMPT_COMMAND=''
-function precmd { eval "$PROMPT_COMMAND" }
+# Line editor mode: 'emacs' or 'vi'
+EDITOR_MODE='emacs'
 
-# Parse current git branch or return empty string
-prompt_git_branch=''
-function current-git-branch
-{
-    local git_branch=$(git branch | grep '\*' | sed 's/\* //')
-    [ -n "$git_branch" ] && \
-        prompt_git_branch="[${git_branch}]~" || prompt_git_branch=''
-}
+# Prompt definition: ${PROMPT_STATIC} is the basic prompt
+autoload -U colors && colors
+PROMPT_STATIC="(%n@%M)~(%~)~(%?)~"
 
-# Add git branch to prompt if git is installed
-command -v git &> /dev/null && \
-    PROMPT_COMMAND="${PROMPT_COMMAND} ; current-git-branch &> /dev/null"
+# Syntax highlighting plugin: point this to the correct location
+SYNTAXHLFILE='/usr/share/zsh/plugins/zsh-syntax-highlighting'
+SYNTAXHLFILE="${SYNTAXHLFILE}/zsh-syntax-highlighting.zsh"
+test -f ${SYNTAXHLFILE} && source ${SYNTAXHLFILE}
 
-## Settings ####################################################################
-
-## Autocompletion
-autoload -Uz compinit && compinit -d $HOME/.zcompdump
+# Autocompletion
+autoload -Uz compinit && compinit -d ${HOME}/.zcompdump
 zmodload zsh/complist
 zstyle ':completion:*' menu select 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 setopt completealiases correct extendedglob globdots nocaseglob
 
-## Linux vconsole-specific options
-if [ $TERM = linux ]
+# Dirstack
+DIRSTACKSIZE=10
+setopt autocd autopushd pushdminus pushdsilent pushdtohome
+
+# History files
+HISTFILE=${HOME}/.zhistory
+HISTSIZE=1000
+SAVEHIST=${HISTSIZE}
+setopt histignoredups histignorespace histsavenodups sharehistory
+
+# Interaction
+KEYTIMEOUT=1
+setopt interactivecomments multios notify
+
+##
+## Prompt initialization
+##
+
+# Pre-prompt command will be to eval "${PROMPT_COMMAND}"
+function precmd { eval "${PROMPT_COMMAND}" }
+
+# Set behaviour of the linux console if we're there
+if test "${TERM}" = 'linux'
 then
     # Beep off - these should cover all cases
     setterm -blength 0
@@ -41,25 +55,54 @@ then
     PROMPT_COMMAND="${PROMPT_COMMAND} ; echo -en \"\e[?6c\""
 fi
 
-## Dirstack
-DIRSTACKSIZE=10
-setopt autocd autopushd pushdminus pushdsilent pushdtohome
+# If git is installed, integrate it into the prompt
+if command -v git &> /dev/null
+then
+    function precmd_git_branch
+    {
+        PROMPT_GIT_BRANCH=''
+        if test -d './.git'
+        then
+            local GIT_STRING="$(git branch | grep '\*' | sed 's/\* //')"
+            test -n "${GIT_STRING}" && PROMPT_GIT_BRANCH="[${GIT_STRING}]~"
+        fi
+    }
+    PROMPT_COMMAND="${PROMPT_COMMAND} ; precmd_git_branch &> /dev/null"
+fi
 
-## History
-HISTFILE=$HOME/.zhistory
-HISTSIZE=1000
-SAVEHIST=$HISTSIZE
-setopt histignoredups histignorespace histsavenodups sharehistory
+##
+## Emacs line editor mode
+##
 
-## Interactive settings
-setopt interactivecomments multios notify
+function zsh-emacs-mode
+{
+    # Emacs-like keybindings; '-e': emacs 
+    bindkey -e
+    bindkey -e '^[h'  backward-delete-word
+    bindkey -e '\e[A' history-beginning-search-backward
+    bindkey -e '\e[B' history-beginning-search-forward
+    bindkey -M menuselect '^[[Z' reverse-menu-complete
 
-## Editor settings #############################################################
+    # Prompt; needs to be updated on line init, after precmd finishes
+    function zle-keymap-select zle-line-init
+    {
+        PROMPT="${PROMPT_GIT_BRANCH}${PROMPT_STATIC}%F{magenta}%#%f "
 
-# Don't wait long for key sequences
-KEYTIMEOUT=1
+        # Preserve return status across line inits
+        typeset -g __prompt_status=${?}
+        function { return ${__prompt_status} }
+        zle reset-prompt
+    }
 
-# Vi mode settings
+    # Reload the functions defined above
+    zle -N zle-keymap-select
+    zle -N zle-line-init
+}
+
+##
+## Vi line editor mode
+## 
+
 function zsh-vi-mode
 {
     # Vim-like keybindings; '-v': insert, '-a': command
@@ -79,67 +122,48 @@ function zsh-vi-mode
     bindkey -a '\e[B' history-beginning-search-forward
     bindkey -M menuselect '^[[Z' reverse-menu-complete
 
-    # Behaviour when initializing prompt or changing vi mode:
-    # Prompt reflects vi mode; vi mode change preserves return status
+    # Behaviour when initializing prompt or changing vi mode
     function zle-keymap-select zle-line-init
     {
-        [ $KEYMAP = vicmd ] && VIMODE="%F{blue}@%f" || VIMODE='%F{magenta}%#%f'
-        PROMPT="${prompt_git_branch}${PROMPT_STATIC}${VIMODE} "
-        typeset -g __prompt_status="$?"
-        function { return $__prompt_status }
+        # Prompt; needs to be updated on line init, after precmd finishes;
+        # '%': insert mode, '@': command mode
+        local VIMODE
+        test "${KEYMAP}" = 'vicmd'  \
+            && VIMODE="%F{blue}@%f" \
+            || VIMODE='%F{magenta}%#%f'
+        PROMPT="${PROMPT_GIT_BRANCH}${PROMPT_STATIC}${VIMODE} "
+
+        # Preserve return status across line inits and vi mode changes
+        typeset -g __prompt_status=${?}
+        function { return ${__prompt_status} }
         zle reset-prompt
     }
+
+    # Reload the functions defined above
     zle -N zle-keymap-select
     zle -N zle-line-init
 }
 
-# Emacs mode settings
-function zsh-emacs-mode
-{
-    # Emacs-like keybindings; '-e': emacs 
-    bindkey -e
-    bindkey -e '^[h'  backward-delete-word
-    bindkey -e '\e[A' history-beginning-search-backward
-    bindkey -e '\e[B' history-beginning-search-forward
-    bindkey -M menuselect '^[[Z' reverse-menu-complete
+##
+## Finalizing setup
+##
 
-    # Prompt -- simpler than in vi mode
-    function zle-keymap-select zle-line-init
-    {
-        PROMPT="${prompt_git_branch}${PROMPT_STATIC}%F{magenta}%#%f "
-        typeset -g __prompt_status="$?"
-        function { return $__prompt_status }
-        zle reset-prompt
-    }
-    zle -N zle-keymap-select
-    zle -N zle-line-init
-}
+# Set up line editor
+zsh-${EDITOR_MODE}-mode
 
-## Prompt ######################################################################
-
-# Prompt definition
-autoload -U colors && colors
-PROMPT_STATIC="(%n@%M)~(%~)~(%?)~"
-
-# Syntax highlighting plugin
-SYNTAXHLFILE="/usr/share/zsh/plugins/zsh-syntax-highlighting"
-SYNTAXHLFILE="${SYNTAXHLFILE}/zsh-syntax-highlighting.zsh"
-[ -f $SYNTAXHLFILE ] && source $SYNTAXHLFILE
-
-# Pick an editor mode
-zsh-vi-mode
-
-## Aliases and functions #######################################################
+##
+## Alias and function definition
+##
 
 # GNU system-specific options
-if ls --version &> /dev/null | grep coreutils &> /dev/null
+if ls --version | grep coreutils &> /dev/null
 then
     LS_GNUOPTS='--color=auto --group-directories-first '
     GREP_GNUOPTS='--color=auto '
-    eval $(dircolors -b)
+    eval "$(dircolors -b)"
 fi
 
-# coreutils and friends
+# Coreutils aliases
 alias ls="ls ${LS_GNUOPTS}-p"
 alias la="ls ${LS_GNUOPTS}-ap"
 alias ll="ls ${LS_GNUOPTS}-hlp"
@@ -152,18 +176,12 @@ alias grep="grep ${GREP_GNUOPTS}"
 alias sush="sudo -E ${SHELL}"
 alias sued="sudoedit"
 
-# Applications
+# Application aliases
 alias emc='emacs -nw'
 alias pacman='pacman --color auto'
 alias tmat='tmux attach || tmux new-session'
 
-# Make .bak files
-function bak
-{
-    for i in $@
-    do
-        cp -R ${i} ${i}.bak
-    done
-}
+# Function to create .bak files
+function bak { for i in ${@}; do cp -R ${i} ${i}.bak; done }
 
-## EOF #########################################################################
+## EOF

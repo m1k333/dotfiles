@@ -10,7 +10,7 @@ PANEL_FIFO='/tmp/bspwm-panel-fifo'
 ## Variables for launch-panel.sh
 source_panel()
 {
-    PANEL_FONT='Terminus:size=12'
+    PANEL_FONT='-xos4-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-*'
     BATTERY_LOC='NONE' # BATTERY='NONE' to disable bat. monitor
     BATTERY_NOW="${BATTERY_LOC}/current"
     BATTERY_FULL="${BATTERY_LOC}/full"

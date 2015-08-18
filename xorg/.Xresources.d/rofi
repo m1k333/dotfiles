@@ -1,0 +1,7 @@
+!! vim: set ft=xdefaults :
+
+rofi.font:          myfont myfontsize
+rofi.color-enabled: true
+rofi.terminal:      urxvt
+
+!!

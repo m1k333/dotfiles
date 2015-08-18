@@ -18,7 +18,7 @@ setxkbmap -option terminate:ctrl_alt_bksp
 ## X settings
 test -e ${HOME}/.xmodmap && xmodmap ${HOME}/.xmodmap
 xset -b s 1800 dpms 1800 1800 1800
-xrdb -load ${HOME}/.Xresources
+xrdb -I${HOME} ${HOME}/.Xresources.d/main
 xsetroot -solid black -cursor_name left_ptr
 export DESKTOP_SESSION=gnome # Make QT use GTK settings
 

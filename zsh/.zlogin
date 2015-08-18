@@ -1,14 +1,9 @@
 #!/bin/zsh
 
-## ~/.zlogin
+# Add a blank line between linux console login text and first prompt
+test "${TERM}" = 'linux' && echo ''
 
-## Start an X server
-#startx ${HOME}/.xinitrc bspwm > /tmp/xorg-session-log-$(date +'%F_%T') 2>&1
-
-## Prettify linux terminal
-if test $TERM = linux
-then
-    echo ''
-fi
+# Start the X server
+#startx 
 
 ## EOF

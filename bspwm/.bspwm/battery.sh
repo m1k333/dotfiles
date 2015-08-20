@@ -9,7 +9,7 @@ BATTERY_STATUS="${BATTERY_LOC}/status"
 
 battery_monitor()
 {
-    ## Should the battery monitor run?
+    # Should the battery monitor run?
     if test "${BATTERY_LOC}" != 'NONE'
     then
         while true
@@ -50,11 +50,11 @@ battery_monitor()
             fi
 
             # Output the battery status and charge, formatted for lemonbar
-            echo "B%{F${black}}${BCOLOUR} ${BSTATUS}${BPERCENT} %{B-}%{F-}    "
+            echo "B%{F${black}}${BCOLOUR} ${BSTATUS}${BPERCENT} %{B-}%{F-}"
             sleep 10
         done
 
-        # If it shouldn't run, exit
+    # If it shouldn't run, exit
     else
         exit 1
     fi

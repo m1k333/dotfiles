@@ -1,9 +1,6 @@
 #!/bin/sh
 
-foreground='93a1a1'
-background='000000'
-
-white='b0b0b0'
+white='93a1a1'
 black='000000'
 
 red='dc322f'

@@ -5,33 +5,35 @@
 ## BSPWM commands
 ##
 
-## Quit bspwm
+# Quit bspwm
 super + ctrl + alt + Escape
     $\{HOME\}/.bspwm/quit.sh
 
-## Reload sxhkd
+# Reload sxhkd
 super + Escape
     pkill -x -SIGUSR1 sxhkd
 
-## Terminal (+ shift for floating terminal)
+# Terminal (+ shift for floating terminal)
 super + {shift + ,_}Return
     {bspc rule -a urxvt -o floating=on && ,_}urxvt
 
-## Launcher (+ shift for floating launcher)
+# Launcher (+ shift for floating launcher)
 super + {_,shift + }r
     $\{HOME\}/.bspwm/launcher.sh {_,floating}
+
+# Window list
 super + w
     rofi -show window
 
-## Toggle panel
-super + grave
+# Toggle panel
+super + b
     $\{HOME\}/.bspwm/hidepanel.sh
 
-## Banish mouse
+# Banish mouse
 super + x
     wmp 25000 25000
 
-## Lock screen
+# Lock screen
 super + z
     lock
 
@@ -39,16 +41,16 @@ super + z
 ## Desktop & window commands
 ##
 
-## {close,kill} window
+# {close,kill} window
 super + {_,ctrl + alt + }c
     bspc window -{c,k}
 
-## Toggle floating mode for {desktop,window}
-super + {_,shift + }space
+# Toggle floating mode for {desktop,window}
+super + {f,space}
     {$\{HOME\}/.bspwm/floatingmode.sh,bspc window focused -t floating}
 
 ## Toggle {monocle mode,fullscreen} for focused window
-super + {m,f}
+super + {m,F11}
     {$\{HOME\}/.bspwm/monoclemode.sh,bspc window -t fullscreen}
 
 ## Focus or move a window to desktop X
@@ -65,23 +67,23 @@ super + {_,shift + }Tab
 
 ## Focus tiling window or move floating window (tries tiling, then floating)
 super + h
-    bspc window -f left  || wmv -40 0 $(pfw)
+    bspc window -f left  || wmv -40 0 $(bspc query -W -w focused)
 super + j
-    bspc window -f down  || wmv 0 +40 $(pfw)
+    bspc window -f down  || wmv 0 +40 $(bspc query -W -w focused)
 super + k
-    bspc window -f up    || wmv 0 -40 $(pfw)
+    bspc window -f up    || wmv 0 -40 $(bspc query -W -w focused)
 super + l
-    bspc window -f right || wmv +40 0 $(pfw)
+    bspc window -f right || wmv +40 0 $(bspc query -W -w focused)
 
 # Move tiling window or resize floating window (tries tiling, then floating)
 super + shift + h
-    bspc window -s left  || wrs -40 0 $(pfw)
+    bspc window -s left  || wrs -40 0 $(bspc query -W -w focused)
 super + shift + j
-    bspc window -s down  || wrs 0 +40 $(pfw)
+    bspc window -s down  || wrs 0 +40 $(bspc query -W -w focused)
 super + shift + k
-    bspc window -s up    || wrs 0 -40 $(pfw)
+    bspc window -s up    || wrs 0 -40 $(bspc query -W -w focused)
 super + shift + l
-    bspc window -s right || wrs +40 0 $(pfw)
+    bspc window -s right || wrs +40 0 $(bspc query -W -w focused)
 
 ## Extend (or shrink) a tiled window (for windows touching walls)
 super + alt + {h,j,k,l}

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. ${HOME}/.bspwm/panelrc
+eval $(grep 'PANEL_HEIGHT=' ${HOME}/.bspwm/panelrc)
 
 WID=$(cat /tmp/bspwm/panel_wid)
 

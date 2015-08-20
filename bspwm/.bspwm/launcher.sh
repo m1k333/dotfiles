@@ -22,7 +22,7 @@ redo_cache_p()
 }
 
 ## If any argument was passed, bspwm will float the next window
-test -n "${1}" && FLOAT=true || FLOAT=false
+test ${#} -ne 0 && FLOAT=true || FLOAT=false
 ${FLOAT} && bspc rule -a \* -o floating=on
 
 ## Define and check/update the cache

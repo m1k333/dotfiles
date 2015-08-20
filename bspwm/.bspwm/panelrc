@@ -1,0 +1,26 @@
+#!/bin/sh
+# vim: set nowrap:
+
+PANEL_FIFO='/tmp/bspwm/panel_fifo'
+
+PANEL_HEIGHT=16
+PANEL_FONT='-xos4-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-*'
+
+. ${HOME}/.bspwm/colors
+
+foreground="#FF${foreground}"
+background="#FF${background}"
+
+white="#FF${white}"
+black="#FF${black}"
+
+red="#FF${red}"
+orange="#FF${orange}"
+yellow="#FF${yellow}"
+green="#FF${green}"
+cyan="#FF${cyan}"
+blue="#FF${blue}"
+violet="#FF${violet}"
+magenta="#FF${magenta}"
+
+## EOF

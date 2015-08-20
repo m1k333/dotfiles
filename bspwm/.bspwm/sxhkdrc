@@ -17,89 +17,73 @@ super + Escape
 super + {shift + ,_}Return
     {bspc rule -a urxvt -o floating=on && ,_}urxvt
 
-## Launcher
+## Launcher (+ shift for floating launcher)
 super + {_,shift + }r
-    $\{HOME\}/.bspwm/menu.sh {_,floating}
+    $\{HOME\}/.bspwm/launcher.sh {_,floating}
 super + w
     rofi -show window
+
+## Toggle panel
+super + grave
+    $\{HOME\}/.bspwm/hidepanel.sh
+
+## Banish mouse
+super + x
+    wmp 25000 25000
 
 ## Lock screen
 super + z
     lock
 
-## Toggle panel
-super + grave
-    . $\{HOME\}/.bspwm/setup-panel.sh && toggle_panel
-
-## Banish mouse
-super + b
-    xdotool mousemove 25000 25000
-
 ##
-## Desktop commands
+## Desktop & window commands
 ##
+
+## {close,kill} window
+super + {_,ctrl + alt + }c
+    bspc window -{c,k}
+
+## Toggle floating mode for {desktop,window}
+super + {_,shift + }space
+    {$\{HOME\}/.bspwm/floatingmode.sh,bspc window focused -t floating}
+
+## Toggle {monocle mode,fullscreen} for focused window
+super + {m,f}
+    {$\{HOME\}/.bspwm/monoclemode.sh,bspc window -t fullscreen}
 
 ## Focus or move a window to desktop X
 super + {_,shift + }{1-9,0}
     bspc {desktop -f,window -d} ^{1-9,10}
 
 ## {focus,move a window to} the next/previous desktop
-super + {_,shift + }bracket{left,right}
+super + {_,shift + }{comma,period}
     bspc {desktop -f,window focused -d} {prev,next}
 
-## Switch to last used {window,desktop}
+## Switch to {next,prev} window
 super + {_,shift + }Tab
-    bspc {window,desktop} -f last
+    bspc window -f {next,prev}
 
-## Circulate the leaves of the focused desktop's binary tree
-super + shift + {comma,period}
-    bspc desktop -C {backward,forward}
+## Focus tiling window or move floating window (tries tiling, then floating)
+super + h
+    bspc window -f left  || wmv -40 0 $(pfw)
+super + j
+    bspc window -f down  || wmv 0 +40 $(pfw)
+super + k
+    bspc window -f up    || wmv 0 -40 $(pfw)
+super + l
+    bspc window -f right || wmv +40 0 $(pfw)
 
-## {rotate,flip} the tree of the focused desktop
-super + {_,shift + }r
-    bspc desktop focused --rotate {90,180}
+# Move tiling window or resize floating window (tries tiling, then floating)
+super + shift + h
+    bspc window -s left  || wrs -40 0 $(pfw)
+super + shift + j
+    bspc window -s down  || wrs 0 +40 $(pfw)
+super + shift + k
+    bspc window -s up    || wrs 0 -40 $(pfw)
+super + shift + l
+    bspc window -s right || wrs +40 0 $(pfw)
 
-##
-## Window manipulation commands
-##
-
-## Convention: super + {_,shift + }[h,j,k,l]
-
-## {close,kill} window
-super + {_,ctrl + alt + }c
-    bspc window -{c,k}
-
-## Focus or move window
-super + {_,shift + }{h,j,k,l}
-    bspc window -{f,s} {left,down,up,right}
-
-## Balance windows
-super + d
-    bspc desktop -B
-
-## Swap window position with largest window
-super + m
-    bspc window -s biggest
-
-## Swap window position with last used window
-super + s
-    bspc window -s last
-
-## Move window to last preselection
-super + y
-    bspc window -w last.manual
-
-## Cycle through all windows
-super + {comma,period}
-    bspc window {next,prev} -f
-
-##
-## Resizing window commands
-##
-
-## Convention: super + alt + {_,shift + }[h,j,k,l]
-
-## Extend (or shrink) a window (for windows touching walls)
+## Extend (or shrink) a tiled window (for windows touching walls)
 super + alt + {h,j,k,l}
     {                                                       \
       bspc window -e left  -40 || bspc window -e right -40, \
@@ -108,20 +92,14 @@ super + alt + {h,j,k,l}
       bspc window -e right +40 || bspc window -e left  +40  \
     }
 
-## Shrink (or expand) a window (for windows not touching walls)
+## Shrink (or expand) a tiled window (for windows not touching walls)
 super + alt + shift + {h,j,k,l}
     {                                                       \
-      bspc window -e right -96 || bspc window -e left  -96, \
-      bspc window -e up    +96 || bspc window -e down  +96, \
-      bspc window -e down  -96 || bspc window -e up    -96, \
-      bspc window -e left  +96 || bspc window -e right +96  \
+      bspc window -e right -40 || bspc window -e left  -40, \
+      bspc window -e up    +40 || bspc window -e down  +40, \
+      bspc window -e down  -40 || bspc window -e up    -40, \
+      bspc window -e left  +40 || bspc window -e right +40  \
     }
-
-##
-## Preselection commands
-##
-
-## Convention: super + ctrl + {[h,j,k,l],[1-9]}
 
 ## Preselect part of a window
 super + ctrl + {h,j,k,l}
@@ -131,19 +109,9 @@ super + ctrl + {h,j,k,l}
 super + ctrl + {1-9}
     bspc window -r 0.{1-9}
 
-##
-## Layout commands
-##
-
-## Convention: super + [shift + ][a-z]
-
-## Toggle floating mode for {window,desktop}
-super + {_,shift + }space
-    bspc {window focused -t floating,desktop -t floating}
-
-## Toggle {monocle mode,fullscreen} for focused window
-super + {_,shift + }f
-    bspc {desktop -l next,window -t fullscreen}
+## Move window to last preselection
+super + p
+    bspc window -w last.manual
 
 ## {in,de}crease useless gaps
 super + {plus,minus}
@@ -152,7 +120,8 @@ super + {plus,minus}
 
 ## Reset useless gaps
 super + equal
-    bspc config -d focused window_gap 2
+    GAP=$(awk '$3 ~ /window_gap/ \{print $4\}' $\{HOME\}/.bspwm/bspwmrc) \
+    && bspc config -d focused window_gap $\{GAP\}
 
 ##
 ## Mouse controls
@@ -173,8 +142,6 @@ super + button{1,2,3}
 ##
 ## External commands
 ##
-
-## Convention: {super + ctrl + [a-z],(XF86MEDIAKEYS),super + F[1-12]}
 
 ## Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}

@@ -52,11 +52,7 @@
   (load-theme 'solarized-light t))
 
 ;;; Fonts
-(when window-system
-  (cond ((x-list-fonts "DejaVu Sans Mono")
-         (set-frame-font
-          "DejaVu Sans Mono-10" nil t))
-        (t nil)))
+(when window-system (set-frame-font "xft:DejaVu Sans Mono:size=11" nil t))
 
 ;;; Mode line
 (tooltip-mode -1)

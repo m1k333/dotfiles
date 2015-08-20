@@ -1,7 +1,6 @@
 !! vim: set ft=xdefaults :
 
 #include ".Xresources.d/solarized"
-
 #define myfont          DejaVu Sans Mono
 #define myfontsize      11
 #define mybgcolor       S_base03
@@ -11,7 +10,6 @@
 
 #include ".Xresources.d/urxvt"
 #include ".Xresources.d/rofi"
-
 Xcursor.theme: mycursortheme
 
 !!

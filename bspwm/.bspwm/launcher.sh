@@ -1,8 +1,5 @@
 #!/bin/sh
 
-## Homespun version of suckless' dmenu_run
-## Call with argument to launch in floating mode for bspwm
-
 ## Get a uniquified list of the files in $PATH
 get_bins()
 {
@@ -12,7 +9,7 @@ get_bins()
     echo "...cache updated."
 }
 
-## Test if the launcher's cache needs to be updates
+## Test if the launcher's cache needs to be updated
 redo_cache_p()
 {
     local IFS=:
@@ -24,7 +21,7 @@ redo_cache_p()
     return 1
 }
 
-## If argument passed, bspwm will float the next window
+## If any argument was passed, bspwm will float the next window
 test -n "${1}" && FLOAT=true || FLOAT=false
 ${FLOAT} && bspc rule -a \* -o floating=on
 
@@ -33,19 +30,19 @@ CACHE="${XDG_CACHE_HOME:-"${HOME}/.cache"}/rofi_launcher_cache"
 redo_cache_p && get_bins
 
 ## Run the launcher
-DMENU_CMD="$( rofi -show -dmenu -p "run:" < ${CACHE} )"
+ROFI_CMD="$( rofi -show -dmenu -p "run:" < ${CACHE} )"
 
 ## If a command was selected, run it
-if test -n "${DMENU_CMD}"
+if test -n "${ROFI_CMD}"
 then
-    eval ${DMENU_CMD} &
+    eval ${ROFI_CMD}
+    exit 0
 
 ## Else, if floating was enabled, disable it
 elif ${FLOAT}
 then
     bspc rule -r \*
+    exit 1
 fi
 
 ## EOF
-
-

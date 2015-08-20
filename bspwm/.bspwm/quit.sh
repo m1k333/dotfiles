@@ -1,9 +1,12 @@
 #!/bin/sh
 
-## Send USR1 signal to start panel termination
-pkill -x -SIGUSR1 launch-panel.sh
+# Send term signals to panel.sh
+pkill -x panel.sh
 
-## Exit bspwm
+# Remove temporary files
+rm -Rf /tmp/bspwm
+
+# Exit bspwm
 bspc quit
 
 ## EOF

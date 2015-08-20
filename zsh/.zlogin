@@ -4,6 +4,11 @@
 test "${TERM}" = 'linux' && echo ''
 
 # Start the X server
-#startx 
+if test -z "${DISPLAY}" -a ${XDG_VTNR} -eq 1 
+then
+    startx &> /dev/null
+else
+    return 0
+fi
 
 ## EOF

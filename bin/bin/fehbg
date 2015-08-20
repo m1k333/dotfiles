@@ -1,0 +1,23 @@
+#!/bin/sh
+
+usage() {
+    echo "fehbg (center|fill|max|scale|tile) <image-file>"
+    exit 1
+}
+
+test -z "${2}" -o -z "${1}" && usage
+
+GOTO_USAGE=true
+
+for ARG in center max tile fill scale
+do
+    test "${ARG}" = "$1" && GOTO_USAGE=false
+done
+
+${GOTO_USAGE} && usage
+
+feh --bg-${1} --no-fehbg ${2} && echo "Done!"
+
+exit ${?}
+
+##

@@ -1,8 +1,8 @@
 #!/bin/sh
 # vim: set nowrap:
 
-PANEL_FONT='-xos4-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-*'
-PANEL_HEIGHT=18
+PANEL_FONT='xft:DejaVu Sans Mono:bold:size=11'
+PANEL_HEIGHT=20
 
 . ${HOME}/.bspwm/colors
 

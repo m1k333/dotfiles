@@ -19,8 +19,9 @@ setxkbmap -option terminate:ctrl_alt_bksp
 test -e ${HOME}/.xmodmap && xmodmap ${HOME}/.xmodmap
 xset -b s 1800 dpms 1800 1800 1800
 xrdb -I${HOME} ${HOME}/.Xresources.d/main
-xsetroot -solid black -cursor_name left_ptr
 export DESKTOP_SESSION=gnome # Make QT use GTK settings
+feh --no-fehbg --bg-fill ${HOME}/.bspwm/wallpaper.jpg
+xsetroot -cursor_name left_ptr
 
 # External applications
 mpd &

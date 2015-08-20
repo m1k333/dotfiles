@@ -23,7 +23,7 @@ bspc config presel_border_color     ${yellow}
 bspc config urgent_border_color     ${red}
 
 bspc config border_width        2
-bspc config window_gap          6
+bspc config window_gap          8
 bspc config borderless_monocle  true
 bspc config gapless_monocle     true
 

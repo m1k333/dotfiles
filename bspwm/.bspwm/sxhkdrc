@@ -45,17 +45,13 @@ super + z
 super + {_,ctrl + alt + }c
     bspc window -{c,k}
 
-# Toggle floating mode for {desktop,window}
+# Toggle floating mode for focused desktop
 super + f
-    $\{HOME\}/.bspwm/floatingmode.sh
-super + space
-    bspc window focused -t floating
+    bspc desktop -t floating; bspc desktop 1 -n 1 # force a status update
 
-## Toggle {monocle mode,fullscreen} for focused window
-super + m
-    $\{HOME\}/.bspwm/monoclemode.sh
-super + F12
-    bspc window -t fullscreen
+## Toggle {floating mode,monocle mode,fullscreen} for focused window
+super + {space,m,F12}
+    bspc {window focused -t floating,desktop -l next,window -t fullscreen}
 
 ## Switch to {next,prev} window
 super + {_,shift + }Tab
@@ -93,13 +89,12 @@ super + alt + shift + {h,j,k,l}
 
 ## Move floating windows
 super + {Left,Down,Up,Right}
-    xdo move {-x -40,-y +40,-y -40,-x +40} $(bspc query -W -w focused)
-    xdotool getactivewindow windowmove --relative {-40 y,x -40,x +40,+40 y}
+    xdotool getactivewindow windowmove --relative -- {-40 y,x +40,x -40,+40 y}
 
 ## Resize floating windows
 super + shift + {Left,Down,Up,Right}
     eval "$(xdotool getactivewindow getwindowgeometry --shell)"  \
-    && xdotool getactivewindow windowsize                        \
+    && xdotool getactivewindow windowsize --                     \
     {                                                            \
         $((WIDTH - 40)) $\{HEIGHT\},$\{WIDTH\} $((HEIGHT + 40)), \
         $\{WIDTH\} $((HEIGHT - 40)),$((WIDTH + 40)) $\{HEIGHT\}  \

@@ -1,10 +1,14 @@
 #!/bin/sh
 
-bspc desktop -l next
+DESKTOP="$(bspc query -D -d focused | tr -d '^!')"
 
-LAYOUT=$(bspc query -T -d focused | awk 'FNR == 2 {print $5}')
-DESKTOP=$(bspc query -D -d focused | tr -d '+')
-test "${LAYOUT}" = 'M' && DESKTOP="${DESKTOP}+"
+FLOATINGP=$(bspc query -T -d focused | awk 'FNR == 2 {print $6}')
+test "${FLOATINGP}" = 'f' && bspc desktop -t floating
+
+MONOCLEP=$(bspc query -T -d focused | awk 'FNR == 2 {print $5}')
+test "${MONOCLEP}" = 'M' || DESKTOP="!${DESKTOP}"
+
+bspc desktop -l next
 bspc desktop focused -n "${DESKTOP}"
 
 ##

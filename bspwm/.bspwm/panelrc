@@ -1,21 +1,19 @@
 #!/bin/sh
 # vim: set nowrap:
 
-PANEL_FONT='xft:DejaVu Sans Mono:bold:size=11'
+PANEL_FONT='DejaVuSansMono:bold:size=11'
 PANEL_HEIGHT=20
+PANEL_UNDERLINE=2
 
 . ${HOME}/.bspwm/colors
 
-white="#FF${white}"
 black="#FF${black}"
-
 red="#FF${red}"
-orange="#FF${orange}"
-yellow="#FF${yellow}"
 green="#FF${green}"
-cyan="#FF${cyan}"
+yellow="#FF${yellow}"
 blue="#FF${blue}"
-violet="#FF${violet}"
 magenta="#FF${magenta}"
+cyan="#FF${cyan}"
+white="#FF${white}"
 
 ## EOF

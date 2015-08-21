@@ -26,12 +26,12 @@ super + w
     rofi -show window
 
 # Toggle panel
-super + b
+super + grave
     $\{HOME\}/.bspwm/hidepanel.sh
 
 # Banish mouse
 super + x
-    wmp 25000 25000
+    xdotool mousemove 10000 10000
 
 # Lock screen
 super + z
@@ -46,12 +46,20 @@ super + {_,ctrl + alt + }c
     bspc window -{c,k}
 
 # Toggle floating mode for {desktop,window}
-super + {f,space}
-    {$\{HOME\}/.bspwm/floatingmode.sh,bspc window focused -t floating}
+super + f
+    $\{HOME\}/.bspwm/floatingmode.sh
+super + space
+    bspc window focused -t floating
 
 ## Toggle {monocle mode,fullscreen} for focused window
-super + {m,F11}
-    {$\{HOME\}/.bspwm/monoclemode.sh,bspc window -t fullscreen}
+super + m
+    $\{HOME\}/.bspwm/monoclemode.sh
+super + F12
+    bspc window -t fullscreen
+
+## Switch to {next,prev} window
+super + {_,shift + }Tab
+    bspc window -f {next,prev}
 
 ## Focus or move a window to desktop X
 super + {_,shift + }{1-9,0}
@@ -61,46 +69,40 @@ super + {_,shift + }{1-9,0}
 super + {_,shift + }{comma,period}
     bspc {desktop -f,window focused -d} {prev,next}
 
-## Switch to {next,prev} window
-super + {_,shift + }Tab
-    bspc window -f {next,prev}
-
-## Focus tiling window or move floating window (tries tiling, then floating)
-super + h
-    bspc window -f left  || wmv -40 0 $(bspc query -W -w focused)
-super + j
-    bspc window -f down  || wmv 0 +40 $(bspc query -W -w focused)
-super + k
-    bspc window -f up    || wmv 0 -40 $(bspc query -W -w focused)
-super + l
-    bspc window -f right || wmv +40 0 $(bspc query -W -w focused)
-
-# Move tiling window or resize floating window (tries tiling, then floating)
-super + shift + h
-    bspc window -s left  || wrs -40 0 $(bspc query -W -w focused)
-super + shift + j
-    bspc window -s down  || wrs 0 +40 $(bspc query -W -w focused)
-super + shift + k
-    bspc window -s up    || wrs 0 -40 $(bspc query -W -w focused)
-super + shift + l
-    bspc window -s right || wrs +40 0 $(bspc query -W -w focused)
+## {focus,move} tiled windows
+super + {_,shift + }{h,j,k,l}
+    bspc window -{f,s} {left,down,up,right}.tiled
 
 ## Extend (or shrink) a tiled window (for windows touching walls)
 super + alt + {h,j,k,l}
-    {                                                       \
-      bspc window -e left  -40 || bspc window -e right -40, \
-      bspc window -e down  +40 || bspc window -e up    +40, \
-      bspc window -e up    -40 || bspc window -e down  -40, \
-      bspc window -e right +40 || bspc window -e left  +40  \
+    {
+        bspc window -e left  -40 || bspc window -e right -40, \
+        bspc window -e down  +40 || bspc window -e up    +40, \
+        bspc window -e up    -40 || bspc window -e down  -40, \
+        bspc window -e right +40 || bspc window -e left  +40  \
     }
 
 ## Shrink (or expand) a tiled window (for windows not touching walls)
 super + alt + shift + {h,j,k,l}
-    {                                                       \
-      bspc window -e right -40 || bspc window -e left  -40, \
-      bspc window -e up    +40 || bspc window -e down  +40, \
-      bspc window -e down  -40 || bspc window -e up    -40, \
-      bspc window -e left  +40 || bspc window -e right +40  \
+    {
+        bspc window -e right -40 || bspc window -e left  -40, \
+        bspc window -e up    +40 || bspc window -e down  +40, \
+        bspc window -e down  -40 || bspc window -e up    -40, \
+        bspc window -e left  +40 || bspc window -e right +40  \
+    }
+
+## Move floating windows
+super + {Left,Down,Up,Right}
+    xdo move {-x -40,-y +40,-y -40,-x +40} $(bspc query -W -w focused)
+    xdotool getactivewindow windowmove --relative {-40 y,x -40,x +40,+40 y}
+
+## Resize floating windows
+super + shift + {Left,Down,Up,Right}
+    eval "$(xdotool getactivewindow getwindowgeometry --shell)"  \
+    && xdotool getactivewindow windowsize                        \
+    {                                                            \
+        $((WIDTH - 40)) $\{HEIGHT\},$\{WIDTH\} $((HEIGHT + 40)), \
+        $\{WIDTH\} $((HEIGHT - 40)),$((WIDTH + 40)) $\{HEIGHT\}  \
     }
 
 ## Preselect part of a window
@@ -118,7 +120,7 @@ super + p
 ## {in,de}crease useless gaps
 super + {plus,minus}
     bspc config -d focused window_gap \
-    $(( $(bspc config -d focused window_gap) {+,-} 1 ))
+    $(($(bspc config -d focused window_gap) {+,-} 1))
 
 ## Reset useless gaps
 super + equal

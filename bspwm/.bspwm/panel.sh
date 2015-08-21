@@ -24,9 +24,8 @@ panel_clean()
     # Remove padding bspc padding
     bspc config top_padding 0
 
-    # Remove old FIFO and WID
+    # Remove old FIFO
     rm -f /tmp/bspwm/panel_fifo
-    rm -f /tmp/bspwm/panel_wid
 
     # Done
     return 0
@@ -57,19 +56,15 @@ panel_parse() {
   case ${line} in
 
   C*) # Clock output
-  date="%{F${white}}${line#?}%{F-}"
+  date="${line#?}"
   ;;
 
   N*) # Notification output
-  notice="%{F${white}}${line#?}%{F-}"
+  notice="${line#?}"
   ;;
 
   #B*) # Battery output (function sets its own colours)
   #batinfo="${line#?}"
-  #;;
-
-  #T*) # Xtitle output
-  #title="%{F${white}}${line#?}%{F-}"
   #;;
 
   W*) # BSPWM internal state output
@@ -101,27 +96,27 @@ panel_parse() {
   #;;
 
   O*) # Focused occupied desktop
-  wm_infos="${wm_infos}%{F${blue}}%{U${magenta}}%{+u} ${name} %{U-}%{-u}%{F-}"
-  ;;
-
-  F*) # Focused free desktop
-  wm_infos="${wm_infos}%{U${magenta}}%{+u} ${name} %{U-}%{-u}"
-  ;;
-
-  U*) # Focused urgent desktop
-  wm_infos="${wm_infos}%{F${red}}%{U${magenta}}%{+u} * %{U-}%{-u}%{F-}"
-  ;;
-
-  o*) # Occupied desktop
   wm_infos="${wm_infos}%{F${blue}} ${name} %{F-}"
   ;;
 
+  F*) # Focused free desktop
+  wm_infos="${wm_infos}%{F${blue}} ${name} %{F-}"
+  ;;
+
+  U*) # Focused urgent desktop
+  wm_infos="${wm_infos}%{F${red}} ${name} %{F-}"
+  ;;
+
+  o*) # Occupied desktop
+  wm_infos="${wm_infos}%{F${yellow}} ${name} %{F-}"
+  ;;
+
   f*) # Free desktop
-  wm_infos="${wm_infos} ${name} "
+  wm_infos="${wm_infos}%{F${white}} ${name} %{F-}"
   ;;
 
   u*) # Urgent desktop
-  wm_infos="${wm_infos}%{F${red}} * %{F-}"
+  wm_infos="${wm_infos}%{F${red}} ${name} %{F-}"
   ;;
 
   #L*) # Layout
@@ -160,25 +155,10 @@ panel_parse() {
 
 # Start the panel
 panel_parse | lemonbar -g x${PANEL_HEIGHT} -f "${PANEL_FONT}" \
-              -F "${white}" -B "${black}" &
+              -u ${PANEL_UNDERLINE} -F "${white}" -B "${black}" &
 
 # Pad BSPWM
 bspc config top_padding ${PANEL_HEIGHT}
-
-# Get the panel's WID
-SEARCH_AGAIN_WID=true
-while ${SEARCH_AGAIN_WID}
-do
-    sleep 1
-    for ARG in $(lsw -a)
-    do
-        TEST_NAME="$(wname ${ARG})"
-        test "${TEST_NAME}" = 'bar' || continue
-        echo "${ARG}" > /tmp/bspwm/panel_wid
-        SEARCH_AGAIN_WID=false
-        break
-    done
-done &
 
 ##
 ## Run some info-gathering programs into the FIFO

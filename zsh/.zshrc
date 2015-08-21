@@ -48,9 +48,9 @@ function precmd { eval "${PROMPT_COMMAND}" }
 if test "${TERM}" = 'linux'
 then
     # Beep off - these should cover all cases
-    setterm -blength 0
-    set bell-style none
-    unsetopt beep
+    #setterm -blength 0
+    #set bell-style none
+    #unsetopt beep
     # Send escape to get a block cursor
     PROMPT_COMMAND="${PROMPT_COMMAND} ; echo -en \"\e[?6c\""
 fi

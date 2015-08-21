@@ -51,9 +51,6 @@
   (setq solarized-distinct-fringe-background t)
   (load-theme 'solarized-light t))
 
-;;; Fonts
-(when window-system (set-frame-font "xft:DejaVu Sans Mono:size=11" nil t))
-
 ;;; Mode line
 (tooltip-mode -1)
 (line-number-mode 1)

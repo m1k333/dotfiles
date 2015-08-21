@@ -1,0 +1,50 @@
+!! vim: set ft=xdefaults :
+
+! Colour definitions
+
+#define mybackground    #fdf6e3
+#define myforeground    #657b83
+
+#define myblack         #eee8d5
+#define myred           #dc322f
+#define mygreen         #859900
+#define myyellow        #b58900
+#define myblue          #268bd2
+#define mymagenta       #d33682
+#define mycyan          #2aa198
+#define mywhite         #073642
+
+#define mybrightblack   #fdf6e3
+#define mybrightred     #cb4b16
+#define mybrightgreen   #93a1a1
+#define mybrightyellow  #839496
+#define mybrightblue    #657b83
+#define mybrightmagenta #6c71c4
+#define mybrightcyan    #586e75
+#define mybrightwhite   #002b36
+
+! X colours
+*background:    mybackground
+*foreground:    myforeground
+*cursorColor:   myforeground
+*color0:        myblack
+*color1:        myred
+*color2:        mygreen
+*color3:        myyellow
+*color4:        myblue
+*color5:        mymagenta
+*color6:        mycyan
+*color7:        mywhite
+*color8:        mybrightblack
+*color9:        mybrightred
+*color10:       mybrightgreen
+*color11:       mybrightyellow
+*color12:       mybrightblue
+*color13:       mybrightmagenta
+*color14:       mybrightcyan
+*color15:       mybrightwhite
+
+! URXVT fix
+URxvt*intensityStyles: false
+
+!!

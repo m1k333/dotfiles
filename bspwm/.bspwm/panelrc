@@ -4,6 +4,7 @@
 PANEL_FONT='DejaVuSansMono:bold:size=11'
 PANEL_HEIGHT=20
 PANEL_UNDERLINE=2
+MULTIPLE_MONITORS=false
 
 . ${HOME}/.bspwm/colors
 

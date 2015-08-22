@@ -5,10 +5,10 @@ DEFAULT_NOTIFY_TIMEOUT = 6000
 MAX_NOTIFY_TIMEOUT = 10000
 
 # Maximum number of characters in a notification
-NOTIFICATION_MAX_LENGTH = 80
+NOTIFICATION_MAX_LENGTH = 90
 
 # Time between regular status updates (s)
-STATUS_UPDATE_INTERVAL = 6.0
+STATUS_UPDATE_INTERVAL = 5.0
 
 # Command from which to fetch status text (reads back from stdout)
 import os

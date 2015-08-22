@@ -7,10 +7,13 @@ BATTERY_NOW="${BATTERY_LOC}/current"
 BATTERY_FULL="${BATTERY_LOC}/full"
 BATTERY_STATUS="${BATTERY_LOC}/status"
 
+. ${HOME}/.bspwm/panelrc
+
 battery_monitor()
 {
     if test "${BATTERY_LOC}" != 'NONE'
     then
+
         while true
         do
             if test -e ${BAT}
@@ -28,22 +31,24 @@ battery_monitor()
 
                 if test ${BPERCENT} -gt 66
                 then
-                    BCOLOUR="%{B${green}}"
+                    BCOLOUR="%{F${green}}"
                 elif test ${BPERCENT} -gt 33
                 then
-                    BCOLOUR="%{B${yellow}}"
+                    BCOLOUR="%{F${yellow}}"
                 else
-                    BCOLOUR="%{B${red}}"
+                    BCOLOUR="%{F${red}}"
                 fi
             else
                 BCOLOUR="%{B${yellow}}"
-                BSTATUS='A/C'
+                BSTATUS='AC'
                 BPERCENT=''
             fi
-            echo "B%{F${black}}${BCOLOUR} ${BSTATUS}${BPERCENT} %{B-}%{F-}"
+            echo "B${BCOLOUR}${BSTATUS}${BPERCENT}%{F-}"
             sleep 10
         done
+
     else
+        echo "BAC"
         exit 1
     fi
 }

@@ -17,6 +17,10 @@ super + Escape
 super + {shift + ,_}Return
     {bspc rule -a urxvt -o floating=on && ,_}urxvt
 
+# File manager (+ shift for floating file manager)
+super + {shift + ,_}e
+    {bspc rule -a spacefm -o floating=on && ,_}spacefm
+
 # Launcher (+ shift for floating launcher)
 super + {_,shift + }r
     $\{HOME\}/.bspwm/launcher.sh {_,floating}
@@ -47,7 +51,8 @@ super + {_,ctrl + alt + }c
 
 # Toggle floating mode for focused desktop
 super + f
-    bspc desktop -t floating; bspc desktop 1 -n 1 # force a status update
+    bspc desktop -t floating; \ 
+    bspc control --get-status > /tmp/bspwm/panel_fifo # force a status update
 
 ## Toggle {floating mode,monocle mode,fullscreen} for focused window
 super + {space,m,F12}
@@ -71,20 +76,20 @@ super + {_,shift + }{h,j,k,l}
 
 ## Extend (or shrink) a tiled window (for windows touching walls)
 super + alt + {h,j,k,l}
-    {
-        bspc window -e left  -40 || bspc window -e right -40, \
-        bspc window -e down  +40 || bspc window -e up    +40, \
-        bspc window -e up    -40 || bspc window -e down  -40, \
-        bspc window -e right +40 || bspc window -e left  +40  \
+    {                                                           \
+        bspc window -e left  -40 || bspc window -e right -40,   \
+        bspc window -e down  +40 || bspc window -e up    +40,   \
+        bspc window -e up    -40 || bspc window -e down  -40,   \
+        bspc window -e right +40 || bspc window -e left  +40    \
     }
 
 ## Shrink (or expand) a tiled window (for windows not touching walls)
 super + alt + shift + {h,j,k,l}
-    {
-        bspc window -e right -40 || bspc window -e left  -40, \
-        bspc window -e up    +40 || bspc window -e down  +40, \
-        bspc window -e down  -40 || bspc window -e up    -40, \
-        bspc window -e left  +40 || bspc window -e right +40  \
+    {                                                           \
+        bspc window -e right -40 || bspc window -e left  -40,   \
+        bspc window -e up    +40 || bspc window -e down  +40,   \
+        bspc window -e down  -40 || bspc window -e up    -40,   \
+        bspc window -e left  +40 || bspc window -e right +40    \
     }
 
 ## Move floating windows

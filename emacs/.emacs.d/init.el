@@ -483,6 +483,6 @@ vertical split."
 (setq mouse-yank-at-point t)
 
 ;;; Evil
-;;(load-file (expand-file-name "evil-setup.el" user-emacs-directory))
+(load-file (expand-file-name "evil-setup.el" user-emacs-directory))
 
 ;;;; EOF ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

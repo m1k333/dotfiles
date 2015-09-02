@@ -155,20 +155,20 @@ panel_parse()
     num_mon=$(bspc query -M | wc -l)
     case ${num_mon} in
     1)
-    fmt="%{l} [${layout_mon0}] ${notice}%{c}${mon_info_mon0}   ${wm_info_mon0}%{r}[${batinfo}] ${date} "
+    fmt="%{l} [${layout_mon0}] ${notice}%{c}${mon_info_mon0}   ${wm_info_mon0}%{r}${batinfo} ${date} "
     ;;
     2)
-               fmt="%{l} [${layout_mon0}] ${notice}%{c}${mon_info_mon0}   ${wm_info_mon0}%{r}[${batinfo}] ${date} "
-    fmt="${fmt}%{S+}%{l} [${layout_mon1}] ${notice}%{c}${mon_info_mon1}   ${wm_info_mon1}%{r}[${batinfo}] ${date} "
+               fmt="%{l} [${layout_mon0}] ${notice}%{c}${mon_info_mon0}   ${wm_info_mon0}%{r}${batinfo} ${date} "
+    fmt="${fmt}%{S+}%{l} [${layout_mon1}] ${notice}%{c}${mon_info_mon1}   ${wm_info_mon1}%{r}${batinfo} ${date} "
     ;;
     3)
-               fmt="%{l} [${layout_mon0}] ${notice}%{c}${mon_info_mon0}   ${wm_info_mon0}%{r}[${batinfo}] ${date} "
-    fmt="${fmt}%{S+}%{l} [${layout_mon1}] ${notice}%{c}${mon_info_mon1}   ${wm_info_mon1}%{r}[${batinfo}] ${date} "
-    fmt="${fmt}%{S+}%{l} [${layout_mon2}] ${notice}%{c}${mon_info_mon2}   ${wm_info_mon2}%{r}[${batinfo}] ${date} "
+               fmt="%{l} [${layout_mon0}] ${notice}%{c}${mon_info_mon0}   ${wm_info_mon0}%{r}${batinfo} ${date} "
+    fmt="${fmt}%{S+}%{l} [${layout_mon1}] ${notice}%{c}${mon_info_mon1}   ${wm_info_mon1}%{r}${batinfo} ${date} "
+    fmt="${fmt}%{S+}%{l} [${layout_mon2}] ${notice}%{c}${mon_info_mon2}   ${wm_info_mon2}%{r}${batinfo} ${date} "
     ;;
     esac
   else
-    fmt="%{l} [${layout}] ${notice}%{c}${wm_infos}%{r}[${batinfo}] ${date} "
+    fmt="%{l} [${layout}] ${notice}%{c}${wm_infos}%{r}${batinfo} ${date} "
   fi
   printf "%s\n" "${fmt}"
 

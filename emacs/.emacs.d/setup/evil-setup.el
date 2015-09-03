@@ -1,6 +1,4 @@
-;;;; $HOME/.emacs.d/evil-init.el
-;;;; By Michael Richer
-;;;; Since May 5th, 2014
+;;;; Evil settings
 
 ;;; Activate evil mode
 (use-package evil
@@ -66,8 +64,6 @@
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
-
-
 ;; Evil-aware minibuffer quit command
 (defun minibuffer-keyboard-quit ()
   "Abort recursive edit.
@@ -85,21 +81,23 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (violet  "#6c71c4")
       (magenta "#d33682")
       (red     "#dc322f"))
-  (setq ;; evil-move-cursor-back nil
-   evil-mode-line-format nil ;; This was set in mode line section
-   evil-emacs-state-cursor    '(grey    box)
-   evil-insert-state-cursor   '(magenta bar)
-   evil-normal-state-cursor   '(green   box)
-   evil-motion-state-cursor   '(green   box)
-   evil-operator-state-cursor '(red     hollow)
-   evil-replace-state-cursor  '(red     bar)
-   evil-visual-state-cursor   '(violet  box)
-   evil-emacs-state-tag    "(EMACS)"
-   evil-insert-state-tag   "(INSERT)"
-   evil-motion-state-tag   "(MOTION)"
-   evil-normal-state-tag   "(NORMAL)"
-   evil-operator-state-tag "(OPERATOR)"
-   evil-replace-state-tag  "(REPLACE)"
-   evil-visual-state-tag   "(VISUAL)"))
+  (setq evil-mode-line-format nil ;; This was set in mode line section
+        evil-emacs-state-cursor    '(grey    box)
+        evil-insert-state-cursor   '(magenta bar)
+        evil-normal-state-cursor   '(green   box)
+        evil-motion-state-cursor   '(green   box)
+        evil-operator-state-cursor '(red     hollow)
+        evil-replace-state-cursor  '(red     bar)
+        evil-visual-state-cursor   '(violet  box)
+        evil-emacs-state-tag    "(EMACS)"
+        evil-insert-state-tag   "(INSERT)"
+        evil-motion-state-tag   "(MOTION)"
+        evil-normal-state-tag   "(NORMAL)"
+        evil-operator-state-tag "(OPERATOR)"
+        evil-replace-state-tag  "(REPLACE)"
+        evil-visual-state-tag   "(VISUAL)"))
 
-;;;
+;;; Done
+(provide 'evil-setup)
+
+;;;;

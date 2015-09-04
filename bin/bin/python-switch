@@ -1,0 +1,30 @@
+#!/bin/sh
+
+PYTHON_BIN=${PYTHON_BIN:-/usr/bin/python}
+
+
+usage() {
+    echo "Usage: ${0} (2|3)."
+    exit 1
+}
+   
+noroot() {
+    echo "Must be run with root privileges."
+    exit 2
+}
+
+test ${#} -ne 1 && usage
+test $(id -u) -eq 0 || noroot
+
+if test ${1} -eq 2 -o ${1} -eq 3
+then
+    echo "Python location: ${PYTHON_BIN}"
+    echo "ln -s --force ${PYTHON_BIN}${1} ${PYTHON_BIN} ..."
+    ln -s --force ${PYTHON_BIN}${1} ${PYTHON_BIN}
+    echo -n "Python version is now: "; python --version
+    exit 0
+fi
+
+usage
+
+##

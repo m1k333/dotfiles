@@ -37,7 +37,7 @@ cd horton-${HVERSION}
 continuep
 echo '*** Installing dependencies:'
 sudo pacman -S --needed
-        gcc gcc-fortran linux-tools matplotlib cython2 python2 \
+        gcc gcc-fortran linux-tools cython2 python2 \
         python2-h5py python2-numpy python2-scipy python2-sympy \
         python2-nose python2-sphinx python2-matplotlib
 
@@ -67,6 +67,10 @@ echo '*** Installing Horton:'
 echo '[blas]' > ./setup.cfg
 echo 'libraries=atlas:cblas' >> ./setup.cfg
 echo 'include_dirs=/usr/include/atlas' >> ./setup.cfg
+cd depends
+make libxc
+make libint -j4
+cd ..
 ./setup.py install --user
 
 # Configure shell

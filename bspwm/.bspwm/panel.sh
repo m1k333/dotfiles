@@ -90,11 +90,13 @@ panel_parse()
   case ${item} in
 
   M*) # Active monitor
+  wm_infos=''
   cur_mon=$((cur_mon + 1))
   mon_infos="%{F${black}}%{B${blue}} ${name} %{B-}%{F-}"
   ;;
 
   m*) # Inactive monitor
+  wm_infos=''
   cur_mon=$((cur_mon + 1))
   mon_infos="%{F${black}}%{B${cyan}} ${name} %{B-}%{F-}"
   ;;
@@ -155,11 +157,11 @@ panel_parse()
     num_mon=$(bspc query -M | wc -l)
     case ${num_mon} in
     1)
-    fmt="%{l} [${layout_mon0}] ${notice}%{c}${mon_info_mon0}   ${wm_info_mon0}%{r}${batinfo} ${date} "
+    fmt="%{l} [${layout_mon0}] ${notice}%{c}${wm_info_mon0}%{r}${batinfo} ${date} "
     ;;
     2)
-               fmt="%{l} [${layout_mon0}] ${notice}%{c}${mon_info_mon0}   ${wm_info_mon0}%{r}${batinfo} ${date} "
-    fmt="${fmt}%{S+}%{l} [${layout_mon1}] ${notice}%{c}${mon_info_mon1}   ${wm_info_mon1}%{r}${batinfo} ${date} "
+               fmt="%{l} [${layout_mon0}] ${notice}%{c}${wm_info_mon0}%{r}${batinfo} ${date} "
+    fmt="${fmt}%{S+}%{l} [${layout_mon1}] ${notice}%{c}${wm_info_mon1}%{r}${batinfo} ${date} "
     ;;
     3)
                fmt="%{l} [${layout_mon0}] ${notice}%{c}${mon_info_mon0}   ${wm_info_mon0}%{r}${batinfo} ${date} "

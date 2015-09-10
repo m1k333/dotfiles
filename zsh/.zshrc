@@ -179,6 +179,7 @@ alias sued="sudoedit"
 # Application aliases
 alias emc='emacs -nw'
 alias pacman='pacman --color auto'
+alias startx-multihead='startx ~/.xinitrc multihead'
 alias tmat='tmux attach || tmux new-session'
 
 # Function to create .bak files

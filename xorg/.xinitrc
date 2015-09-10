@@ -26,8 +26,16 @@ xsetroot -cursor_name left_ptr
 # External applications
 mpd &
 
+# Multihead
+if test ${#} -ne 0
+then
+    xrandr --output LVDS --auto --right-of VGA-0 --output VGA-0 --primary --auto
+    exec bspwm -c ${HOME}/.bspwm/bspwmrc-multihead
+else 
+
 # Window manager
-exec bspwm -c ${HOME}/.bspwm/bspwmrc
+    exec bspwm -c ${HOME}/.bspwm/bspwmrc
+fi
 
 ## EOF
 

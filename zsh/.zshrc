@@ -1,12 +1,6 @@
 #!/bin/zsh
 
 ##
-## Profile
-##
-
-. ${HOME}/.zprofile
-
-##
 ## Basic configuration
 ##
 

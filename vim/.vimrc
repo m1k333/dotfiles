@@ -1,5 +1,4 @@
 "" #/.vimrc MSR 2014 ###################################################
-"" 'diet' version, with 110% less cruft! ###############################
 
 "" Appearance ##########################################################
 
@@ -7,9 +6,7 @@
 set noerrorbells novisualbell t_vb=
 if has("gui_running")
     set guioptions= guiheadroom=0
-    colorscheme solarized
 else
-    set background=light
     colorscheme desert
 endif
 
@@ -45,7 +42,6 @@ func! WScleanup()
     %s/\s\+$//ge
     exe "normal `z"
 endfunc
-command! WScleanup call WScleanup()
 
 " Show whitespace
 let w:showWS = 0
@@ -58,14 +54,13 @@ func! ToggleWS()
         let w:showWS = 1
     endif
 endfunc
-command! ToggleWS call ToggleWS()
 
 "" Keybindings #########################################################
 set scrolloff=7
 set timeoutlen=500
 nmap <leader>n :set invnumber<CR>
-nmap <leader>w :WScleanup<CR>
-nmap <leader>s :ToggleWS<CR>
+nmap <leader>w :call WScleanup()<CR>
+nmap <leader>s :call ToggleWS()<CR>
 
 "" Searching ###########################################################
 set incsearch
@@ -82,6 +77,7 @@ set shiftwidth=4 tabstop=4
 set wildmenu wildmode=list:longest,full
 
 "" Wrap ################################################################
+
 set backspace=indent,eol,start
 set textwidth=80
 

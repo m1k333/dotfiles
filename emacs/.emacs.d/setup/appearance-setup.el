@@ -15,12 +15,10 @@
             '(lambda () (set-frame-size (selected-frame) 82 26))))
 
 ;;; Theme
-(use-package solarized-theme
+(use-package material-theme
   :ensure t
   :if window-system
-  :config
-  (setq solarized-distinct-fringe-background t)
-  (load-theme 'solarized-light t))
+  :config (load-theme 'material-light t))
 
 ;;; Mode line
 (tooltip-mode -1)

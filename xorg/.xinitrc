@@ -15,17 +15,6 @@ fi
 # Always be able to safely terminate X
 setxkbmap -option terminate:ctrl_alt_bksp
 
-# X settings
-test -e ${HOME}/.xmodmap && xmodmap ${HOME}/.xmodmap
-xset -b s 1800 dpms 1800 1800 1800
-xrdb -I${HOME} ${HOME}/.Xresources.d/main
-export DESKTOP_SESSION=gnome # Make QT use GTK settings
-feh --no-fehbg --bg-fill ${HOME}/.bspwm/wallpaper.jpg
-xsetroot -cursor_name left_ptr
-
-# External applications
-mpd &
-
 # Multihead
 if test ${#} -ne 0
 then
@@ -38,4 +27,3 @@ else
 fi
 
 ## EOF
-

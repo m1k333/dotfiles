@@ -10,9 +10,15 @@
       echo-keystrokes 0.1
       global-font-lock-mode t
       font-lock-maximum-decoration t)
+(when window-system
+  (add-hook 'after-init-hook
+            '(lambda () (set-frame-size (selected-frame) 82 26))))
 
 ;;; Theme
-(load-theme 'adwaita t)
+(use-package material-theme
+  :ensure t
+  :if window-system
+  :config (load-theme 'material-light t))
 
 ;;; Mode line
 (tooltip-mode -1)

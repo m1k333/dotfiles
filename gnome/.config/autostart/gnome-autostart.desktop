@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=GNOME User Autostart
+Comment=GNOME User Autostart
+Exec=sh ~/.config/autostart/gnome-autostart.sh
+Terminal=false
+Categories=System;

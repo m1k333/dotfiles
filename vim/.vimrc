@@ -5,9 +5,7 @@
 " Visuals
 set noerrorbells novisualbell t_vb=
 if has("gui_running")
-    set guioptions= guiheadroom=0
-else
-    colorscheme desert
+    set guioptions=
 endif
 
 " Information

@@ -1,6 +1,0 @@
-#!/bin/sh
-
-# Force QT to adopt GTK icons/themes
-export DESKTOP_SESSION=gnome
-
-## EOF

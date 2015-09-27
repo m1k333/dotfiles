@@ -23,18 +23,7 @@
   (ac-config-default)
   (setq ac-auto-start nil
         ac-comphist-file (expand-file-name "ac-comp-history-file"
-                                           user-emacs-directory))
-  (use-package jedi
-    ;; Python auto-complete via Jedi python backend.  M-x
-    ;; jedi:install-server is required on first run.
-    ;; jed:install-server is dependent on the virtualenv
-    ;; python library, which is available as
-    ;; python-virtualenv in the Arch repos.
-    :ensure t
-    :config
-    (add-hook 'python-mode-hook 'jedi:setup)
-    (setq jedi:complete-on-dot t)))
-
+                                           user-emacs-directory)))
 
 ;;; Backups and autosave
 (defvar backup-dir (expand-file-name "backup" user-emacs-directory))

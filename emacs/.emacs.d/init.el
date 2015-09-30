@@ -25,6 +25,6 @@
 (require 'appearance-setup)
 (require 'keybindings-setup)
 (require 'emacs-setup)
-;;(require 'evil-setup)
+(require 'evil-setup)
 
 ;;;;

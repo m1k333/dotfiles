@@ -9,7 +9,7 @@ EDITOR_MODE='emacs'
 
 # Prompt definition: ${PROMPT_STATIC} is the basic prompt
 autoload -U colors && colors
-PROMPT_STATIC="(%n@%M)~(%~)~(%?)~"
+PROMPT_STATIC="(%n@%M)-(%~)-(%?)-"
 
 # Syntax highlighting plugin: point this to the correct location
 SYNTAXHLFILE='/usr/share/zsh/plugins/zsh-syntax-highlighting'

@@ -102,36 +102,6 @@
 (setq disabled-command-function nil)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;;; Eshell
-
-;; Parse git branch
-(defun eshell/current-git-branch ()
-  "Returns current git branch as a string, or the empty string if the
-working directory is not in a git repo (or the git command is not found)."
-  (interactive)
-  (let ((pwd (expand-file-name (eshell/pwd))))
-    (if (and (eshell-search-path "git") (locate-dominating-file pwd ".git"))
-        (shell-command-to-string
-         (concat "cd "
-                 (expand-file-name (eshell/pwd))
-                 " && git branch | grep '\*' | sed 's/\* //' | tr -d '\n'"))
-      (concat ""))))
-
-;; Prompt
-(setq eshell-highlight-prompt nil
-      eshell-history-size 25000
-      eshell-prompt-function
-      (lambda ()
-        (concat
-         (let ((git-branch (eshell/current-git-branch)))
-           (if (= 0 (length git-branch))
-               "" (concat "[" git-branch "]~")))
-         "(" (user-login-name) "@" (system-name) ")~"
-         "(" (eshell/pwd) ")~"
-         (propertize (if (= (user-uid) 0) "#" "$")
-                     'face `(:foreground "orchid"))
-         " ")))
-
 ;;; Fill
 
 ;; Settings

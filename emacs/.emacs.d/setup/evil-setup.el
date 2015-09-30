@@ -16,6 +16,8 @@
     (if (eq evil-state 'emacs)
         (evil-normal-state) (evil-emacs-state)))
   (bind-key "e" 'evil-toggle-vim-emacs-state 'ctl-x-m-map)
+  ;; Evil default modes
+  (evil-set-initial-state 'term-mode 'emacs)
   :config (evil-mode 1))
 
 ;;; Use evil packages

@@ -124,6 +124,9 @@ This command does the inverse of `fill-region'."
   (interactive "r")
   (let ((fill-column most-positive-fixnum)) (fill-region start end)))
 
+;;; Floobits
+(use-package floobits :ensure t)
+
 ;;; Flyspell
 (use-package flyspell
   :ensure t
@@ -167,6 +170,15 @@ This command does the inverse of `fill-region'."
 
 ;;; Org
 (setq org-completion-use-ido t)
+
+;;; Python
+(use-package anaconda-mode
+  :ensure t
+  :defer t
+  :commands anaconda-mode
+  :init
+  (add-hook 'python-mode-hook 'anaconda-mode)
+  (add-hook 'python-mode-hook 'eldoc-mode))
 
 ;;; Rainbow delimiters
 (use-package rainbow-delimiters

@@ -64,7 +64,7 @@ then
         if test -d './.git'
         then
             local GIT_STRING="$(git branch | grep '\*' | sed 's/\* //')"
-            test -n "${GIT_STRING}" && PROMPT_GIT_BRANCH="[${GIT_STRING}]~"
+            test -n "${GIT_STRING}" && PROMPT_GIT_BRANCH="[${GIT_STRING}]-"
         fi
     }
     PROMPT_COMMAND="${PROMPT_COMMAND} ; precmd_git_branch &> /dev/null"

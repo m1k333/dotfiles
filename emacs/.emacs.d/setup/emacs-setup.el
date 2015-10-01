@@ -124,9 +124,6 @@ This command does the inverse of `fill-region'."
   (interactive "r")
   (let ((fill-column most-positive-fixnum)) (fill-region start end)))
 
-;;; Floobits
-(use-package floobits :ensure t)
-
 ;;; Flyspell
 (use-package flyspell
   :ensure t

@@ -182,6 +182,9 @@ alias pacman='pacman --color auto'
 alias startx-multihead='startx ~/.xinitrc multihead'
 alias tmat='tmux attach || tmux new-session'
 
+# X aliases
+alias xlab="MONITOR_SETUP='lab' startx ${HOME}/.xinitrc"
+
 # Function to create .bak files
 function bak { for i in ${@}; do cp -R ${i} ${i}.bak; done }
 

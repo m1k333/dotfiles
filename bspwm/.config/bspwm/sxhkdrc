@@ -1,37 +1,26 @@
-## SXHKD Config
-## MSR 2014-2015
-
 ##
 ## BSPWM commands
 ##
 
 # Quit bspwm
 super + ctrl + alt + Escape
-    $\{HOME\}/.bspwm/quit.sh
+    bspc quit
 
 # Reload sxhkd
 super + Escape
     pkill -x -SIGUSR1 sxhkd
 
-# Terminal (+ shift for floating terminal)
-super + {shift + ,_}Return
-    {bspc rule -a urxvt -o floating=on && ,_}urxvt
+# Terminal
+super + {_,shift + }Return
+    {_,bspc rule -a urxvt -o floating=on && }urxvt
 
-# File manager (+ shift for floating file manager)
-super + {shift + ,_}e
-    {bspc rule -a spacefm -o floating=on && ,_}spacefm
+# File manager
+super + e
+    caja
 
-# Launcher (+ shift for floating launcher)
-super + {_,shift + }r
-    $\{HOME\}/.bspwm/launcher.sh {_,floating}
-
-# Window list
-super + w
-    rofi -show window
-
-# Toggle panel
-super + grave
-    $\{HOME\}/.bspwm/hidepanel.sh
+# Run/window dialogs
+super + {r,w}
+    rofi -show {run,window}
 
 # Banish mouse
 super + x
@@ -50,31 +39,30 @@ super + {_,ctrl + alt + }c
     bspc window -{c,k}
 
 # Toggle floating mode for focused desktop
-super + f
-    bspc desktop -t floating; \ 
-    bspc control --get-status > /tmp/bspwm/panel_fifo # force a status update
+#super + f
+#    bspc desktop -t floating
 
-## Toggle {floating mode,monocle mode,fullscreen} for focused window
+# Toggle {floating mode,monocle mode,fullscreen} for focused window
 super + {space,m,F12}
     bspc {window focused -t floating,desktop -l next,window -t fullscreen}
 
-## Switch to {next,prev} window
+# Switch to {next,prev} window
 super + {_,shift + }Tab
     bspc window -f {next,prev}
 
-## Focus or move a window to desktop X
+# Focus or move a window to desktop X
 super + {_,shift + }{1-9,0}
     bspc {desktop -f,window -d} ^{1-9,10}
 
-## {focus,move a window to} the next/previous desktop
+# {focus,move a window to} the next/previous desktop
 super + {_,shift + }{comma,period}
     bspc {desktop -f,window focused -d} {prev,next}
 
-## {focus,move} tiled windows
+# {focus,move} tiled windows
 super + {_,shift + }{h,j,k,l}
     bspc window -{f,s} {left,down,up,right}.tiled
 
-## Extend (or shrink) a tiled window (for windows touching walls)
+# Extend (or shrink) a tiled window (for windows touching walls)
 super + alt + {h,j,k,l}
     {                                                           \
         bspc window -e left  -40 || bspc window -e right -40,   \
@@ -83,7 +71,7 @@ super + alt + {h,j,k,l}
         bspc window -e right +40 || bspc window -e left  +40    \
     }
 
-## Shrink (or expand) a tiled window (for windows not touching walls)
+# Shrink (or expand) a tiled window (for windows not touching walls)
 super + alt + shift + {h,j,k,l}
     {                                                           \
         bspc window -e right -40 || bspc window -e left  -40,   \
@@ -92,11 +80,11 @@ super + alt + shift + {h,j,k,l}
         bspc window -e left  +40 || bspc window -e right +40    \
     }
 
-## Move floating windows
+# Move floating windows
 super + {Left,Down,Up,Right}
     xdotool getactivewindow windowmove --relative -- {-40 y,x +40,x -40,+40 y}
 
-## Resize floating windows
+# Resize floating windows
 super + shift + {Left,Down,Up,Right}
     eval "$(xdotool getactivewindow getwindowgeometry --shell)"  \
     && xdotool getactivewindow windowsize --                     \
@@ -105,41 +93,36 @@ super + shift + {Left,Down,Up,Right}
         $\{WIDTH\} $((HEIGHT - 40)),$((WIDTH + 40)) $\{HEIGHT\}  \
     }
 
-## Preselect part of a window
+# Preselect part of a window
 super + ctrl + {h,j,k,l}
     bspc window -p {left,down,up,right}
 
-## Set preselection size ratio
+# Set preselection size ratio
 super + ctrl + {1-9}
     bspc window -r 0.{1-9}
 
-## Move window to last preselection
+# Move window to last preselection
 super + p
     bspc window -w last.manual
 
-## {in,de}crease useless gaps
-super + {plus,minus}
+# {in,de}crease useless gaps
+super + {plus,minus,equal}
     bspc config -d focused window_gap \
-    $(($(bspc config -d focused window_gap) {+,-} 1))
-
-## Reset useless gaps
-super + equal
-    GAP=$(awk '$3 ~ /window_gap/ \{print $4\}' $\{HOME\}/.bspwm/bspwmrc) \
-    && bspc config -d focused window_gap $\{GAP\}
+    $(($(bspc config -d focused window_gap) {+ 1,- 1, 0}))
 
 ##
 ## Mouse controls
 ##
 
-## Track and send pointer coordinates
+# Track and send pointer coordinates
 super + {!,@}button{1,2,3}
     bspc pointer {-t %i %i,-u}{_,_,_}
 
-## Focus window
+# Focus window
 ~button1
     bspc pointer -g focus
 
-## Rearrange/resize windows
+# Rearrange/resize windows
 super + button{1,2,3}
     bspc pointer -g {move,resize_side,resize_corner}
 
@@ -147,20 +130,18 @@ super + button{1,2,3}
 ## External commands
 ##
 
-## Adjust ALSA volume
+# Adjust ALSA volume
 XF86Audio{RaiseVolume,LowerVolume,Mute}
     amixer set Master {5%+,5%-,toggle}
 super + F{11,10,9}
     amixer set Master {5%+,5%-,toggle}
 
-## Control MPC
+# Control MPC
 XF86Audio{Play,Stop,Prev,Next}
     mpc {toggle,stop,prev,next}
 super + F{5,6,7,8}
     mpc {toggle,stop,prev,next}
 
-## Screenshot
+# Screenshot
 {_,shift + }Print
     screenshot {screen,window}
-
-## EOF

@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# Vars
+BSPWMDIR="${HOME}/.config/bspwm"
+export DESKTOP_SESSION=gnome
+
+# sxhkd hotkey daemon
+sxhkd -c ${BSPWMDIR}/sxhkdrc &
+
+# X settings
+xrdb -merge ${BSPWMDIR}/xresources
+test -f ${BSPWMDIR}/xmodmap && xmodmap ${BSPWMDIR}/xmodmap
+xset -b s 1800 dpms 1800 1800 1800
+xsetroot -cursor_name left_ptr
+feh --no-fehbg --bg-fill ${BSPWMDIR}/wallpaper*
+caja -n
+/usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &
+
+# Appearance
+black='#000000'
+red='#f44336'
+green='#8bc34a'
+yellow='#ffeb3b'
+blue='#03a9f4'
+magenta='#9c27b0'
+cyan='#00bcd4'
+white='#c0c0c0'
+bspc config focused_border_color    ${blue}
+bspc config active_border_color     ${blue}
+bspc config normal_border_color     ${black}
+bspc config presel_border_color     ${yellow}
+bspc config urgent_border_color     ${red}
+bspc config border_width            2
+bspc config window_gap              4
+bspc config borderless_monocle      false
+bspc config gapless_monocle         false
+
+# Behaviour
+bspc config auto_cancel             true
+bspc config split_ratio             0.50
+bspc config auto_alternate          false
+bspc config focus_follows_pointer   false
+
+# Rules
+bspc rule -a                        Steam   floating=on
+
+# Monitors
+sh ${BSPWMDIR}/monitors
+
+# Send restart signal to sxhkd
+pkill -x -SIGUSR1 sxhkd

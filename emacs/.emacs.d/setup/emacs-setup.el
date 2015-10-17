@@ -176,6 +176,7 @@ This command does the inverse of `fill-region'."
   :init
   (add-hook 'python-mode-hook 'anaconda-mode)
   (add-hook 'python-mode-hook 'eldoc-mode))
+(use-package cython-mode :ensure t)
 
 ;;; Rainbow delimiters
 (use-package rainbow-delimiters

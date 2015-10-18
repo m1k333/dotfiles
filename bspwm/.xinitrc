@@ -49,4 +49,23 @@ startbspwm()
     exec bspwm
 }
 
-startbspwm
+startawesome()
+{
+    # X settings
+    xset -b s 1800 dpms 1800 1800 1800
+    xrdb -merge ~/.config/awesome/xresources
+    test -f ~/.config/awesome/xmodmap && xmodmap ~/.config/awesome/xmodmap
+
+    # MATE DE stuff
+    export DESKTOP_SESSION=gnome
+    /usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &
+    mate-volume-control-applet &
+    mate-power-manager &
+    nm-applet &
+
+    # Run window manager
+    exec awesome
+}
+#startbspwm
+#exec mate-session
+startawesome

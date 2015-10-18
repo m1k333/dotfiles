@@ -1,0 +1,88 @@
+!! vim: set ft=xdefaults :
+
+! Define font
+#define myfont              DejaVu Sans Mono
+#define myfontsize          10
+
+! Define colors
+#define mybackground        #fdf6e3
+#define myforeground        #657b83
+
+#define myblack             #eee8d5
+#define myred               #dc322f
+#define mygreen             #859900
+#define myyellow            #b58900
+#define myblue              #268bd2
+#define mymagenta           #d33682
+#define mycyan              #2aa198
+#define mywhite             #073642
+
+#define mybrightblack       #fdf6e3
+#define mybrightred         #cb4b16
+#define mybrightgreen       #93a1a1
+#define mybrightyellow      #839496
+#define mybrightblue        #657b83
+#define mybrightmagenta     #6c71c4
+#define mybrightcyan        #586e75
+#define mybrightwhite       #002b36
+
+URxvt*background:           mybackground
+URxvt*foreground:           myforeground
+URxvt*cursorColor:          myforeground
+URxvt*color0:               myblack
+URxvt*color1:               myred
+URxvt*color2:               mygreen
+URxvt*color3:               myyellow
+URxvt*color4:               myblue
+URxvt*color5:               mymagenta
+URxvt*color6:               mycyan
+URxvt*color7:               mywhite
+URxvt*color8:               mybrightblack
+URxvt*color9:               mybrightred
+URxvt*color10:              mybrightgreen
+URxvt*color11:              mybrightyellow
+URxvt*color12:              mybrightblue
+URxvt*color13:              mybrightmagenta
+URxvt*color14:              mybrightcyan
+URxvt*color15:              mybrightwhite
+
+! URXVT fix
+URxvt*intensityStyles:      false
+
+! URXvt appearance
+URxvt*externalBorder:       0
+URxvt*internalBorder:       4
+URxvt*font:                 xft:myfont:size=myfontsize
+URxvt*boldFont:             xft:myfont:size=myfontsize:bold
+URxvt*scrollBar:            false
+URxvt*scrollBar_right:      true
+URxvt*scrollstyle:          plain
+
+! URXVT behaviour
+URxvt*cursorBlinks:         true
+URxvt*iso14755:             false
+URxvt*iso14755_52:          false
+URxvt*saveLines:            30000
+URxvt*scrollTtyKeypress:    true
+URxvt*scrollTtyOutput:      false
+URxvt*termName:             rxvt-unicode-256color
+URxvt*title:                rxvt-unicode-256color
+URxvt*urgentonBell:         true
+
+! URXVT extensions
+URxvt*perl-ext-common:      default,clipboard,matcher,url-select
+URxvt*url-launcher:         /usr/bin/firefox
+URxvt*url-select.launcher:  /usr/bin/firefox
+URxvt*url-select.underline: true
+URxvt*matcher.button:       1
+
+! URXVT keybindings
+URxvt*keysym.C-C:           perl:clipboard:copy
+URxvt*keysym.C-V:           perl:clipboard:paste
+URxvt*keysym.C-A-v:         perl:clipboard:paste_escaped
+URxvt*keysym.A-u:           perl:url-select:select_next
+
+! Rofi
+rofi.color-enabled: true
+rofi.font:          myfont myfontsize
+rofi.terminal:      urxvt
